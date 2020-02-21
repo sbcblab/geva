@@ -25,6 +25,7 @@ call.objname <- function(obj, prevfns=0)
   nm
 }
 
+# Gets a list of the default arguments inside the currect function
 call.default.arg <- function(obj)
 {
   objname = call.objname(obj, 1)
@@ -35,3 +36,9 @@ call.default.arg <- function(obj)
   if (is.call(argres)) argres = eval.parent(argres)
   return(argres)
 }
+
+# Gets a character vector with the argument names used in dots. This does not evaluate the arguments
+call.dots.argnames <- function(...) names(match.call(expand.dots = FALSE)$`...`)
+
+# Gets a pairlist with the unvaluated arguments included in dots
+call.dots.args <- function(...) match.call(expand.dots = FALSE)$`...`

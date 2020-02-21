@@ -16,7 +16,7 @@
 #' @include generics.R
 #' @include usecasechecks.R
 
-#' @title Class Containing Input Data for GEVA
+#' @title GEVA Input Data
 #'
 #' @description The \code{GEVAInput} class contains the initial data for \code{GEVA} usage.
 #' It stores numeric matrices of \emph{logFC} values from differential expression comparison results. Options for calculations and summarizing are also included.
@@ -32,12 +32,12 @@
 #' @export
 setClass('GEVAInput',
          slots = c(
-                   values = 'matrix',
-                   weights = 'matrix',
-                   factors='factor',
-                   probeattrs = 'data.frame',
-                   info = 'list'
-                   ))
+           values = 'matrix',
+           weights = 'matrix',
+           factors='factor',
+           probeattrs = 'data.frame',
+           info = 'list'
+         ))
 
 # INITIALIZE
 setMethod('initialize', 'GEVAInput',
@@ -80,11 +80,12 @@ setMethod('[', c('GEVAInput', 'ANY', 'ANY', 'ANY'),
           })
 
 # S4 Methods
+setMethod('inputdata', 'GEVAInput', function(object) object)
 setMethod('inputvalues', 'GEVAInput', function(object) object@values)
 setMethod('inputweights', 'GEVAInput', function(object) object@weights)
 setMethod('probeattrs', 'GEVAInput', function(object) object@probeattrs)
 
-setMethod('infolist', 'GEVAInput', function(object) object@info)
+setMethod('infolist', c('GEVAInput', 'missing'), function(object, recursive=FALSE) object@info)
 setMethod('infolist<-', c('GEVAInput', 'list'), function(object, value) { object@info = value; object })
 
 setMethod('factors', 'GEVAInput', function(object) object@factors)

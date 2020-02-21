@@ -10,11 +10,12 @@
 # Last updated version: 0.1.0
 
 #' @include callhelpers.R
+#' @include printhelpers.R
 
 
 # Base function to assert that the result of calling functions matches the input arguments
 # The 'posscalls' argument must be a list like: list(functionname = "Error message objname %s: expected %s, got %s")
-assert.callres <- function(obj, posscalls, prevframes=2, ...)
+assert.callres <- function(obj, posscalls, prevframes=2, pastefn=base::deparse, ...)
 {
   objname = call.objname(obj, prevframes)
   argls = list(...)
@@ -27,8 +28,8 @@ assert.callres <- function(obj, posscalls, prevframes=2, ...)
     {
       stop(sprintf(posscalls[[callnm]],
                    objname,
-                   deparse(callinput),
-                   deparse(callres)))
+                   pastefn(callinput),
+                   pastefn(callres)))
     }
   }
   invisible(T)
@@ -48,4 +49,15 @@ assert.dim <- function(arr, ...)
   invisible(T)
 }
 
-
+# Asserts that 'arr' has the same character sequence as the result of a call applied to it
+# Valid arguments are names, rownames, colnames
+assert.names.equal <- function(arr, ...)
+{
+  posscalls = list(
+    names = "Mismatching names in '%s': expected [%s], got [%s]",
+    rownames = "Mismatching row.names in '%s': expected [%s], got [%s]",
+    colnames = "Mismatching col.names in '%s': expected [%s], got [%s]"
+  )
+  assert.callres(arr, posscalls, pastefn = fmt.limit, ...)
+  invisible(T)
+}
