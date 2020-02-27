@@ -10,7 +10,6 @@
 # Nunes et al, 2020
 # Last updated version: 0.1.0
 
-
 # === S4 ===
 
 setGeneric('inputvalues', function(object) standardGeneric('inputvalues'))
@@ -34,7 +33,16 @@ setGeneric('elem.class', function(object) standardGeneric('elem.class'))
 
 # GEVAGroupedSummary-class
 setGeneric('groupsets', function(object) standardGeneric('groupsets'))
+setGeneric('groupsets<-', function(object, value) standardGeneric('groupsets<-'))
 
+
+# GEVAGroupSet-class
+setGeneric('groups', function(object) standardGeneric('groups'))
+setGeneric('scores', function(object, group) standardGeneric('scores'))
+
+# GEVAQuantiles-class
+setGeneric('qindexes', function(object) standardGeneric('qindexes'))
+setGeneric('quantiles', function(object) standardGeneric('quantiles'))
 
 # === S3 ===
 

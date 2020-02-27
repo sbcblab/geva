@@ -10,12 +10,14 @@
 # Last updated version: 0.1.0
 
 #' @include c_SVTable.R
+#' @include c_SVAttribute.R
 
 #' @title GEVA Summary-Variation Table
 #'
 #' @description The \code{GEVASummary} class inherits from \code{SVTable}.
 #'
 #' @slot inputdata GEVAInput-class with the data input
+#' @slot sv.method Names of the statistical methods used to summarize data
 #' @slot info list with additional information
 #' 
 #'
@@ -25,6 +27,7 @@
 setClass('GEVASummary',
          slots = c(
            inputdata = 'GEVAInput',
+           sv.method = 'SVCharacterAttribute',
            info = 'list'
          ),
          contains = 'SVTable')
@@ -37,6 +40,7 @@ setMethod('initialize', 'GEVASummary',
             argls = initialize.class.args(...)
             .Object@inputdata = argls$inputdata
             assert.names.equal(.Object@sv, rownames = rownames(.Object@inputdata))
+            .Object@sv.method = argls$sv.method
             .Object@info = argls$info
             validObject(.Object)
             .Object

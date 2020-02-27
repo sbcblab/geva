@@ -9,6 +9,7 @@
 # Last updated version: 0.1.0
 
 #' @include c_GEVASummary.R
+#' @include c_GEVAGroupSet.R
 
 #' @title GEVA Grouped Summary-Variation Table
 #'
@@ -33,6 +34,7 @@ setMethod('initialize', 'GEVAGroupedSummary',
             .Object = callNextMethod(.Object, ...)
             argls = initialize.class.args(...)
             if (!is.unitialized(argls$groupsetlist)) .Object@groupsetlist = argls$groupsetlist
+            assert.notempty(.Object@groupsetlist)
             validObject(.Object)
             .Object
           })
@@ -40,4 +42,5 @@ setMethod('initialize', 'GEVAGroupedSummary',
 
 # S4 METHODS
 setMethod('groupsets', 'GEVAGroupedSummary', function(object) object@groupsetlist)
+#setMethod('groupsets<-', 'GEVAGroupedSummary', function(object, value) object@groupsetlist)
 

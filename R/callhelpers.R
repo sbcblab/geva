@@ -10,6 +10,7 @@
 # Nunes et al, 2020
 # Last updated version: 0.1.0
 
+# Finds recursively the source name of 'obj' function used as argument in parent functions
 call.objname <- function(obj, prevfns=0)
 {
   prevfns = prevfns + 1

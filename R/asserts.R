@@ -61,3 +61,29 @@ assert.names.equal <- function(arr, ...)
   assert.callres(arr, posscalls, pastefn = fmt.limit, ...)
   invisible(T)
 }
+
+# Asserts that the length of a list or array is not zero. This function accepts multiple arguments
+assert.notempty <- function(...)
+{
+  arglen = ...length()
+  if (arglen != 0)
+  {
+    argnms = call.dots.argnames(...)
+    for (i in 1:arglen)
+    {
+      objname = argnms[i]
+      if (length(...elt(i)) == 0) stop(sprintf("'%s' must contain at least one element", objname))
+    }
+  }
+  invisible(T)
+}
+
+# Asserts that all elements in a collection (needle) are included in another collection (arr)
+assert.included <- function(needle, arr, elemnames = "elements")
+{
+  nmneedle = call.objname(needle, 1)
+  nmarr = call.objname(arr, 1)
+  misselems = !(needle %in% arr)
+  if (any(misselems)) stop(sprintf("Some %s in '%s' are missing in '%s': [%s]", elemnames, nmneedle, nmarr, fmt.limit(needle[misselems])))
+  invisible(T)
+}
