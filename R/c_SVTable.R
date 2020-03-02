@@ -34,8 +34,9 @@ setMethod('initialize', 'SVTable',
           function(.Object, ...)
           {
             argls = initialize.class.args(...)
-            .Object@sv = argls$sv
-            assert.names.equal(.Object@sv, colnames = c('S', 'V'))
+            sv = argls$sv
+            assert.names.equal(sv, colnames = c('S', 'V'))
+            .Object@sv = as.matrix(sv)
             validObject(.Object)
             .Object
           }

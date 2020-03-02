@@ -25,18 +25,23 @@
 #' @export
 setClass('SVAttribute', representation('VIRTUAL'))
 
-setClass('SVCharacterAttribute',
+setClass('SVChrAttribute',
          slots = c(
            S = 'character',
            V = 'character'
          ), contains = 'SVAttribute')
 
-setClass('SVNumericAttribute',
+setClass('SVNumAttribute',
          slots = c(
            S = 'numeric',
            V = 'numeric'
          ), contains = 'SVAttribute')
 
+setClass('SVIntAttribute',
+         slots = c(
+           S = 'integer',
+           V = 'integer'
+         ), contains = 'SVAttribute')
 
 # INITIALIZE
 setMethod('initialize', 'SVAttribute',
@@ -50,22 +55,11 @@ setMethod('initialize', 'SVAttribute',
             .Object
           })
 
-setMethod('initialize', 'SVCharacterAttribute',
-          function(.Object, S, V, ...)
-          {
-            .Object = callNextMethod(.Object, S, V, ...)
-            validObject(.Object)
-            .Object
-          })
+setMethod('initialize', 'SVChrAttribute', function(.Object, S, V, ...) callNextMethod(.Object, S, V, ...))
 
-setMethod('initialize', 'SVNumericAttribute',
-          function(.Object, S, V, ...)
-          {
-            .Object = callNextMethod(.Object, S, V, ...)
-            validObject(.Object)
-            .Object
-          })
+setMethod('initialize', 'SVNumAttribute', function(.Object, S, V, ...) callNextMethod(.Object, S, V, ...))
 
+setMethod('initialize', 'SVIntAttribute', function(.Object, S, V, ...) callNextMethod(.Object, S, V, ...))
 
 # SHOW
 setMethod('show', 'SVAttribute',
@@ -75,7 +69,7 @@ setMethod('show', 'SVAttribute',
           })
 
 # INDEXERS
-setMethod('[', c('SVTable', 'ANY', 'ANY', 'ANY'),
+setMethod('[', c('SVAttribute', 'ANY', 'ANY', 'ANY'),
           function(x, i, j, ... , drop = TRUE)
           {
             if (lenth(i) != 0)
@@ -92,6 +86,10 @@ setMethod('dim', 'SVAttribute', function(x) NULL)
 setMethod('names', 'SVAttribute', function(x) c('S', 'V') )
 
 setMethod('sv', 'SVAttribute', function(object) setNames(c(object@S, object@V), c('S', 'V')))
+
+setMethod('svattr', c(S='character', V='character'), function(S, V) new('SVChrAttribute', S=S, V=V))
+setMethod('svattr', c(S='numeric', V='numeric'), function(S, V) new('SVNumAttribute', S=as.numeric(S), V=as.numeric(V)))
+setMethod('svattr', c(S='integer', V='integer'), function(S, V) new('SVIntAttribute', S=S, V=V))
 
 # S3 Methods
 summary.SVTable <- function(object, ...) x@S

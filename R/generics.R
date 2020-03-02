@@ -28,8 +28,12 @@ setGeneric('probeattrs', function(object) standardGeneric('probeattrs'))
 # SVTable-class
 setGeneric('sv', function(object) standardGeneric('sv'))
 
+# SVAttribute-class
+setGeneric('svattr', function(S, V) standardGeneric('svattr'))
+
 # TypedList-class
-setGeneric('elem.class', function(object) standardGeneric('elem.class'))
+setGeneric('elem.class', function(typedlist) standardGeneric('elem.class'))
+setGeneric('elem.class<-', function(typedlist, value) standardGeneric('elem.class<-'))
 
 # GEVAGroupedSummary-class
 setGeneric('groupsets', function(object) standardGeneric('groupsets'))
@@ -42,7 +46,12 @@ setGeneric('scores', function(object, group) standardGeneric('scores'))
 
 # GEVAQuantiles-class
 setGeneric('qindexes', function(object) standardGeneric('qindexes'))
+setGeneric('qcount', function(object) standardGeneric('qcount'))
 setGeneric('quantiles', function(object) standardGeneric('quantiles'))
+
+# GEVAResults-class
+setGeneric('results.table', function(gres) standardGeneric('results.table'))
+
 
 # === S3 ===
 

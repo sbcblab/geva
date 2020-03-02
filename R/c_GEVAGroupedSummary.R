@@ -10,6 +10,7 @@
 
 #' @include c_GEVASummary.R
 #' @include c_GEVAGroupSet.R
+#' @include c_TypedList.R
 
 #' @title GEVA Grouped Summary-Variation Table
 #'
@@ -33,8 +34,10 @@ setMethod('initialize', 'GEVAGroupedSummary',
           {
             .Object = callNextMethod(.Object, ...)
             argls = initialize.class.args(...)
-            if (!is.unitialized(argls$groupsetlist)) .Object@groupsetlist = argls$groupsetlist
-            assert.notempty(.Object@groupsetlist)
+            groupsetlist = argls$groupsetlist
+            assert.notempty(groupsetlist)
+            elem.class(groupsetlist) = 'GEVAGroupSet'
+            .Object@groupsetlist = groupsetlist
             validObject(.Object)
             .Object
           })

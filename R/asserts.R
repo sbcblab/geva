@@ -24,7 +24,7 @@ assert.callres <- function(obj, posscalls, prevframes=2, pastefn=base::deparse, 
   {
     callres = do.call(callnm, list(obj))
     callinput = argls[[callnm]]
-    if (all.equal(callinput, callres) != TRUE)
+    if (all.equal(callinput, callres)[1] != TRUE)
     {
       stop(sprintf(posscalls[[callnm]],
                    objname,
@@ -85,5 +85,27 @@ assert.included <- function(needle, arr, elemnames = "elements")
   nmarr = call.objname(arr, 1)
   misselems = !(needle %in% arr)
   if (any(misselems)) stop(sprintf("Some %s in '%s' are missing in '%s': [%s]", elemnames, nmneedle, nmarr, fmt.limit(needle[misselems])))
+  invisible(T)
+}
+
+# Asserts that the object belongs, inherits or is related to an class
+assert.class <- function(object, ...)
+{
+  objname = call.objname(object, 1)
+  argls = list(...)
+  posscalls = list(
+    class = "'%s' must belong the %s class",
+    is = "'%s' must be a '%s'",
+    inherits = "'%s' must inherit the %s class"
+  )
+  for (fnm in intersect(names(argls), names(posscalls)))
+  {
+    reqclass = argls[[fnm]]
+    if (reqclass == 'ANY') next
+    if (!(do.call(fnm, reqclass)[1]))
+    {
+      stop(sprintf(posscalls[[fnm]], objname, reqclass))
+    }
+  }
   invisible(T)
 }

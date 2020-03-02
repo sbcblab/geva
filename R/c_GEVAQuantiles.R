@@ -11,19 +11,24 @@
 
 
 #' @include c_GEVAGroupSet.R
+#' @include c_SVAttribute.R
 
 #' @title GEVA Quantiles Grouping Results
 #'
 #' @description The \code{GEVAQuantiles} class inherits the grouping properties from \code{GEVAGroupSet} and additionally stores the indexes associated to summary and variation.
 #'
 #' @slot qindexes SVTable with indexes representing the magnitude of summary and variation
+#' @slot qcount SVIntAttribute with number of quantiles for summary and variation
+#' @slot qcutoff SVNumAttribute with the initial quantile cut-offs, starting from zero
 #'
 #' @name GEVAQuantiles-class
 #' @rdname GEVAQuantiles-class
 #' @export
 setClass('GEVAQuantiles',
          slots = c(
-           qindexes = 'SVTable'
+           qindexes = 'SVTable',
+           qcount = 'SVIntAttribute',
+           qcutoff = 'SVNumAttribute'
          ), contains = 'GEVAGroupSet')
 
 # INITIALIZE
@@ -33,6 +38,9 @@ setMethod('initialize', 'GEVAQuantiles',
             .Object = callNextMethod(.Object, ...)
             argls = initialize.class.args(...)
             .Object@qindexes = argls$qindexes
+            qcount = get.initialized(argls$qcount, svattr(3L, 2L))
+            # TODO: Assert that quantile count is above 2
+            .Object@qcount = qcount
             validObject(.Object)
             .Object
           }
@@ -52,4 +60,5 @@ setMethod('show', 'GEVAQuantiles',
 # S4 Methods
 setMethod('qindexes', 'GEVAQuantiles', function(object) object@qindexes)
 setMethod('quantiles', 'GEVAQuantiles', function(object) levels(object))
+setMethod('qcount', 'GEVAQuantiles', function(object) object@qcount)
 

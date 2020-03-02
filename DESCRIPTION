@@ -1,0 +1,35 @@
+Package: geva
+Type: Package
+Title: Gene Expression Variation Analysis
+Version: 0.1.0
+Author: Nunes I.J.G. <nunesijg@gmail.com>, David M. Z., Feltes B. C., and Dorn M.
+Maintainer: Nunes I.J.G. <nunesijg@gmail.com>
+Description: Statistic methods to evaluate variation between multiple biological conditions.
+License: LGPLv3
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 3.5.0)
+Imports: dbscan, fastcluster, matrixStats, sp, SearchTrees
+Suggests: AnnotationDbi, DBI, devtools, topGO
+RoxygenNote: 6.1.1
+Collate: 
+    'callhelpers.R'
+    'vectorhelpers.R'
+    'stringhelpers.R'
+    'printhelpers.R'
+    'asserts.R'
+    'base.R'
+    'usecasechecks.R'
+    'generics.R'
+    'classhelpers.R'
+    'c_SVTable.R'
+    'c_GEVAGroupSet.R'
+    'c_TypedList.R'
+    'c_SVAttribute.R'
+    'c_GEVAInput.R'
+    'c_GEVASummary.R'
+    'c_GEVAGroupedSummary.R'
+    'c_GEVAQuantiles.R'
+    'c_GEVAResults.R'
+    'geva-package.R'
+    'inputmethods.R'

@@ -58,11 +58,20 @@ setMethod('initialize', 'TypedList',
           )
 
 # DEFAULT CONSTRUCTOR
-typed.list <- function(elem.class=NA_character_, ...) new('TypedList', elem.class=elem.class, ...)
+typed.list <- function(..., elem.class=NA_character_) new('TypedList', elem.class=elem.class, ...)
 
 
 # S4 METHODS
-setMethod('elem.class', 'TypedList', function(object) object@elem.class)
+setMethod('elem.class', 'TypedList', function(typedlist) typedlist@elem.class)
+setMethod('elem.class<-', c(typedlist='TypedList', value='character'),
+          function(typedlist, value)
+          {
+            args = as.list(typedlist)
+            assert.notempty(value)
+            args$elem.class = value[1]
+            typedlist = do.call('typed.list', args = args)
+            typedlist
+          })
 
 setMethod('show', 'TypedList',
           function(object)
@@ -79,3 +88,6 @@ setMethod('[', c('TypedList', 'ANY', 'missing', 'missing'),
             if (drop) return(elems)
             return(do.call('typed.list', args=elems))
           })
+
+# S3 Methods
+as.list.TypedList <- function(x, ...) x[1:length(x), drop=TRUE]

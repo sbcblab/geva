@@ -10,6 +10,7 @@
 # Last updated version: 0.1.0
 
 #' @include c_SVTable.R
+#' @include c_GEVAInput.R
 #' @include c_SVAttribute.R
 
 #' @title GEVA Summary-Variation Table
@@ -27,7 +28,7 @@
 setClass('GEVASummary',
          slots = c(
            inputdata = 'GEVAInput',
-           sv.method = 'SVCharacterAttribute',
+           sv.method = 'SVChrAttribute',
            info = 'list'
          ),
          contains = 'SVTable')
@@ -38,8 +39,10 @@ setMethod('initialize', 'GEVASummary',
           {
             .Object = callNextMethod(.Object, ...)
             argls = initialize.class.args(...)
+            sv = .Object@sv
+            if (!is.numeric(sv)) stop("'sv' must be a numeric matrix")
             .Object@inputdata = argls$inputdata
-            assert.names.equal(.Object@sv, rownames = rownames(.Object@inputdata))
+            assert.names.equal(sv, rownames = rownames(.Object@inputdata))
             .Object@sv.method = argls$sv.method
             .Object@info = argls$info
             validObject(.Object)
