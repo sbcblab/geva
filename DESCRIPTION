@@ -11,11 +11,11 @@ LazyData: true
 Depends: R (>= 3.5.0)
 Imports: dbscan, fastcluster, matrixStats, sp, SearchTrees
 Suggests: AnnotationDbi, DBI, devtools, topGO
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Collate: 
+    'stringhelpers.R'
     'callhelpers.R'
     'vectorhelpers.R'
-    'stringhelpers.R'
     'printhelpers.R'
     'asserts.R'
     'base.R'
@@ -32,4 +32,5 @@ Collate:
     'c_GEVAQuantiles.R'
     'c_GEVAResults.R'
     'geva-package.R'
-    'inputmethods.R'
+    'input.R'
+    'summarization.R'

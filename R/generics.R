@@ -22,11 +22,16 @@ setGeneric('infolist<-', function(object, value) standardGeneric('infolist<-'))
 setGeneric('factors', function(object) standardGeneric('factors'))
 setGeneric('factors<-', function(object, value) standardGeneric('factors<-'))
 
+setGeneric('as.indexes', function(x) standardGeneric('as.indexes'))
+
 # GEVAInput-class
 setGeneric('probeattrs', function(object) standardGeneric('probeattrs'))
 
 # SVTable-class
 setGeneric('sv', function(object) standardGeneric('sv'))
+
+# GEVASummary-class
+setGeneric('sv.method', function(gevasummary) standardGeneric('sv.method'))
 
 # SVAttribute-class
 setGeneric('svattr', function(S, V) standardGeneric('svattr'))
@@ -55,5 +60,8 @@ setGeneric('results.table', function(gres) standardGeneric('results.table'))
 
 # === S3 ===
 
-variation = function(object, ...) UseMethod('variation')
+variation <- function(object, ...) UseMethod('variation')
+
+get.summary.method <- function(x) UseMethod('get.summary.method')
+get.variation.method <- function(x) UseMethod('get.variation.method')
 

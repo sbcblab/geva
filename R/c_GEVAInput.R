@@ -109,6 +109,7 @@ setMethod('dim', 'GEVAInput', function(x) dim(inputvalues(x)))
 setMethod('dimnames', 'GEVAInput', function(x) dimnames(inputvalues(x)))
 setMethod('names', 'GEVAInput', function(x) colnames(inputvalues(x)))
 
+setMethod('as.indexes', 'GEVAInput', function(x) matrix(1:length(inputvalues(x)), ncol=ncol(x), dimnames = dimnames(x)))
 
 # S3 Methods
 

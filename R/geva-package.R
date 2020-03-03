@@ -12,3 +12,5 @@
 #' @name geva
 NULL
 
+#' @import matrixStats
+NULL

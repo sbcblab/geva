@@ -27,14 +27,15 @@ call.objname <- function(obj, prevfns=0)
 }
 
 # Gets a list of the default arguments inside the currect function
-call.default.arg <- function(obj)
+call.default.arg <- function(obj, prevfns=0L)
 {
-  objname = call.objname(obj, 1)
-  fms = eval.parent(formals(sys.function(sys.parent())))
+  prevfns = prevfns + 1L
+  objname = call.objname(obj, prevfns)
+  fms = eval.parent(formals(sys.function(sys.parent(prevfns))), prevfns)
   if (!(objname %in% names(fms))) return(NULL)
   argres = fms[[objname]]
   if (missing(argres)) argres = NULL
-  if (is.call(argres)) argres = eval.parent(argres)
+  if (is.call(argres)) argres = eval.parent(argres, prevfns)
   return(argres)
 }
 

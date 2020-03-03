@@ -75,5 +75,8 @@ setMethod('infolist', c('GEVASummary', 'missing'),
           })
 setMethod('infolist<-', c('GEVASummary', 'list'), function(object, value) { object@info = value; object })
 
+setMethod('sv.method', 'GEVASummary', function(gevasummary) gevasummary@sv.method)
 
-
+# S3 Methods
+get.summary.method.GEVASummary <- function(gevasummary) get.summary.method(sv.method(gevasummary)$S)
+get.variation.method.GEVASummary <- function(gevasummary) get.variation.method(sv.method(gevasummary)$V)

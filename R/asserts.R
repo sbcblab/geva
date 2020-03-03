@@ -11,7 +11,7 @@
 
 #' @include callhelpers.R
 #' @include printhelpers.R
-
+#' @include stringhelpers.R
 
 # Base function to assert that the result of calling functions matches the input arguments
 # The 'posscalls' argument must be a list like: list(functionname = "Error message objname %s: expected %s, got %s")
@@ -108,4 +108,23 @@ assert.class <- function(object, ...)
     }
   }
   invisible(T)
+}
+
+# Asserts that the argument of a funtion
+assert.choices <- function(arg, accept.multiple=FALSE, accept.null=FALSE, accept.na=FALSE)
+{
+  argnm = call.objname(arg, 1)
+  choices = call.default.arg(arg, 1)
+  if (!accept.null && is.null(arg)) stop(sprintf("'%s' cannot be NULL", argnm))
+  if (!accept.na && is.na(arg)) stop(sprintf("'%s' cannot be NA", argnm))
+  if (!is.null(arg) && !is.na(arg))
+  {
+    if (accept.multiple && length(arg) > 1)
+    {
+      margs = !(arg %in% choices)
+      if (any(margs)) stop(sprintf("invalid arguments in '%s': (%s).\nValid choices are: %s", argnm, strjoin(arg[margs], ', '), strjoin(choices, ', ')) )
+    } else if (!all(arg %in% choices)) stop(sprintf("Invalid argument (%s) in '%s'.\nValid choices are: %s", arg, argnm, strjoin(choices, ', ')), call. = F)
+  } else return(arg)
+  if (!accept.multiple) arg = arg[1]
+  arg
 }
