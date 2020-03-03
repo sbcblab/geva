@@ -12,5 +12,5 @@
 #' @name geva
 NULL
 
-#' @import matrixStats
+#' @importFrom matrixStats weightedMean weightedMedian weightedSd weightedVar weightedMad
 NULL

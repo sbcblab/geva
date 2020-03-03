@@ -31,6 +31,8 @@ setClass('GEVAQuantiles',
            qcutoff = 'SVNumAttribute'
          ), contains = 'GEVAGroupSet')
 
+# TODO: Include individual scores for SV
+
 # INITIALIZE
 setMethod('initialize', 'GEVAQuantiles',
           function(.Object, ...)

@@ -14,16 +14,13 @@
 #' @include asserts.R
 
 #' GEVA summarization options
-#' @rdname summarizeoptions
 NULL
 
 #' Returns a vector with the supported methods of summarization
-#' @rdname summarizeoptions
 #' @export
 options.summary <- c('median', 'mean')
 
 #' Returns a vector with the supported methods of summarization
-#' @rdname summarizeoptions
 #' @export
 options.variation <- c('median', 'mean')
 

@@ -47,3 +47,24 @@ fmt.limit <- function(arr, limit=6, mode=c('headtail', 'head', 'tail'), ellipsis
   }
   fmt
 }
+
+# Checks if there's a 'verbose' variable defined as TRUE in parent function
+is.verbose <- function(prevfns=0L)
+{
+  prevfns = prevfns + 1L
+  defvars = ls(envir = parent.frame(prevfns))
+  return('verbose' %in% defvars && all(eval.parent(verbose, prevfns) == TRUE) == TRUE)
+}
+
+
+# Performs a print if verbose is activated. Arguments can be formatted as in sprintf
+vprint <- function(x, ..., new.line=TRUE)
+{
+  isverb = is.verbose(1L)
+  if (isverb)
+  {
+    if (is.character(x)) cat(sprintf(x, ...)) else print(x)
+    if (new.line) cat('\n')
+  }
+  invisible(isverb)
+}
