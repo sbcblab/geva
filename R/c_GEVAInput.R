@@ -24,7 +24,7 @@
 #' @slot values numeric matrix (m*n) of log-ratio values, usually \emph{logFC}
 #' @slot weights numeric matrix (m*n) of weighted values. If not defined, all weight values are equal to 1
 #' @slot factors factor representing the grouping of the n columns. If not defined, all factors are equal to NA
-#' @slot probeattrs data.frame with m rows containing attribute columns associated to the probes
+#' @slot ftable data.frame with m rows containing attribute columns associated to the features (e.g. probes or genes)
 #' @slot info list containg additional information included in the input
 #'
 #' @name GEVAInput-class
@@ -35,7 +35,7 @@ setClass('GEVAInput',
            values = 'matrix',
            weights = 'matrix',
            factors='factor',
-           probeattrs = 'data.frame',
+           ftable = 'data.frame',
            info = 'list'
          ))
 
@@ -49,7 +49,7 @@ setMethod('initialize', 'GEVAInput',
             .Object@values = mvals
             .Object@weights = get.initialized(argls$weights, default = mvals^0)
             .Object@factors = get.initialized(argls$factors, default = factor(rep(NA, ncol(mvals))))
-            .Object@probeattrs = get.initialized(argls$factors, default = data.frame(row.names=rownames(mvals)))
+            .Object@ftable = get.initialized(argls$factors, default = data.frame(row.names=rownames(mvals)))
             
             assert.dim(.Object@weights, ncol=ncol(mvals), nrow=nrow(mvals))
             assert.dim(.Object@factors, length=ncol(mvals))
@@ -65,11 +65,11 @@ setMethod('initialize', 'GEVAInput',
 setMethod('show', 'GEVAInput',
           function(object)
           {
-            catline('Object used as Input for GEVA (GEVAInput-class)')
+            catline('GEVA Input Data')
             catline('Columns (%d): %s', ncol(object), fmt.limit(colnames(object)))
             catline('Rows (%d): %s', nrow(object), fmt.limit(rownames(object)))
             catline('Factors (%d): %s', length(levels(object)), fmt.limit(levels(object) ))
-            catline('Attribute columns (%d): %s', ncol(probeattrs(object)), fmt.limit(colnames(probeattrs(object))))
+            catline('Attribute columns (%d): %s', ncol(featureTable(object)), fmt.limit(colnames(featureTable(object))))
           })
 
 # INDEXERS
@@ -83,7 +83,7 @@ setMethod('[', c('GEVAInput', 'ANY', 'ANY', 'ANY'),
 setMethod('inputdata', 'GEVAInput', function(object) object)
 setMethod('inputvalues', 'GEVAInput', function(object) object@values)
 setMethod('inputweights', 'GEVAInput', function(object) object@weights)
-setMethod('probeattrs', 'GEVAInput', function(object) object@probeattrs)
+setMethod('featureTable', 'GEVAInput', function(object) object@ftable)
 
 setMethod('infolist', c('GEVAInput', 'missing'), function(object, recursive=FALSE) object@info)
 setMethod('infolist<-', c('GEVAInput', 'list'), function(object, value) { object@info = value; object })

@@ -92,8 +92,8 @@ setMethod('svattr', c(S='numeric', V='numeric'), function(S, V) new('SVNumAttrib
 setMethod('svattr', c(S='integer', V='integer'), function(S, V) new('SVIntAttribute', S=S, V=V))
 
 # S3 Methods
-summary.SVTable <- function(object, ...) x@S
-variation.SVTable <- function(object, ...) x@V
+summary.SVAttribute <- function(object, ...) object@S
+variation.SVAttribute <- function(object, ...) object@V
 as.character.SVAttribute <- function(x, ...) c(summary(x), variation(x))
 as.vector.SVAttribute <- function(x, ...) sv(x)
 

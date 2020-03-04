@@ -22,7 +22,7 @@ options.summary <- c('median', 'mean')
 
 #' Returns a vector with the supported methods of summarization
 #' @export
-options.variation <- c('median', 'mean')
+options.variation <- c('mad', 'sd', 'var')
 
 #' Summarizes the GEVAInput
 #' @export
@@ -31,6 +31,11 @@ geva.summarize <- function(gevainput, summary.method = options.summary, variatio
   assert.class(gevainput, is='GEVAInput')
   summary.method = assert.choices(summary.method)
   variation.method = assert.choices(variation.method)
+  if (ncol(ginput) <= 3L && variation.method == 'mad')
+  {
+    variation.method = setdiff(options.variation, 'mad')[1]
+    warning(sprintf("'mad' option for variation method requires at least 4 columns.\nUsing '%s' instead", variation.method))
+  }
   summf = get.summary.method(summary.method)
   varf = get.variation.method(variation.method)
   matinds = as.indexes(gevainput)
@@ -38,10 +43,12 @@ geva.summarize <- function(gevainput, summary.method = options.summary, variatio
   vw = as.numeric(inputweights(gevainput))
   na.rm = anyNA(vv)
   vsumm = apply(matinds, 1, function(vinds) summf(vv, vw, idxs = vinds, na.rm = na.rm))
-  vvar = apply(matinds, 1, function(vinds) varf(vv, vw, idxs = vinds, na.rm = na.rm))
+  vvar = apply(matinds, 1, function(vinds) varf(vv, vw, idxs = vinds, center=vsumm[vinds[1]], na.rm = na.rm))
+  assign('varf', varf, globalenv())
   dfsv = data.frame(S=vsumm, V=vvar)
   svmets = svattr(summary.method, variation.method)
   infols = list(summary.method=summary.method, variation.method=variation.method)
+  vprint("Input summarized")
   new('GEVASummary', sv=dfsv, inputdata=gevainput, sv.method=svmets, info=infols)
 }
 

@@ -57,13 +57,17 @@ setMethod('show', 'GEVASummary',
             catline('GEVA Summary-Variation Table (GEVASummary-class)')
             catline('Columns: S (summary), V (variation)')
             catline('Rows (%d): %s', nrow(object), fmt.limit(rownames(object)))
+            srng = range(summary(object))
+            vrng = range(variation(object))
+            catline('Summary range: %.2f to %.2f', srng[1], srng[2])
+            catline('Variation range: %.2f to %.2f', vrng[1], vrng[2])
           })
 
 # S4 Methods
 setMethod('inputdata', 'GEVASummary', function(object) object@inputdata)
 setMethod('inputvalues', 'GEVASummary', function(object) inputvalues(inputdata(object)))
 setMethod('inputweights', 'GEVASummary', function(object) inputweights(inputdata(object)))
-setMethod('probeattrs', 'GEVASummary', function(object) probeattrs(inputdata(object)))
+setMethod('featureTable', 'GEVASummary', function(object) featureTable(inputdata(object)))
 setMethod('factors', 'GEVASummary', function(object) factors(inputdata(object)))
 
 setMethod('infolist', c('GEVASummary', 'missing'),

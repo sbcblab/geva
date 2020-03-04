@@ -18,6 +18,7 @@
 #'
 #' @slot grouping factor used to group genes or probes
 #' @slot scores numeric vector with grouping scores
+#' @slot ftable data.frame with additional information related to the grouped features (genes or probes)
 #' @slot centroids SVTable describing the position of centroids
 #' @slot offsets SVTable with distances between the centroids and SV data
 #' @slot info list with additional information
@@ -29,6 +30,7 @@ setClass('GEVAGroupSet',
          slots = c(
            grouping = 'factor',
            scores = 'numeric',
+           ftable = 'data.frame',
            centroids = 'SVTable',
            offsets = 'SVTable',
            info = 'list'
@@ -43,9 +45,12 @@ setMethod('initialize', 'GEVAGroupSet',
             centroids = argls$centroids
             offsets = argls$offsets
             scores = argls$scores
+            ftable = get.initialized(argls$ftable, data.frame(row.names = names(scores)))
             assert.dim(scores, length=length(grouping))
             assert.included(levels(grouping), rownames(centroids), "centroid groups")
             assert.dim(offsets, nrow=length(grouping))
+            assert.names.equal(ftable, rownames=names(scores))
+            .Object@ftable = ftable
             .Object@grouping = grouping
             .Object@scores = scores
             .Object@centroids = centroids
@@ -74,6 +79,8 @@ setMethod('scores', c('GEVAGroupSet', 'character'), function(object, group) obje
 
 setMethod('infolist', c('GEVAGroupSet', 'missing'), function(object, recursive) object@info )
 setMethod('infolist<-', c('GEVAGroupSet', 'list'), function(object, value) { object@info = value; object })
+
+setMethod('featureTable', 'GEVAGroupSet', function(object) object@ftable)
 
 # S3 Methods
 levels.GEVAGroupSet <- function(x) levels(groups(x))

@@ -25,7 +25,7 @@ setGeneric('factors<-', function(object, value) standardGeneric('factors<-'))
 setGeneric('as.indexes', function(x) standardGeneric('as.indexes'))
 
 # GEVAInput-class
-setGeneric('probeattrs', function(object) standardGeneric('probeattrs'))
+setGeneric('featureTable', function(object) standardGeneric('featureTable'))
 
 # SVTable-class
 setGeneric('sv', function(object) standardGeneric('sv'))

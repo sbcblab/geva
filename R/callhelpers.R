@@ -26,7 +26,7 @@ call.objname <- function(obj, prevfns=0)
   nm
 }
 
-# Gets a list of the default arguments inside the currect function
+# Gets a list of the default arguments inside the current function
 call.default.arg <- function(obj, prevfns=0L)
 {
   prevfns = prevfns + 1L
@@ -44,3 +44,15 @@ call.dots.argnames <- function(...) names(match.call(expand.dots = FALSE)$`...`)
 
 # Gets a pairlist with the unvaluated arguments included in dots
 call.dots.args <- function(...) match.call(expand.dots = FALSE)$`...`
+
+# Gets an argument by its name inside the dots of a parent funtion. If a default value is provided, this is used if the argument is missing
+...arg <- function(name, default)
+{
+  argnm = trimws(deparse(substitute(name)), whitespace = '[\'\"\t\n]')
+  dotexpr = substitute(call.dots.args(...))
+  argls = eval(dotexpr, envir = sys.frame(1L))
+  nodef = missing(default)
+  ret = if (argnm %in% names(argls)) argls[[argnm]] else if (!nodef) default else stop(sprintf("object '%s' not found", argnm), call. = F)
+  ret
+}
+

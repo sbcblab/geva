@@ -100,9 +100,9 @@ assert.class <- function(object, ...)
   )
   for (fnm in intersect(names(argls), names(posscalls)))
   {
-    reqclass = argls[[fnm]]
+    reqclass = argls[[fnm]][1]
     if (reqclass == 'ANY') next
-    if (!(do.call(fnm, reqclass)[1]))
+    if (!(do.call(fnm, list(object, reqclass))))
     {
       stop(sprintf(posscalls[[fnm]], objname, reqclass))
     }
@@ -114,7 +114,7 @@ assert.class <- function(object, ...)
 assert.choices <- function(arg, accept.multiple=FALSE, accept.null=FALSE, accept.na=FALSE)
 {
   argnm = call.objname(arg, 1)
-  choices = call.default.arg(arg, 1)
+  choices = eval(call.default.arg(arg, 1))
   if (!accept.null && is.null(arg)) stop(sprintf("'%s' cannot be NULL", argnm))
   if (!accept.na && is.na(arg)) stop(sprintf("'%s' cannot be NA", argnm))
   if (!is.null(arg) && !is.na(arg))
@@ -127,4 +127,31 @@ assert.choices <- function(arg, accept.multiple=FALSE, accept.null=FALSE, accept
   } else return(arg)
   if (!accept.multiple) arg = arg[1]
   arg
+}
+
+# Asserts that the argument satisfy some operator (like <, >, <=, >=, etc) based on another parameter
+assert.operator <- function(arg, ...)
+{
+  objname = call.objname(arg, 1)
+  argls = list(...)
+  posscalls = list(
+    `>` = "greater than %s",
+    `<` = "less than %s",
+    `>=` = "greater or equal than %s",
+    `<=` = "less or equal than %s",
+    `==` = "equal to %s",
+    `!=` = "different than %s"
+  )
+  argnms = intersect(names(argls), names(posscalls))
+  pretxt = if (length(arg) > 1) "All elements in '%s'" else "'%s'"
+  for (fnm in argnms)
+  {
+    reqop = argls[[fnm]]
+    mism = !(do.call(fnm, list(arg, reqop)))
+    if (any(mism))
+    {
+      stop(sprintf(pretxt + ' must be ' + posscalls[[fnm]], objname, reqop), call. = F)
+    }
+  }
+  invisible(T)
 }

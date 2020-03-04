@@ -19,4 +19,14 @@
   .Primitive("+")(x, y)
 }
 
+# More succint way to concatenate a vector of strings
 strjoin <- function(strvec, sep="") paste0(strvec, collapse = sep)
+
+# Concatenates a string vector using conjunctions when needed
+strconjunct <- function(strvec, sep=', ', conj=' and ')
+{
+  len = length(strvec)
+  if (len == 0L) return('')
+  if (len == 1L) return(strvec)
+  return(strjoin(strvec[1L:(len-1L)], sep) + conj + strvec[len])
+}

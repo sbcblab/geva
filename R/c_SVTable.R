@@ -70,6 +70,6 @@ setMethod('names', 'SVTable', function(x) colnames(sv(x)))
 # S3 Methods
 as.matrix.SVTable <- function(x, ...) sv(x)
 as.data.frame.SVTable <- function(x, ...) as.data.frame(sv(x))
-summary.SVTable <- function(object, ...) sv(x)[, 'S']
-variation.SVTable <- function(object, ...) sv(x)[, 'V']
+summary.SVTable <- function(object, ...) sv(object)[, 'S']
+variation.SVTable <- function(object, ...) sv(object)[, 'V']
 
