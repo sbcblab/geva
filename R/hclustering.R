@@ -21,8 +21,9 @@ options.hc.metric <- c('euclidean', 'maximum', 'manhattan', 'canberra', 'binary'
 options.hc.method <- c('centroid', 'median', 'ward', 'single')
 
 # Performs hierarchical clustering
-geva.hcluster <- function(svmatrix, resolution=0.85, hc.method=options.hc.method, hc.metric=options.hc.metric, ...)
+geva.hcluster <- function(sv, resolution=0.85, hc.method=options.hc.method, hc.metric=options.hc.metric, ...)
 {
+  svmatrix = as.matrix(sv)
   assert.choices(hc.method)
   assert.choices(hc.metric)
   assert.names.equal(svmatrix, colnames=c('S', 'V'))
@@ -31,5 +32,5 @@ geva.hcluster <- function(svmatrix, resolution=0.85, hc.method=options.hc.method
   hc = hclust.vector(X = svmatrix, method = hc.method, metric = hc.metric, p = mink.p)
   fdt = data.frame(row.names = rownames(svmatrix))
   
-  
+  # TODO: Finish the clustering method here
 }

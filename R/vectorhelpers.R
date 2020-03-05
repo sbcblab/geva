@@ -51,4 +51,5 @@ headtail.matrix <- function(x, n = 6L, ...)
 headtail.data.frame <- function(x, n = 6L, ...) headtail.matrix(x, n, ...)
 
 
-
+# Checks if a vector is a named vector
+is.named <- function(x) !is.null(names(x))

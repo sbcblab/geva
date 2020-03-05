@@ -63,7 +63,7 @@ assert.names.equal <- function(arr, ...)
 }
 
 # Asserts that the length of a list or array is not zero. This function accepts multiple arguments
-assert.notempty <- function(...)
+assert.notempty <- function(..., .posmsg = "'%s' must contain at least one element")
 {
   arglen = ...length()
   if (arglen != 0)
@@ -72,7 +72,7 @@ assert.notempty <- function(...)
     for (i in 1:arglen)
     {
       objname = argnms[i]
-      if (length(...elt(i)) == 0) stop(sprintf("'%s' must contain at least one element", objname))
+      if (length(...elt(i)) == 0) stop(sprintf(.posmsg, objname))
     }
   }
   invisible(T)
@@ -130,9 +130,9 @@ assert.choices <- function(arg, accept.multiple=FALSE, accept.null=FALSE, accept
 }
 
 # Asserts that the argument satisfy some operator (like <, >, <=, >=, etc) based on another parameter
-assert.operator <- function(arg, ...)
+assert.operator <- function(arg, ..., .argname = NA)
 {
-  objname = call.objname(arg, 1)
+  objname = if (is.na(.argname)) call.objname(arg, 1) else .argname
   argls = list(...)
   posscalls = list(
     `>` = "greater than %s",

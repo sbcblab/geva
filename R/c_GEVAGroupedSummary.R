@@ -37,6 +37,7 @@ setMethod('initialize', 'GEVAGroupedSummary',
             groupsetlist = argls$groupsetlist
             assert.notempty(groupsetlist)
             elem.class(groupsetlist) = 'GEVAGroupSet'
+            check.typed.list.class(groupsetlist, 'GEVAGroupSet')
             .Object@groupsetlist = groupsetlist
             validObject(.Object)
             .Object
@@ -45,5 +46,5 @@ setMethod('initialize', 'GEVAGroupedSummary',
 
 # S4 METHODS
 setMethod('groupsets', 'GEVAGroupedSummary', function(object) object@groupsetlist)
-#setMethod('groupsets<-', 'GEVAGroupedSummary', function(object, value) object@groupsetlist)
+setMethod('groupsets<-', 'GEVAGroupedSummary', function(object, value) new('GEVAGroupedSummary', inputdata=inputdata(object), sv.method=sv.method(object), info=infolist(object), groupsetlist=value))
 

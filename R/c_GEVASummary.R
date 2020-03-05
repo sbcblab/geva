@@ -12,6 +12,7 @@
 #' @include c_SVTable.R
 #' @include c_GEVAInput.R
 #' @include c_SVAttribute.R
+#' @include c_TypedList.R
 
 #' @title GEVA Summary-Variation Table
 #'
@@ -81,6 +82,10 @@ setMethod('infolist<-', c('GEVASummary', 'list'), function(object, value) { obje
 
 setMethod('sv.method', 'GEVASummary', function(gevasummary) gevasummary@sv.method)
 
+setMethod('groupsets', 'GEVASummary', function(object) NULL)
+setMethod('groupsets<-', c('GEVASummary', 'TypedList'), function(object, value) new('GEVAGroupedSummary', inputdata=inputdata(object), sv.method=sv.method(object), info=infolist(object), groupsetlist=value))
+
 # S3 Methods
 get.summary.method.GEVASummary <- function(gevasummary) get.summary.method(sv.method(gevasummary)$S)
 get.variation.method.GEVASummary <- function(gevasummary) get.variation.method(sv.method(gevasummary)$V)
+

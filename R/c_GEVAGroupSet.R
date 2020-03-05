@@ -45,8 +45,9 @@ setMethod('initialize', 'GEVAGroupSet',
             centroids = argls$centroids
             offsets = argls$offsets
             scores = argls$scores
-            ftable = get.initialized(argls$ftable, data.frame(row.names = names(scores)))
+            assert.notempty(names(scores))
             assert.dim(scores, length=length(grouping))
+            ftable = get.initialized(argls$ftable, data.frame(row.names = names(scores)))
             assert.included(levels(grouping), rownames(centroids), "centroid groups")
             assert.dim(offsets, nrow=length(grouping))
             assert.names.equal(ftable, rownames=names(scores))

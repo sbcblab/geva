@@ -54,6 +54,9 @@ setGeneric('qindexes', function(object) standardGeneric('qindexes'))
 setGeneric('qcount', function(object) standardGeneric('qcount'))
 setGeneric('quantiles', function(object) standardGeneric('quantiles'))
 
+# GEVAQuantilesAdjusted-class
+setGeneric('group.rels', function(object) standardGeneric('group.rels'))
+
 # GEVAResults-class
 setGeneric('results.table', function(gres) standardGeneric('results.table'))
 

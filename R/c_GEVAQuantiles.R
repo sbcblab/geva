@@ -12,6 +12,7 @@
 
 #' @include c_GEVAGroupSet.R
 #' @include c_SVAttribute.R
+#' @include usecasechecks.R
 
 #' @title GEVA Quantiles Grouping Results
 #'
@@ -31,7 +32,7 @@ setClass('GEVAQuantiles',
            qcutoff = 'SVNumAttribute'
          ), contains = 'GEVAGroupSet')
 
-# TODO: Include individual scores for SV
+# TODO: Include individual scores for SV (?)
 
 # INITIALIZE
 setMethod('initialize', 'GEVAQuantiles',
@@ -41,7 +42,7 @@ setMethod('initialize', 'GEVAQuantiles',
             argls = initialize.class.args(...)
             .Object@qindexes = argls$qindexes
             qcount = get.initialized(argls$qcount, svattr(3L, 2L))
-            # TODO: Assert that quantile count is above 2
+            check.quantiles.count(summary(qcount), variation(qcount))
             .Object@qcount = qcount
             validObject(.Object)
             .Object

@@ -72,7 +72,7 @@ setMethod('show', 'SVAttribute',
 setMethod('[', c('SVAttribute', 'ANY', 'ANY', 'ANY'),
           function(x, i, j, ... , drop = TRUE)
           {
-            if (lenth(i) != 0)
+            if (length(i) != 0)
             {
               if (length(i) > 1) return(sv(x)[i])
               if (i == 1 || i %in% c('s', 'S')) return(summary(x))
@@ -84,6 +84,7 @@ setMethod('[', c('SVAttribute', 'ANY', 'ANY', 'ANY'),
 # S4 Methods
 setMethod('dim', 'SVAttribute', function(x) NULL)
 setMethod('names', 'SVAttribute', function(x) c('S', 'V') )
+setMethod('$', 'SVAttribute', function(x, name) x[name] )
 
 setMethod('sv', 'SVAttribute', function(object) setNames(c(object@S, object@V), c('S', 'V')))
 
