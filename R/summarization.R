@@ -44,7 +44,6 @@ geva.summarize <- function(gevainput, summary.method = options.summary, variatio
   na.rm = anyNA(vv)
   vsumm = apply(matinds, 1, function(vinds) summf(vv, vw, idxs = vinds, na.rm = na.rm))
   vvar = apply(matinds, 1, function(vinds) varf(vv, vw, idxs = vinds, center=vsumm[vinds[1]], na.rm = na.rm))
-  assign('varf', varf, globalenv())
   dfsv = data.frame(S=vsumm, V=vvar)
   svmets = svattr(summary.method, variation.method)
   infols = list(summary.method=summary.method, variation.method=variation.method)

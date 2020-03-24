@@ -64,6 +64,17 @@ setMethod('show', 'GEVASummary',
             catline('Variation range: %.2f to %.2f', vrng[1], vrng[2])
           })
 
+# PLOT
+setMethod('plot', c('GEVASummary', 'missing'),
+          function(x, y, ...)
+          {
+            svmethname = sv.method(x)
+            defargs = list.merge(list(xlab = sprintf('Summary (%s)', svmethname$S),
+                                      ylab = sprintf('Variation (%s)', svmethname$V)),
+                                 plotargs.sv.proportional(x))
+            call.plot(sv(x), ..., defargs=defargs)
+          })
+
 # S4 Methods
 setMethod('inputdata', 'GEVASummary', function(object) object@inputdata)
 setMethod('inputvalues', 'GEVASummary', function(object) inputvalues(inputdata(object)))
@@ -84,6 +95,7 @@ setMethod('sv.method', 'GEVASummary', function(gevasummary) gevasummary@sv.metho
 
 setMethod('groupsets', 'GEVASummary', function(object) NULL)
 setMethod('groupsets<-', c('GEVASummary', 'TypedList'), function(object, value) new('GEVAGroupedSummary', inputdata=inputdata(object), sv.method=sv.method(object), info=infolist(object), groupsetlist=value))
+
 
 # S3 Methods
 get.summary.method.GEVASummary <- function(gevasummary) get.summary.method(sv.method(gevasummary)$S)

@@ -56,3 +56,16 @@ call.dots.args <- function(...) match.call(expand.dots = FALSE)$`...`
   ret
 }
 
+# Merges the arguments inside a function with the passed arguments in dots. The arguments in dots are preferred when present 
+...merge <- function(...)
+{
+  pargls = list(...)
+  argls = call.dots.args(...)
+  newarginds = which(!(names(argls) %in% names(pargls)))
+  for (newi in newarginds)
+  {
+    pargls[[names(argls)[newi]]] = argls[[newi]]
+  }
+  pargls
+  #as.list(pargls)
+}

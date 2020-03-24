@@ -23,7 +23,7 @@ setClass('GEVAQuantilesAdjusted',
          ), contains = 'GEVAQuantiles')
 
 # INITIALIZE
-setMethod('initialize', 'GEVAQuantiles',
+setMethod('initialize', 'GEVAQuantilesAdjusted',
           function(.Object, ...)
           {
             .Object = callNextMethod(.Object, ...)
@@ -35,11 +35,12 @@ setMethod('initialize', 'GEVAQuantiles',
           })
 
 # SHOW
-setMethod('show', 'GEVAQuantiles',
+setMethod('show', 'GEVAQuantilesAdjusted',
           function(object)
           {
             callNextMethod(object)
-            catline('Group Relationships (%d): %s', length(group.rels), fmt.limit(group.rels))
+            grels = as.character(group.rels(object))
+            catline('Group Relationships (%d): %s', length(grels), fmt.limit(grels))
           })
 
 # S4 Methods

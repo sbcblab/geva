@@ -48,8 +48,11 @@ setGeneric('groupsets<-', function(object, value) standardGeneric('groupsets<-')
 # GEVAGroupSet-class
 setGeneric('groups', function(object) standardGeneric('groups'))
 setGeneric('scores', function(object, group) standardGeneric('scores'))
+setGeneric('centroids', function(object) standardGeneric('centroids'))
+setGeneric('offsets', function(object) standardGeneric('offsets'))
 
 # GEVAQuantiles-class
+setGeneric('sv.scores', function(object) standardGeneric('sv.scores'))
 setGeneric('qindexes', function(object) standardGeneric('qindexes'))
 setGeneric('qcount', function(object) standardGeneric('qcount'))
 setGeneric('quantiles', function(object) standardGeneric('quantiles'))

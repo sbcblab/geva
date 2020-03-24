@@ -23,7 +23,7 @@
 #' @name SVAttribute-class
 #' @rdname SVAttribute-class
 #' @export
-setClass('SVAttribute', representation('VIRTUAL'))
+setClass('SVAttribute', contains='VIRTUAL')
 
 setClass('SVChrAttribute',
          slots = c(

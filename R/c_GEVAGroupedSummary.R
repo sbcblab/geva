@@ -11,6 +11,7 @@
 #' @include c_GEVASummary.R
 #' @include c_GEVAGroupSet.R
 #' @include c_TypedList.R
+#' @include vectorhelpers.R
 
 #' @title GEVA Grouped Summary-Variation Table
 #'
@@ -48,3 +49,11 @@ setMethod('initialize', 'GEVAGroupedSummary',
 setMethod('groupsets', 'GEVAGroupedSummary', function(object) object@groupsetlist)
 setMethod('groupsets<-', 'GEVAGroupedSummary', function(object, value) new('GEVAGroupedSummary', inputdata=inputdata(object), sv.method=sv.method(object), info=infolist(object), groupsetlist=value))
 
+setMethod('quantiles', 'GEVAGroupedSummary',
+          function(object)
+          {
+            gsets = groupsets(object)
+            if ('quantiles' %in% names(gsets)) return(gsets[['quantiles']])
+            gq = first(gsets ~ inherits(g, 'GEVAQuantiles'))
+            gq
+          })

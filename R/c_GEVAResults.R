@@ -58,3 +58,7 @@ setMethod('show', 'GEVAResults',
             # TODO: Show results contents
             
           })
+
+# S4 Methods
+setMethod('quantiles', 'GEVAResults', function(object) object@adjquantdata)
+

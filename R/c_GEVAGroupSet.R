@@ -41,7 +41,8 @@ setMethod('initialize', 'GEVAGroupSet',
           function(.Object, ...)
           {
             argls = initialize.class.args(...)
-            grouping = as.factor(argls$grouping)
+            grouping = argls$grouping
+            if (!is.factor(grouping)) grouping = as.factor(grouping)
             centroids = argls$centroids
             offsets = argls$offsets
             scores = argls$scores
@@ -72,16 +73,45 @@ setMethod('show', 'GEVAGroupSet',
             if (length(infolist(object)) != 0) catline('Additional information (%d): %s', length(infolist(object)), fmt.limit(names(infolist(object))))
           })
 
+# PLOT
+setMethod('plot', c('GEVAGroupSet', 'missing'),
+          function(x, y, ...)
+          {
+            svdata = sv(x)
+            clrs = infolist(x)$colors
+            if (is.null(clrs))
+            {
+              clrs = generate.colors(length(levels(x)))[as.integer(groups(x))]
+            } else {
+              clrs = clrs[groups(x)]
+            }
+            defargs = list.merge(list(col=clrs),
+                                 plotargs.sv.proportional(svdata))
+            call.plot(svdata, ..., defargs=defargs)
+          })
+
 # S4 Methods
 setMethod('groups', 'GEVAGroupSet', function(object) object@grouping)
+setMethod('centroids', 'GEVAGroupSet', function(object) object@centroids)
+setMethod('offsets', 'GEVAGroupSet', function(object) object@offsets)
 
 setMethod('scores', c('GEVAGroupSet', 'missing'), function(object, group) object@scores)
 setMethod('scores', c('GEVAGroupSet', 'character'), function(object, group) object@scores[groups(object) %in% group])
+
+
 
 setMethod('infolist', c('GEVAGroupSet', 'missing'), function(object, recursive) object@info )
 setMethod('infolist<-', c('GEVAGroupSet', 'list'), function(object, value) { object@info = value; object })
 
 setMethod('featureTable', 'GEVAGroupSet', function(object) object@ftable)
+
+setMethod('sv', 'GEVAGroupSet',
+          function(object)
+          {
+            mcentoffs = sv(centroids(object))[as.character(groups(object)), ] + sv(offsets(object))
+            mcentoffs = svtable(mcentoffs[,1], mcentoffs[,2], names(scores(object)))
+            mcentoffs
+          })
 
 # S3 Methods
 levels.GEVAGroupSet <- function(x) levels(groups(x))
