@@ -56,7 +56,8 @@ assert.names.equal <- function(arr, ...)
   posscalls = list(
     names = "Mismatching names in '%s': expected [%s], got [%s]",
     rownames = "Mismatching row.names in '%s': expected [%s], got [%s]",
-    colnames = "Mismatching col.names in '%s': expected [%s], got [%s]"
+    colnames = "Mismatching col.names in '%s': expected [%s], got [%s]",
+    levels = "Mismatching levels in '%s': expected [%s], got [%s]"
   )
   assert.callres(arr, posscalls, pastefn = fmt.limit, ...)
   invisible(T)

@@ -20,6 +20,7 @@ generate.colors <- function(n=1L, h.range = c(0, 1) , s.range = c(0.8, 1), v.ran
   hsize = max(h.range) - min(h.range)
   h = (seq(from=0, to = hsize, length.out = n + 1L)[-1] + runif(n, 0, hsize / (n * 2) )) %% hsize
   h = h + min(h.range)
+  h = sample(h, length(h))
   s = runif(n, s.range[1], s.range[2])
   v = runif(n, v.range[1], v.range[2])
   hsv(h, s, v)

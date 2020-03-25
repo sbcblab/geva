@@ -34,7 +34,7 @@ setClass('GEVAGroupSet',
            centroids = 'SVTable',
            offsets = 'SVTable',
            info = 'list'
-         ))
+         ), contains = 'VIRTUAL')
 
 # INITIALIZE
 setMethod('initialize', 'GEVAGroupSet',

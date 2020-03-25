@@ -13,7 +13,7 @@
 #' @include c_GEVASummary.R
 #' @include asserts.R
 
-#' GEVA summarization options
+#' GEVA summarization
 NULL
 
 #' Returns a vector with the supported methods of summarization

@@ -71,3 +71,6 @@ variation <- function(object, ...) UseMethod('variation')
 get.summary.method <- function(x) UseMethod('get.summary.method')
 get.variation.method <- function(x) UseMethod('get.variation.method')
 
+get.distance.method <- function(x) UseMethod('get.distance.method')
+as.SVTable <- function(x) UseMethod('as.SVTable')
+

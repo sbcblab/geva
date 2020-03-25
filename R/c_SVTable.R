@@ -116,4 +116,6 @@ as.data.frame.SVTable <- function(x, ...) as.data.frame(sv(x))
 summary.SVTable <- function(object, ...) sv(object)[, 'S']
 variation.SVTable <- function(object, ...) sv(object)[, 'V']
 head.SVTable <- function(x, n = 6L, ...) head(sv(x), n=n, ...)
-
+is.na.SVTable <- function(x) is.na(sv(x))
+as.SVTable.matrix <- function(x) if(all(c('S', 'V') %in% colnames(x))) svtable(x[,'S'], x[,'V'], rownames(x)) else svtable(x[,1], x[,2], rownames(x))
+as.SVTable.data.frame <- function(x) if(all(c('S', 'V') %in% names(x))) svtable(x$S, x$V, rownames(x)) else svtable(x[,1], x[,2], rownames(x))
