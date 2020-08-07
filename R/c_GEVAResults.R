@@ -17,7 +17,11 @@
 #'
 #' @description The \code{GEVAResults} class contains the final results from GEVA analyses. It represents the results of multiple statistical approaches from summary/variation data, groupings and quantiles.
 #'
-#' @slot sv matrix composed by two columns: summary and variation
+#' @slot resultstable data.frame with classification results for data points
+#' @slot svdata GEVASummary object with summarized data
+#' @slot quantdata GEVAQuantiles object with final quantiles definitions (e.g. adjusted quantiles)
+#' @slot factoring data.frame with detailed factoring information
+#' @slot classiftable data.frame used as reference to classify the data points
 #'
 #' @name GEVAResults-class
 #' @rdname GEVAResults-class
@@ -26,8 +30,9 @@ setClass('GEVAResults',
          slots = c(
            resultstable = 'data.frame',
            svdata = 'GEVASummary',
-           adjquantdata = 'GEVAQuantiles',
-           factoring = 'data.frame'
+           quantdata = 'GEVAQuantiles',
+           factoring = 'data.frame',
+           classiftable = 'data.frame'
          ))
 
 # INITIALIZE
@@ -37,13 +42,15 @@ setMethod('initialize', 'GEVAResults',
             argls = initialize.class.args(...)
             resultstable = argls$resultstable
             svdata = argls$svdata
-            adjquantdata = argls$adjquantdata
+            quantdata = argls$quantdata
             factoring = argls$factoring
+            classiftable = argls$classiftable
             # TODO: Asserts of the input arguments
             .Object@resultstable = resultstable
             .Object@svdata = svdata
-            .Object@adjquantdata = adjquantdata
+            .Object@quantdata = quantdata
             .Object@factoring = factoring
+            .Object@classiftable = classiftable
             validObject(.Object)
             .Object
           }
@@ -59,6 +66,9 @@ setMethod('show', 'GEVAResults',
             
           })
 
-# S4 Methods
-setMethod('quantiles', 'GEVAResults', function(object) object@adjquantdata)
+# PLOT
+setMethod('plot', c('GEVAResults', 'missing'), function(x, y, ...) plot(quantiles(x), ...))
 
+# S4 Methods
+setMethod('quantiles', 'GEVAResults', function(object) object@quantdata)
+setMethod('results.table', 'GEVAResults', function(gres) gres@resultstable)

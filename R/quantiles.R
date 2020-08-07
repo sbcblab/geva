@@ -14,13 +14,16 @@
 #' @include asserts.R
 #' @include vectorhelpers.R
 
+# Gets the quantile's label from the given indexes
+qindex2label <- function(si, vi) sprintf("s%sv%s", si, vi)
+
 # Calculates the quantile indexes from the number of quantiles (nq)
 calc.quantile.indexes <- function(nq, has.negative=TRUE)
 {
   nq = as.integer(abs(nq))
-  if (!has.negative) return(1L:nq)
   if (nq == 0L) return(integer(0))
-  if (nq == 1L) return(if (has.negative) 0L else 1L)
+  if (!has.negative) return(0L:(nq-1L))
+  if (nq == 1L) return(0L) #return(if (has.negative) 0L else 1L)
   iseven = nq %% 2L == 0L
   amaxind = as.integer(floor(nq / 2))
   qinds = (-amaxind):amaxind
@@ -74,7 +77,7 @@ calc.quantile.centroids <- function(x, nq, init.threshold=NA_real_)
 {
   nq = as.integer(nq)
   if (nq == 0L) return(numeric(0))
-  has.negative = any(x < 0)
+  has.negative = any(x < 0, na.rm = T)
   qinds = calc.quantile.indexes(nq, has.negative)
   qthres = calc.quantile.thresholds(x, nq, init.threshold, has.negative)
   if (nq == 1L)
@@ -92,10 +95,10 @@ calc.quantile.centroids <- function(x, nq, init.threshold=NA_real_)
 }
 
 # Calculates the nearest quantiles from the given centroids
-calc.quantile.nearest <- function(x, qcents)
+calc.quantile.nearest.vector <- function(x, qcents, qsizes=NULL)
 {
   qnms = factor(names(qcents), levels=names(qcents))
-  qsizes = attr(qcents, 'sizes')
+  if (is.null(qsizes)) qsizes = attr(qcents, 'sizes')
   mdists = t(sapply(x, function(xi) abs((xi - qcents) / qsizes)))
   vmindists = apply(mdists, 1, which.min)
   qnearests = qnms[vmindists]
@@ -109,11 +112,56 @@ calc.quantile.nearest <- function(x, qcents)
   qnearests
 }
 
+# Calculates the nearest quantiles from the given points, centroids and sizes
+calc.quantile.nearest.SVTable <- function(svx, svcents, svsizes)
+{
+  svx = as.SVTable(svx)
+  svcents = as.SVTable(svcents)
+  svsizes = as.SVTable(svsizes)
+  qnms = rownames(svcents)
+  assert.dim(svsizes, dim=dim(svcents))
+  assert.names.equal(svcents, rownames=rownames(svsizes))
+  gnms = rownames(svx)
+  sels = !duplicated(qindexes(gq)$S)
+  selv = !duplicated(qindexes(gq)$V)
+  sinds = qindexes(gq)$S[sels]
+  vinds = qindexes(gq)$V[selv]
+  vscents = setNames(svcents$S[sels], sinds)
+  vvcents = setNames(svcents$V[selv], vinds)
+  vsasz = setNames(svsizes$S[sels], sinds)
+  vvasz = setNames(svsizes$V[selv], vinds)
+  
+  vds = calc.quantile.nearest.vector(svx$S, vscents, vsasz)
+  vdv = calc.quantile.nearest.vector(svx$V, vvcents, vvasz)
+  
+  qassocs = factor(qindex2label(vds, vdv), levels=qnms)
+  names(qassocs) = gnms
+  qassocs
+}
+
+# Gets a table of quantiles default classification table based on quantile indexes
+get.quantiles.default.classification <- function(gquants)
+{
+  assert.class(gquants, inherits='GEVAQuantiles')
+  qinds = qindexes(gq)
+  qnms = rownames(qinds)
+  
+  qclasstable = data.frame(row.names=qnms)
+  minqss = qnms[abs(qinds$S) == min(abs(qinds$S))]
+  selbasal = qinds$V == min(qinds$V)
+  qclasstable$basal = ifelse(selbasal, 1L, 0L)
+  qclasstable$sparse = ifelse(!selbasal, 1L, 0L)
+  qclasstable$consistent = ifelse(selbasal & !(qnms %in% minqss), 1L, 0L)
+  qclasstable = as.matrix(qclasstable)
+  attr(qclasstable, 'relevance') = setNames(1L:3L, colnames(qclasstable))
+  qclasstable
+}
+
 # Generates the quantile colors
 generate.quantile.colors <- function(svinds)
 {
   sinds = svinds$S
-  vinds = svinds$V
+  vinds = svinds$V + 1
   
   szerosel = abs(sinds) == min(abs(sinds))
   
@@ -133,9 +181,11 @@ generate.quantile.colors <- function(svinds)
   clrs
 }
 
+
+
 # Calculates the quantiles of a SVTable 
 #' @export
-geva.quantiles <- function(sv, nq.s = 3L, nq.v = 2L, initial.thresholds=c(S=NA_real_, V=NA_real_), ...)
+geva.quantiles <- function(sv, nq.s = 3L, nq.v = 2L, initial.thresholds=c(S=NA_real_, V=NA_real_), comb.score.fn = prod, ...)
 {
   assert.names.equal(sv, colnames=c('S', 'V'))
   assert.dim(initial.thresholds, length=2L)
@@ -157,8 +207,8 @@ geva.quantiles <- function(sv, nq.s = 3L, nq.v = 2L, initial.thresholds=c(S=NA_r
   assert.operator(thrs, `<` = maxs, .argname = "'S' initial threshold")
   assert.operator(thrv, `<` = maxv, .argname = "'V' initial threshold")
   
-  vsm.qs = calc.quantile.nearest(vsm, vsm.cents)
-  vvr.qs = calc.quantile.nearest(vvr, vvr.cents)
+  vsm.qs = calc.quantile.nearest.vector(vsm, vsm.cents)
+  vvr.qs = calc.quantile.nearest.vector(vvr, vvr.cents)
   svscores = svtable(attr(vsm.qs, 'score'), attr(vvr.qs, 'score'), rownames(sv))
   vsm.names = names(vsm.cents)
   vvr.names = names(vvr.cents)
@@ -166,21 +216,22 @@ geva.quantiles <- function(sv, nq.s = 3L, nq.v = 2L, initial.thresholds=c(S=NA_r
   vsm.inds = attr(vsm.cents, 'indexes')
   vvr.inds = attr(vvr.cents, 'indexes')
   
-  fsvlabel = function(s, v) sprintf("s%sv%s", s, v)
-  mqinds = sapply(vsm.inds, function(si) sapply(vvr.inds, function(vi) fsvlabel(si, vi)))
+  mqinds = sapply(vsm.inds, function(si) sapply(vvr.inds, function(vi) qindex2label(si, vi)))
   vlabels = as.vector(mqinds)
   svinds = svtable(S = as.vector(sapply(vsm.inds, rep, times=length(vvr.inds))),
                    V = rep(vvr.inds, length(vsm.inds)),
                    row.names = vlabels)
   
+  
   dfinds = data.frame(S=as.factor(svinds$S), V=as.factor(svinds$V), row.names=rownames(svinds))
   svcents = svtable(vsm.cents[dfinds$S], vvr.cents[dfinds$V], rownames(svinds))
+  qsizes = svtable(attr(vsm.cents, 'sizes')[dfinds$S], attr(vvr.cents, 'sizes')[dfinds$V], vlabels)
   qcount = svattr(nq.s, nq.v)
   qcutoff = svattr(as.numeric(thrs), as.numeric(thrv))
   qgroups = factor(mqinds[matrix(c(vvr.qs, vsm.qs), ncol=2)], levels = vlabels)
   
   # Score calculated by direct multiplication
-  qscores = apply(svscores, 1, prod)
+  qscores = apply(svscores, 1, comb.score.fn)
   qoffsets = svtable(attr(vsm.qs, 'offsets'), attr(vvr.qs, 'offsets'), rownames(sv))
   lthres = list(S=attr(vsm.cents, 'thresholds'), V=attr(vvr.cents, 'thresholds'))
   
@@ -195,6 +246,7 @@ geva.quantiles <- function(sv, nq.s = 3L, nq.v = 2L, initial.thresholds=c(S=NA_r
       offsets=qoffsets,
       info=qinfo,
       svscores=svscores,
+      qareasizes=qsizes,
       qindexes=svinds,
       qcount=qcount,
       qcutoff=qcutoff)

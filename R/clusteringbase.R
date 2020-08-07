@@ -9,7 +9,9 @@
 # Nunes et al, 2020
 # Last updated version: 0.1.0
 
+#' @include linq.R
 #' @include summarization.R
+#' @include c_GEVAGroupedSummary.R
 
 
 # Distance options
@@ -70,6 +72,27 @@ calc.cluster.scores <- function(sv, cl, mcents, distance.method=options.distance
   vscores
 }
 
+# Appends one or more groupsets in a GEVASummary object, returning a GEVAGroupedSummary
+append.groupsets <- function(gsummary, ...)
+{
+  assert.class(gsummary, inherits='GEVASummary')
+  if (...length() == 0L) return(gsummary)
+  tls = groupsets(gsummary)
+  args = list(...)
+  argnms = call.dots.namesorargs(...)
+  for (i in 1:...length())
+  {
+    argnm = argnms[i]
+    ggset = ...elt(i)
+    if (inherits(ggset, 'GEVAGroupSet'))
+    {
+      tls[[argnm]] = ggset
+    }
+  }
+  groupsets(gsummary) = tls
+  gsummary
+}
+
 # Gets the distance calculation function from the character
 get.distance.method.character <- function(method=options.distance)
 {
@@ -80,3 +103,5 @@ get.distance.method.character <- function(method=options.distance)
   )
   fn
 }
+
+

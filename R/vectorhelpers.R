@@ -9,6 +9,7 @@
 # Nunes et al, 2020
 # Last updated version: 0.1.0
 
+
 # Gets the initial and final indexes within a limit
 indexes.headtail <- function(length, n=6L, start=1L, ...)
 {
@@ -53,31 +54,6 @@ headtail.data.frame <- function(x, n = 6L, ...) headtail.matrix(x, n, ...)
 # Checks if a vector is a named vector
 is.named <- function(x) !is.null(names(x))
 
-# Gets the first element that satisfies a function, or a default value if no such item was found
-first <- function(x, fn, default=NULL)
-{
-  if (missing(fn) && is(x, 'formula'))
-  {
-    fvars = all.vars(x)[1:2]
-    if (is.na(fvars[2])) stop("must specify at least one variable for collection and one for element selector")
-    fbody = deparse(x[[3]])
-    x = eval.parent(x[[2]])
-    fn = as.formula(sprintf('%s ~ %s', fvars[2], fbody))
-  }
-  if (length(x) == 0) return(default)
-  if (is(fn, 'formula'))
-  {
-    fvar = all.vars(fn)[1]
-    fbody = deparse(fn[[3]])
-    fn = eval(parse(text=sprintf('function(%s){%s}', fvar, fbody)))
-  }
-  for (elem in x)
-  {
-    if (any(fn(elem))) return(elem)
-  }
-  default
-}
-
 # Merges multiple lists, assuring that the final list will contain unique names
 list.merge <- function(...)
 {
@@ -101,4 +77,16 @@ list.merge <- function(...)
     }
   }
   fls
+}
+
+# Applies the tapply function using a function that returns a vector of the same length of its arguments. The return vector has the same order and size from the X argument
+gtapply <- function(X, INDEX, FUN, ...)
+{
+  len = length(X)
+  if (len == 0L) return(X)
+  vinds = unlist(tapply(1L:len, INDEX, function(i) i, simplify = F), use.names = F)
+  vorder = order(vinds)
+  vres = unlist(tapply(X, INDEX, FUN, ..., simplify = F), use.names=F)
+  vres = vres[vorder]
+  vres
 }

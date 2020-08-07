@@ -66,5 +66,6 @@ geva.hcluster <- function(sv, resolution=0.25, hc.method=options.hc.method, hc.m
       scores=vscores,
       centroids=svcents,
       offsets=moffsets,
-      info=infols)
+      info=infols,
+      cluster.method='hierarchical')
 }

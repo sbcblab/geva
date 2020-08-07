@@ -10,7 +10,9 @@
 # Last updated version: 0.1.0
 
 #' @include generics.R
+#' @include asserts.R
 #' @include callhelpers.R
+#' @include vectorhelpers.R
 
 #' @title Type-strict List (TypedList-class)
 #'
@@ -66,9 +68,12 @@ setMethod('elem.class', 'TypedList', function(typedlist) typedlist@elem.class)
 setMethod('elem.class<-', c(typedlist='TypedList', value='character'),
           function(typedlist, value)
           {
+            assert.notempty(value, .posmsg = "a valid class name must be specified")
+            Class = value[1]
+            if (elem.class(typedlist) %in% Class && all(sapply(typedlist, is, class2 = Class))) return(typedlist)
             args = as.list(typedlist)
             assert.notempty(value)
-            args$elem.class = value[1]
+            args$elem.class = Class
             typedlist = do.call('typed.list', args = args)
             typedlist
           })
@@ -76,7 +81,9 @@ setMethod('elem.class<-', c(typedlist='TypedList', value='character'),
 setMethod('show', 'TypedList',
           function(object)
           {
-            catline('TypedList<%s>', elem.class(object))
+            title = attr(object, 'title')
+            if (is.null(title)) title = sprintf('TypedList<%s>', elem.class(object))
+            catline(title)
             show(object[1:length(object), drop=TRUE])
             invisible(object)
           })
@@ -91,3 +98,12 @@ setMethod('[', c('TypedList', 'ANY', 'missing', 'missing'),
 
 # S3 Methods
 as.list.TypedList <- function(x, ...) x[1:length(x), drop=TRUE]
+as.typed.list.vector <- function(x, elem.class=NA_character_) do.call('typed.list', list.merge(as.list(x), list(elem.class=elem.class)))
+as.typed.list.list <- function(x, elem.class=NA_character_) do.call('typed.list', list.merge(x, list(elem.class=elem.class)))
+as.typed.list.TypedList <- function(x, elem.class=NA_character_)
+{
+  if (is.na(elem.class)) return(x)
+  elem.class(x) = elem.class
+  x
+}
+

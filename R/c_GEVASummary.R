@@ -55,7 +55,7 @@ setMethod('initialize', 'GEVASummary',
 setMethod('show', 'GEVASummary',
           function(object)
           {
-            catline('GEVA Summary-Variation Table (GEVASummary-class)')
+            catline('GEVA Summary-Variation Table (%s-class)', class(object))
             catline('Columns: S (summary), V (variation)')
             catline('Rows (%d): %s', nrow(object), fmt.limit(rownames(object)))
             srng = range(summary(object))
@@ -79,12 +79,23 @@ setMethod('plot', c('GEVASummary', 'missing'),
 setMethod('inputdata', 'GEVASummary', function(object) object@inputdata)
 setMethod('inputvalues', 'GEVASummary', function(object) inputvalues(inputdata(object)))
 setMethod('inputweights', 'GEVASummary', function(object) inputweights(inputdata(object)))
+setMethod('inputnames', 'GEVASummary', function(object) names(inputdata(object)))
 setMethod('featureTable', 'GEVASummary', function(object) featureTable(inputdata(object)))
 setMethod('factors', 'GEVASummary', function(object) factors(inputdata(object)))
 
-setMethod('infolist', c('GEVASummary', 'missing'),
-          function(object, recursive=FALSE)
+setMethod('factors<-', c('GEVASummary', 'factor'),
+          function(object, value)
           {
+            inpdt = inputdata(object)
+            factors(inpdt) = value
+            object@inputdata = inpdt
+            object
+          })
+
+setMethod('infolist', c('GEVASummary', 'missing'),
+          function(object, recursive)
+          {
+            if (missing(recursive)) recursive = FALSE
             if (!recursive) return(object@info)
             infols = unlist(list(object@info, infolist(inputdata(object))), recursive = FALSE)
             infols
@@ -93,8 +104,12 @@ setMethod('infolist<-', c('GEVASummary', 'list'), function(object, value) { obje
 
 setMethod('sv.method', 'GEVASummary', function(gevasummary) gevasummary@sv.method)
 
-setMethod('groupsets', 'GEVASummary', function(object) NULL)
-setMethod('groupsets<-', c('GEVASummary', 'TypedList'), function(object, value) new('GEVAGroupedSummary', inputdata=inputdata(object), sv.method=sv.method(object), info=infolist(object), groupsetlist=value))
+setMethod('groupsets', 'GEVASummary', function(object) typed.list(elem.class = 'GEVAGroupSet') )
+setMethod('groupsets<-', c('GEVASummary', 'TypedList'), function(object, value)
+{
+  gs2 = promote.class(object, 'GEVAGroupedSummary', groupsetlist=value)
+  gs2
+})
 
 
 # S3 Methods

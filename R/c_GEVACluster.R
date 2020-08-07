@@ -17,10 +17,15 @@
 #'
 #' @description The \code{GEVACluster} class inherits the grouping properties from \code{GEVAGroupSet}.
 #'
+#' @slot cluster.method Method used to obtain the clustering results
+#'
 #' @name GEVACluster-class
 #' @rdname GEVACluster-class
 #' @export
-setClass('GEVACluster', contains = 'GEVAGroupSet')
+setClass('GEVACluster',
+         slots = c(
+           cluster.method = 'character'
+         ), contains = 'GEVAGroupSet')
 
 
 # INITIALIZE
@@ -29,6 +34,9 @@ setMethod('initialize', 'GEVACluster',
           {
             .Object = callNextMethod(.Object, ...)
             argls = initialize.class.args(...)
+            cluster.method = get.initialized(argls$cluster.method, 'generic')
+            assert.dim(cluster.method, length=1L)
+            .Object@cluster.method = cluster.method
             validObject(.Object)
             .Object
           }
@@ -50,3 +58,6 @@ setMethod('plot', c('GEVACluster', 'missing'),
           {
             plotres = callNextMethod(x, ..., cl=groups(x), plotfn = hull.plot)
           })
+
+# S4 Methods
+setMethod('cluster.method', 'GEVACluster', function(object) object@cluster.method)

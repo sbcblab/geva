@@ -78,12 +78,6 @@ setMethod('plot', c('SVTable', 'missing'),
           function(x, y, ...)
           {
             call.plot(sv(x), ...)
-            #argls = list(...)
-            #validargs = c(names(graphics::par(no.readonly = TRUE)),
-            #              names(formals(plot.default)))
-            #argls = argls[!duplicated(names(argls)) & (names(argls) %in% validargs)]
-            #argls$x = sv(x)
-            #do.call(plot, argls)
           })
 
 # INDEXERS
@@ -119,3 +113,5 @@ head.SVTable <- function(x, n = 6L, ...) head(sv(x), n=n, ...)
 is.na.SVTable <- function(x) is.na(sv(x))
 as.SVTable.matrix <- function(x) if(all(c('S', 'V') %in% colnames(x))) svtable(x[,'S'], x[,'V'], rownames(x)) else svtable(x[,1], x[,2], rownames(x))
 as.SVTable.data.frame <- function(x) if(all(c('S', 'V') %in% names(x))) svtable(x$S, x$V, rownames(x)) else svtable(x[,1], x[,2], rownames(x))
+as.SVTable.SVTable <- function(x) x
+points.SVTable <- function(x, ...) call.plot(sv(x), ..., plotfn = points.default)

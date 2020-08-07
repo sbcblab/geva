@@ -41,6 +41,7 @@ initialize.class.args <- function(...)
   argls
 }
 
+# Checks if the argument is unitialized (i.e. has the 'unitialized' attribute)
 is.unitialized <- function(elem)
 {
   unitattr = attr(elem, 'unitialized')
@@ -48,5 +49,13 @@ is.unitialized <- function(elem)
   return(unitattr == T)
 }
 
+# Gets the elem parameter if the argument was initialized, or else the default parameter
 get.initialized <- function(elem, default) { if (is.unitialized(elem)) default else elem }
 
+# Creates a new instance of a class using the slots of an existing object, in addition to arguments passed in dots
+promote.class <- function(obj, Class, ...)
+{
+  args = list.merge(list(Class=Class, ...),
+                    setNames(lapply(slotNames(obj), function(snm) slot(obj, snm)), slotNames(obj)))
+  do.call(new, args)
+}

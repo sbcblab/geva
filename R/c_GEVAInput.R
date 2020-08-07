@@ -49,7 +49,7 @@ setMethod('initialize', 'GEVAInput',
             .Object@values = mvals
             .Object@weights = get.initialized(argls$weights, default = mvals^0)
             .Object@factors = get.initialized(argls$factors, default = factor(rep(NA, ncol(mvals))))
-            .Object@ftable = get.initialized(argls$factors, default = data.frame(row.names=rownames(mvals)))
+            .Object@ftable = get.initialized(argls$ftable, default = data.frame(row.names=rownames(mvals)))
             
             assert.dim(.Object@weights, ncol=ncol(mvals), nrow=nrow(mvals))
             assert.dim(.Object@factors, length=ncol(mvals))
@@ -76,14 +76,36 @@ setMethod('show', 'GEVAInput',
 setMethod('[', c('GEVAInput', 'ANY', 'ANY', 'ANY'),
           function(x, i, j, ... , drop = TRUE)
           {
-            inputvalues(x)[i,j,drop=drop]
+            mv = inputvalues(x)[i,j,drop=drop]
+            if (drop) return(mv)
+            if (missing(j)) j = 1L:ncol(x)
+            mw = inputweights(x)[i,j,drop=drop]
+            dft = featureTable(x)[i,,drop=drop]
+            facts = factors(x)[j]
+            ginput = promote.class(x, class(x), values=mv, weights=mw, factors=facts, ftable=dft)
+            validObject(ginput)
+            ginput
           })
 
 # S4 Methods
 setMethod('inputdata', 'GEVAInput', function(object) object)
 setMethod('inputvalues', 'GEVAInput', function(object) object@values)
 setMethod('inputweights', 'GEVAInput', function(object) object@weights)
+setMethod('inputnames', 'GEVAInput', function(object) names(object@values))
 setMethod('featureTable', 'GEVAInput', function(object) object@ftable)
+setMethod('featureTable<-', c('GEVAInput', 'data.frame'),
+          function(object, value)
+          {
+            assert.dim(value, nrow=nrow(object))
+            rowseq = match(rownames(value), rownames(object))
+            if (anyNA(rowseq))
+              rownames(value) = rownames(object)
+            else
+              value = value[rowseq,,drop=FALSE]
+            object@ftable = value
+            object
+          })
+
 
 setMethod('infolist', c('GEVAInput', 'missing'), function(object, recursive=FALSE) object@info)
 setMethod('infolist<-', c('GEVAInput', 'list'), function(object, value) { object@info = value; object })
@@ -100,6 +122,7 @@ setMethod('factors<-', c('GEVAInput', 'factor'),
               check.suitable.factors(value)
               object@factors = value
             }
+            validObject(object)
             object
           })
 
@@ -107,13 +130,27 @@ setMethod('factors<-', c('GEVAInput', 'character'), function(object, value) { fa
 
 setMethod('dim', 'GEVAInput', function(x) dim(inputvalues(x)))
 setMethod('dimnames', 'GEVAInput', function(x) dimnames(inputvalues(x)))
+setMethod('dimnames<-', c('GEVAInput', 'list'),
+  function(x, value)
+  {
+    dimnames(x@values) = value
+    dimnames(x@weights) = value
+    rownames(x@ftable) = value[[1]]
+    x
+  })
 setMethod('names', 'GEVAInput', function(x) colnames(inputvalues(x)))
 
-setMethod('as.indexes', 'GEVAInput', function(x) matrix(1:length(inputvalues(x)), ncol=ncol(x), dimnames = dimnames(x)))
+setMethod('as.indexes', 'matrix', function(x) matrix(1:length(x), ncol=ncol(x), dimnames = dimnames(x)))
+
+setMethod('as.indexes', 'GEVAInput', function(x) as.indexes(inputvalues(x)))
+
+
 
 # S3 Methods
 
 levels.GEVAInput <- function(x) levels(factors(x))
+
+head.GEVAInput <- function(x, n=6L, ...) head(inputvalues(x), n=n, ...)
 
 as.array.GEVAInput <- function(x, ...)
 {
@@ -121,3 +158,4 @@ as.array.GEVAInput <- function(x, ...)
         dim = c(dim(x), 2L),
         dimnames = list(rownames(x), colnames(x), c('values', 'weights')))
 }
+

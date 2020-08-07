@@ -57,7 +57,7 @@ plotargs.sv.proportional <- function(x)
 }
 
 # Creates a hull plot of the current data
-hull.plot <- function (x, cl, col = NULL, hull_lwd = 1, hull_lty = 1, alpha = 0.2, ...)
+hull.plot <- function (x, cl, col = NULL, hull_lwd = 1, hull_lty = 1, alpha = 0.2, border.visible=TRUE, ...)
 {
   if (is.list(cl)) 
   {
@@ -86,6 +86,6 @@ hull.plot <- function (x, cl, col = NULL, hull_lwd = 1, hull_lty = 1, alpha = 0.
     d = x[cl == i, , drop=F]
     ch = chull(d)
     ch = c(ch, ch[1])
-    polygon(d[ch,,drop=F ], col = col_poly[cl == i], lwd = hull_lwd, lty = hull_lty, border = border[cl == i])
+    polygon(d[ch,,drop=F ], col = col_poly[cl == i], lwd = hull_lwd, lty = hull_lty, border = (if (border.visible) border[cl == i] else NA))
   }
 }

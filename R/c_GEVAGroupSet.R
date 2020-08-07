@@ -95,9 +95,10 @@ setMethod('groups', 'GEVAGroupSet', function(object) object@grouping)
 setMethod('centroids', 'GEVAGroupSet', function(object) object@centroids)
 setMethod('offsets', 'GEVAGroupSet', function(object) object@offsets)
 
+setMethod('names', 'GEVAGroupSet', function(x) names(scores(x)))
+
 setMethod('scores', c('GEVAGroupSet', 'missing'), function(object, group) object@scores)
 setMethod('scores', c('GEVAGroupSet', 'character'), function(object, group) object@scores[groups(object) %in% group])
-
 
 
 setMethod('infolist', c('GEVAGroupSet', 'missing'), function(object, recursive) object@info )
@@ -112,6 +113,16 @@ setMethod('sv', 'GEVAGroupSet',
             mcentoffs = svtable(mcentoffs[,1], mcentoffs[,2], names(scores(object)))
             mcentoffs
           })
+setMethod('cluster.method', 'GEVAGroupSet', function(object) NA_character_ )
+
+setMethod('classification.table', 'GEVAGroupSet', function(object) infolist(object)$classification.table  )
+setMethod('classification.table<-', c('GEVAGroupSet', 'data.frame'),
+          function(object, value)
+          {
+            infolist(object)$classification.table = value
+            object
+          })
+
 
 # S3 Methods
 levels.GEVAGroupSet <- function(x) levels(groups(x))

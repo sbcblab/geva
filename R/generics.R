@@ -15,6 +15,7 @@
 setGeneric('inputvalues', function(object) standardGeneric('inputvalues'))
 setGeneric('inputweights', function(object) standardGeneric('inputweights'))
 setGeneric('inputdata', function(object) standardGeneric('inputdata'))
+setGeneric('inputnames', function(object) standardGeneric('inputnames'))
 
 setGeneric('infolist', function(object, recursive) standardGeneric('infolist'))
 setGeneric('infolist<-', function(object, value) standardGeneric('infolist<-'))
@@ -22,10 +23,14 @@ setGeneric('infolist<-', function(object, value) standardGeneric('infolist<-'))
 setGeneric('factors', function(object) standardGeneric('factors'))
 setGeneric('factors<-', function(object, value) standardGeneric('factors<-'))
 
+setGeneric('classification.table', function(object) standardGeneric('classification.table'))
+setGeneric('classification.table<-', function(object, value) standardGeneric('classification.table<-'))
+
 setGeneric('as.indexes', function(x) standardGeneric('as.indexes'))
 
 # GEVAInput-class
 setGeneric('featureTable', function(object) standardGeneric('featureTable'))
+setGeneric('featureTable<-', function(object, value) standardGeneric('featureTable<-'))
 
 # SVTable-class
 setGeneric('sv', function(object) standardGeneric('sv'))
@@ -54,11 +59,15 @@ setGeneric('offsets', function(object) standardGeneric('offsets'))
 # GEVAQuantiles-class
 setGeneric('sv.scores', function(object) standardGeneric('sv.scores'))
 setGeneric('qindexes', function(object) standardGeneric('qindexes'))
+setGeneric('qareasizes', function(object) standardGeneric('qareasizes'))
 setGeneric('qcount', function(object) standardGeneric('qcount'))
 setGeneric('quantiles', function(object) standardGeneric('quantiles'))
 
 # GEVAQuantilesAdjusted-class
 setGeneric('group.rels', function(object) standardGeneric('group.rels'))
+
+# GEVACluster-class
+setGeneric('cluster.method', function(object) standardGeneric('cluster.method'))
 
 # GEVAResults-class
 setGeneric('results.table', function(gres) standardGeneric('results.table'))
@@ -74,3 +83,7 @@ get.variation.method <- function(x) UseMethod('get.variation.method')
 get.distance.method <- function(x) UseMethod('get.distance.method')
 as.SVTable <- function(x) UseMethod('as.SVTable')
 
+first <- function(x, ...) UseMethod('first')
+where <- function(x, ...) UseMethod('where')
+as.typed.list <- function(x, elem.class=NA_character_) UseMethod('as.typed.list')
+distinct <- function(x, ..., incomparables=FALSE) UseMethod('distinct')

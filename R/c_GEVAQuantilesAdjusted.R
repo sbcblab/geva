@@ -12,14 +12,14 @@
 
 #' @include c_GEVAQuantiles.R
 
-#' @slot grouprels named factor representing external group relationships to the current quantiles
+#' @slot grouprels typed list of named factors representing external group relationships to the current quantiles
 #'
 #' @name GEVAQuantilesAdjusted-class
 #' @rdname GEVAQuantiles-class
 #' @export
 setClass('GEVAQuantilesAdjusted',
          slots = c(
-           grouprels = 'factor'
+           grouprels = 'TypedList'
          ), contains = 'GEVAQuantiles')
 
 # INITIALIZE
@@ -29,7 +29,14 @@ setMethod('initialize', 'GEVAQuantilesAdjusted',
             .Object = callNextMethod(.Object, ...)
             argls = initialize.class.args(...)
             grouprels = argls$grouprels
-            assert.notempty(names(grouprels), .posmsg = sprintf("'grouprels' must be a non-empty named factor"))
+            elem.class(grouprels) = 'factor'
+            check.typed.list.class(grouprels, 'factor')
+            for (i in 1L:length(grouprels))
+            {
+              e = grouprels[[i]]
+              assert.notempty(names(e), .posmsg = sprintf("element [[%d]] in 'grouprels' must be a non-empty named factor", i))
+            }
+            .Object@grouprels = grouprels
             validObject(.Object)
             .Object
           })

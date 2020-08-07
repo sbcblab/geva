@@ -19,7 +19,8 @@
 #' @description The \code{GEVAQuantiles} class inherits the grouping properties from \code{GEVAGroupSet} and additionally stores the indexes associated to summary and variation.
 #' 
 #' @slot svscores SVTable with individual scores for summary and variation
-#' @slot qindexes SVTable with indexes representing the magnitude of summary and variation
+#' @slot qareasizes SVTable with nominal area sizes of the quantiles in terms of summary and variation
+#' @slot qindexes SVTable with indexes representing the magnitude index of summary and variation
 #' @slot qcount SVIntAttribute with number of quantiles for summary and variation
 #' @slot qcutoff SVNumAttribute with the initial quantile cut-offs, starting from zero
 #'
@@ -29,6 +30,7 @@
 setClass('GEVAQuantiles',
          slots = c(
            svscores = 'SVTable',
+           qareasizes = 'SVTable',
            qindexes = 'SVTable',
            qcount = 'SVIntAttribute',
            qcutoff = 'SVNumAttribute'
@@ -41,14 +43,20 @@ setMethod('initialize', 'GEVAQuantiles',
           {
             .Object = callNextMethod(.Object, ...)
             argls = initialize.class.args(...)
-            .Object@qindexes = argls$qindexes
+            qareasizes = argls$qareasizes
+            qindexes = argls$qindexes
+            .Object@qcutoff = argls$qcutoff
             svscores = argls$svscores
             assert.dim(svscores, nrow=length(scores(.Object)))
+            assert.dim(qareasizes, dim=dim(.Object@centroids))
+            assert.names.equal(qareasizes, rownames=rownames(qindexes))
             .Object@svscores = svscores
+            .Object@qareasizes = qareasizes
+            .Object@qindexes = qindexes
             qcount = get.initialized(argls$qcount, svattr(3L, 2L))
             check.quantiles.count(summary(qcount), variation(qcount))
             .Object@qcount = qcount
-            validObject(.Object)
+            validObject(.Object, complete = T)
             .Object
           }
           )
@@ -59,7 +67,7 @@ setMethod('show', 'GEVAQuantiles',
           {
             catline('GEVA Quantiles (%s-class)', class(object)[1])
             catline('Quantiles (%d): %s', length(levels(object)), fmt.limit(levels(object)))
-            catline('Scores (%d): %s', length(object), fmt.limit(scores(object)))
+            catline('Scores (%d): %s', length(groups(object)), fmt.limit(scores(object)))
             if (length(infolist(object)) != 0) catline('Additional information (%d): %s', length(infolist(object)), fmt.limit(names(infolist(object))))
           })
 
@@ -79,10 +87,33 @@ setMethod('plot', c('GEVAQuantiles', 'missing'),
             invisible(plotres)
           })
 
+# INDEXERS
+setMethod('[', c('GEVAQuantiles', 'ANY', 'ANY', 'ANY'),
+          function(x, i, j, ... , drop = TRUE)
+          {
+            sv.scores(x)[i,j,drop=drop]
+          })
 
 # S4 Methods
 setMethod('qindexes', 'GEVAQuantiles', function(object) object@qindexes)
+setMethod('qareasizes', 'GEVAQuantiles', function(object) object@qareasizes)
 setMethod('quantiles', 'GEVAQuantiles', function(object) levels(object))
 setMethod('qcount', 'GEVAQuantiles', function(object) object@qcount)
 setMethod('sv.scores', 'GEVAQuantiles', function(object) object@svscores)
+setMethod('cluster.method', 'GEVAQuantiles', function(object) 'quantiles')
+setMethod('dim', 'GEVAQuantiles', function(x) dim(sv.scores(x)))
 
+
+setMethod('classification.table', 'GEVAQuantiles',
+          function(object)
+          {
+            ctable = callNextMethod(object)
+            if (is.null(ctable)) return(get.quantiles.default.classification(object))
+            ctable
+          })
+setMethod('classification.table<-', c('GEVAQuantiles', 'data.frame'),
+          function(object, value)
+          {
+            infolist(object)$classification.table = value
+            object
+          })

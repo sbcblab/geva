@@ -11,7 +11,7 @@
 #' @include c_GEVASummary.R
 #' @include c_GEVAGroupSet.R
 #' @include c_TypedList.R
-#' @include vectorhelpers.R
+#' @include linq.R
 
 #' @title GEVA Grouped Summary-Variation Table
 #'
@@ -39,6 +39,7 @@ setMethod('initialize', 'GEVAGroupedSummary',
             assert.notempty(groupsetlist)
             elem.class(groupsetlist) = 'GEVAGroupSet'
             check.typed.list.class(groupsetlist, 'GEVAGroupSet')
+            attr(groupsetlist, 'title') = 'List of GroupSets'
             .Object@groupsetlist = groupsetlist
             validObject(.Object)
             .Object
@@ -47,7 +48,7 @@ setMethod('initialize', 'GEVAGroupedSummary',
 
 # S4 METHODS
 setMethod('groupsets', 'GEVAGroupedSummary', function(object) object@groupsetlist)
-setMethod('groupsets<-', 'GEVAGroupedSummary', function(object, value) new('GEVAGroupedSummary', inputdata=inputdata(object), sv.method=sv.method(object), info=infolist(object), groupsetlist=value))
+#setMethod('groupsets<-', 'GEVAGroupedSummary', function(object, value) new('GEVAGroupedSummary', inputdata=inputdata(object), sv.method=sv.method(object), info=infolist(object), groupsetlist=value))
 
 setMethod('quantiles', 'GEVAGroupedSummary',
           function(object)
@@ -57,3 +58,5 @@ setMethod('quantiles', 'GEVAGroupedSummary',
             gq = first(gsets ~ inherits(g, 'GEVAQuantiles'))
             gq
           })
+
+setMethod('cluster.method', 'GEVAGroupedSummary', function(object) sapply(cluster.method, groupsets(object)))
