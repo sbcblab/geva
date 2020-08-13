@@ -5,7 +5,8 @@
 \alias{GEVASummary-class}
 \title{GEVA Summary-Variation Table}
 \description{
-The \code{GEVASummary} class inherits from \code{SVTable}.
+The \code{GEVASummary} class represents the calculation results for summary and variation from a \code{GEVAInput}.
+This class inherits from \code{SVTable}.
 }
 \section{Slots}{
 

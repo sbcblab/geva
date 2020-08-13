@@ -183,7 +183,14 @@ generate.quantile.colors <- function(svinds)
 
 
 
-# Calculates the quantiles of a SVTable 
+#' Calculates the quantiles of a SVTable 
+#' 
+#' @param sv SVTable
+#' @param nq.s number of quantiles in S-axis
+#' @param nq.v number of quantiles in V-axis
+#' @param initial.thresholds named numeric vector with the threshold used for the first quantile
+#' @param comb.score.fn function to merge S and V scores into a single column. prod and mean are some examples
+#' 
 #' @export
 geva.quantiles <- function(sv, nq.s = 3L, nq.v = 2L, initial.thresholds=c(S=NA_real_, V=NA_real_), comb.score.fn = prod, ...)
 {

@@ -4,7 +4,9 @@
 \name{options.variation}
 \alias{options.variation}
 \title{Returns a vector with the supported methods of summarization}
-\format{An object of class \code{character} of length 3.}
+\format{
+An object of class \code{character} of length 3.
+}
 \usage{
 options.variation
 }

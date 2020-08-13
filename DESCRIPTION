@@ -11,7 +11,7 @@ LazyData: true
 Depends: R (>= 3.5.0)
 Imports: dbscan, fastcluster, matrixStats, sp, SearchTrees
 Suggests: AnnotationDbi, DBI, devtools, topGO
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
 Collate: 
     'stringhelpers.R'
     'callhelpers.R'

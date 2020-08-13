@@ -16,7 +16,8 @@
 
 #' @title GEVA Summary-Variation Table
 #'
-#' @description The \code{GEVASummary} class inherits from \code{SVTable}.
+#' @description The \code{GEVASummary} class represents the calculation results for summary and variation from a \code{GEVAInput}.
+#' This class inherits from \code{SVTable}.
 #'
 #' @slot inputdata GEVAInput-class with the data input
 #' @slot sv.method Names of the statistical methods used to summarize data
