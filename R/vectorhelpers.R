@@ -90,3 +90,69 @@ gtapply <- function(X, INDEX, FUN, ...)
   vres = vres[vorder]
   vres
 }
+
+
+# Keeps all values in a vector or matrix within a minimum and maximum value
+clamp <- function(x, min.value=NA_real_, max.value=NA_real_, ...)
+{
+  assert.dim(min.value, length=1L)
+  assert.dim(max.value, length=1L)
+  has.min = !is.na(min.value) && is.numeric(min.value)
+  has.max = !is.na(max.value) && is.numeric(max.value)
+  if (!has.min && !has.max)
+    return(x)
+  if (has.min && has.max && min.value > max.value)
+  {
+    tmp = max.value
+    max.value = min.value
+    min.value = tmp
+  }
+  if (has.min)
+  {
+    x[x < min.value] = min.value
+  }
+  if (has.max)
+  {
+    x[x > max.value] = max.value
+  }
+  x
+}
+
+# Gets a matrix containing the k neighbors of the numeric vector x
+k.neighbors <- function(x, k)
+{
+  assert.class(x, is='vector')
+  assert.class(x, is='numeric')
+  k = as.integer(k)
+  n = length(x)
+  if (k >= length(x))
+    k = n - 1L
+  if (is.integer(x) && is.null(names(x)))
+    names(x) = as.character(x)
+  if (k <= 0) return(matrix(numeric(0), nrow=n, ncol=0, dimnames = list(names(x), NULL)))
+  koffsets = as.integer(ceiling(1:k / 2) * ifelse(1:k %% 2 == 1, 1, -1))
+  mneigh = matrix(NA_real_, nrow=n, ncol=k, dimnames = list(names(x), as.character(koffsets)))
+  ind.order = order(x)
+  vx = x[ind.order]
+  kh.ceil = ceiling(k / 2)
+  kh.floor = floor(k / 2)
+  for (ki in 1L:k)
+  {
+    ind.offs = 1:n + koffsets[ki]
+    ind.offs = ind.offs +
+      ifelse(ind.offs <= 0, k + 1L, 0)
+    ind.offs = ind.offs +
+      (k + 1L) * ifelse(ind.offs > n, -1, 0)
+    mneigh[ind.order,ki] = vx[ind.offs]
+  }
+  mneigh
+}
+
+# Replaces all NA values with a replacement value. If the replacement is NULL, removes all NA's
+na.replace <- function(x, replace=NULL)
+{
+  if (!anyNA(x)) return(x)
+  if (is.null(replace)) return(x[!is.na(x),drop=FALSE])
+  x[is.na(x)] = replace
+  x
+}

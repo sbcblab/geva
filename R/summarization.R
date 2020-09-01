@@ -18,10 +18,12 @@ NULL
 
 #' Returns a vector with the supported methods of summarization
 #' @export
+#' @rdname geva.summarize
 options.summary <- c('median', 'mean')
 
 #' Returns a vector with the supported methods of summarization
 #' @export
+#' @rdname geva.summarize
 options.variation <- c('mad', 'sd', 'var')
 
 # Calculates the weighted summary of a matrix
@@ -55,8 +57,59 @@ rows.weighted.variation <- function(mv, mw, centers, variation.method = options.
   vres
 }
 
+# Weighted variance implementation
+weighted.var <- function(x, w = NULL, idxs = NULL, na.rm = FALSE, center = NULL, ...)
+{
+  n = length(x)
+  if (n == 0L) return(0)
+  if (is.null(w))
+  {
+    w = rep(1, times = n)
+  }
+  else if (length(w) != n)
+  {
+    stop ("The number of elements in arguments 'w' and 'x' does not match: ", length(w), " != ", n)
+  }
+  if (!is.null(idxs))
+  {
+    x = x[idxs]
+    w = w[idxs]
+  }
+  if (na.rm)
+  {
+    keep = !(is.na(x) | is.na(w))
+    if (any(!keep))
+    {
+      x = x[keep]
+      w = w[keep]
+    }
+  }
+  wsum = sum(w)
+  if (wsum == 0)
+  {
+    w = rep(1, times = n)
+    wsum = n
+  }
+  if (is.null(center))
+  {
+    center = sum(w * x) / wsum
+  }
+  sqdx = (x - center)^2
+  wvar = sum(w * sqdx) / wsum
+  wvar
+}
+
+# Weighted standard-deviation implementation
+weighted.sd <- function(x, w = NULL, idxs = NULL, na.rm = FALSE, center = NULL, ...)
+{
+  wvar = weighted.var(x, w, idxs, na.rm, center, ...)
+  wsd = sqrt(wvar)
+  wsd
+}
+
 #' Summarizes the GEVAInput
 #' @export
+#' @rdname geva.summarize
 geva.summarize <- function(gevainput, summary.method = options.summary, variation.method = options.variation)
 {
   assert.class(gevainput, is='GEVAInput')
@@ -71,14 +124,6 @@ geva.summarize <- function(gevainput, summary.method = options.summary, variatio
   mw = inputweights(gevainput)
   vsumm = rows.weighted.summary(mv, mw, summary.method)
   vvar = rows.weighted.variation(mv, mw, vsumm, variation.method)
-  #summf = get.summary.method(summary.method)
-  #varf = get.variation.method(variation.method)
-  #matinds = as.indexes(gevainput)
-  #vv = as.numeric(inputvalues(gevainput))
-  #vw = as.numeric(inputweights(gevainput))
-  #na.rm = anyNA(vv)
-  #vsumm = apply(matinds, 1, function(vinds) summf(vv, vw, idxs = vinds, na.rm = na.rm))
-  #vvar = apply(matinds, 1, function(vinds) varf(vv, vw, idxs = vinds, center=vsumm[vinds[1]], na.rm = na.rm))
   dfsv = data.frame(S=vsumm, V=vvar)
   svmets = svattr(summary.method, variation.method)
   infols = list(summary.method=summary.method, variation.method=variation.method)
@@ -104,9 +149,9 @@ get.variation.method.character <- function(method = options.variation)
   method = assert.choices(method)
   fn = switch(method,
               mad = matrixStats::weightedMad,
-              sd = matrixStats::weightedSd,
-              var = matrixStats::weightedVar,
-              matrixStats::weightedVar
+              sd = weighted.sd,
+              var = weighted.var,
+              weighted.sd
   )
   fn
 }
