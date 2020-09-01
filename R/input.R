@@ -72,7 +72,9 @@ geva.read.tables <- function(filenames=NULL, dirname=".", col.values="logFC", co
     }
   }
   
-  dw = t(apply(dw, 1, normalize.weights, na.val=na.val)) # p.values are normalized so that weighted calculations can be made
+  #dw = t(apply(dw, 1, normalize.weights, na.val=na.val)) # p.values are normalized so that weighted calculations can be made
+  # Edit: No more - since matrixStats::weightedVar has a bug, we made our own implementation of weighted variance,
+  #       and weighted ANOVA implementation will automatically normalize the weights
   info = list(filenames = filenames, values.column = col.values, pvalues.column = col.pvals)
   ginput = new('GEVAInput', values=as.matrix(df), weights=as.matrix(dw), ftable = da, info = info)
   vprint("Read %d columns with %d probes", ncol(df), nrow(df))

@@ -53,10 +53,10 @@ setMethod('show', 'GEVACluster',
           })
 
 # PLOT
-setMethod('plot', c('GEVACluster', 'missing'),
+setMethod('plot', c('GEVACluster', 'SVTable'),
           function(x, y, ...)
           {
-            plotres = callNextMethod(x, ..., cl=groups(x), plotfn = hull.plot)
+            plotres = callNextMethod(x, y, ..., cl=groups(x), plotfn = hull.plot)
           })
 
 # S4 Methods

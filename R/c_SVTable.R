@@ -101,7 +101,7 @@ setMethod('$', 'SVTable',
             if (name %in% c('V', 'v', 'variation')) return(variation(x))
             NULL
           })
-
+setMethod('sv.data', 'SVTable', function(object) object)
 
 
 # S3 Methods

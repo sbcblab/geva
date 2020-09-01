@@ -14,7 +14,7 @@
 
 # Merges the obtained information and applies the final steps to produce the classification results for the data points
 #' @export
-geva.finalize <- function(gsummary, ..., p.value=0.05)
+geva.finalize <- function(gsummary, ..., p.value=0.05, constraint.factors=TRUE)
 {
   assert.class(gsummary, inherits='GEVASummary')
   nprobes = nrow(gsummary)
@@ -32,37 +32,63 @@ geva.finalize <- function(gsummary, ..., p.value=0.05)
   cltable$qindex.variation = as.integer(qindexes(gq)$V[groups(gq)])
   facts = as.factor(factors(gsummary))
   vspec.name = rep(NA_character_, nprobes)
+  vspec.pvals = rep(NA_real_, nprobes)
   if (check.suitable.factors(facts))
   {
+    min.value = NA_real_
+    max.value = NA_real_
+    if (constraint.factors)
+    {
+      vscents = centroids(gq)$S
+      if (length(vscents) != 0L)
+      {
+        vrange = range(vscents)
+        min.value = min(vrange)
+        max.value = max(vrange) 
+      }
+    }
     catline("Searching for dependent factors...")
-    cltable$factoring.dep.pval = factoring.dep.fisher(gsummary, factors(gsummary))
+    cltable$factoring.dep.pval = factoring.dep.fisher(gsummary, factors(gsummary),
+                                                      min.value=min.value, max.value=max.value)
     factable$dep.pval = cltable$factoring.dep.pval
     if (check.factors.are.specific(facts, warn = FALSE))
     {
-      mpvals = factoring.spec.levene(gsummary)
-      mpsigs = mpvals < p.value
-      mpsigs[is.na(mpsigs)] = FALSE
-      vspecount = rowSums(mpsigs)
-      factable$spec.count = vspecount
-      factable$spec.name = vspec.name
-      selspecs = vspecount == 1
-      has.specinds = any(selspecs)
-      for (fcolnm in colnames(mpvals))
+      mpvals.levene = factoring.spec.levene(gsummary,
+                                            min.value=min.value, max.value=max.value)
+      mpvals.fisher = factoring.spec.fisher(gsummary,
+                                            min.value=min.value, max.value=max.value)
+      factable.spec = factoring.combine.spec.classif(mpvals.levene, mpvals.fisher)
+      factable = cbind(factable, factable.spec)
+      sel.spec = factable.spec$is.spec
+      if (any(sel.spec))
       {
-        fnewcolnm = sprintf("spec.pval.%s", fcolnm)
-        factable[,fnewcolnm] = mpvals[,fcolnm]
-        if (has.specinds)
-        {
-          selcurrspecs = mpsigs[,fcolnm] & selspecs
-          if (any(selcurrspecs))
-          {
-            vspec.name[selcurrspecs] = fcolnm
-            factable$spec.name[selcurrspecs] = fcolnm
-            cltable$factoring.spec.pval[selcurrspecs] = mpvals[selcurrspecs, fcolnm]
-          }
-        }
+        vspec.pvals[sel.spec] = factable.spec$min.pval[sel.spec]
+        vspec.name[sel.spec] = factable.spec$spec.name[sel.spec]
       }
-       
+      # 
+      # mpsigs = mpvals < p.value
+      # mpsigs[is.na(mpsigs)] = FALSE
+      # vspecount = base::rowSums(mpsigs)
+      # selspecs = vspecount == 1
+      # has.specinds = any(selspecs)
+      # for (fcolnm in colnames(mpvals))
+      # {
+      #   fnewcolnm = sprintf("spec.pval.%s", fcolnm)
+      #   factable[,fnewcolnm] = mpvals[,fcolnm]
+      #   if (has.specinds)
+      #   {
+      #     selcurrspecs = mpsigs[,fcolnm] & selspecs
+      #     if (any(selcurrspecs))
+      #     {
+      #       vspec.name[selcurrspecs] = fcolnm
+      #       vspec.pvals[selcurrspecs] = mpvals[selcurrspecs, fcolnm]
+      #       
+      #     }
+      #   }
+      # }
+      # factable$spec.count = vspecount
+      # factable$spec.name = vspec.name
+      cltable$factoring.spec.pval = vspec.pvals
     }
   }
   restable = results.table.from.classif(gq, cltable, p.value)

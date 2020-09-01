@@ -79,7 +79,11 @@ setMethod('plot', c('GEVASummary', 'missing'),
 # S4 Methods
 setMethod('inputdata', 'GEVASummary', function(object) object@inputdata)
 setMethod('inputvalues', 'GEVASummary', function(object) inputvalues(inputdata(object)))
-setMethod('inputweights', 'GEVASummary', function(object) inputweights(inputdata(object)))
+setMethod('inputweights', c('GEVASummary', 'logical'), function(object, normalized) inputweights(inputdata(object), normalized))
+setMethod('inputweights', c('GEVASummary', 'missing'), function(object, normalized=FALSE) inputweights(inputdata(object)))
+
+
+
 setMethod('inputnames', 'GEVASummary', function(object) names(inputdata(object)))
 setMethod('featureTable', 'GEVASummary', function(object) featureTable(inputdata(object)))
 setMethod('factors', 'GEVASummary', function(object) factors(inputdata(object)))

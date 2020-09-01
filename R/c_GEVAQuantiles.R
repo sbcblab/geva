@@ -33,7 +33,8 @@ setClass('GEVAQuantiles',
            qareasizes = 'SVTable',
            qindexes = 'SVTable',
            qcount = 'SVIntAttribute',
-           qcutoff = 'SVNumAttribute'
+           qcutoff = 'SVNumAttribute',
+           qmethod = 'character'
          ), contains = 'GEVAGroupSet')
 
 
@@ -72,10 +73,10 @@ setMethod('show', 'GEVAQuantiles',
           })
 
 # PLOT
-setMethod('plot', c('GEVAQuantiles', 'missing'),
+setMethod('plot', c('GEVAQuantiles', 'SVTable'),
           function(x, y, ...)
           {
-            plotres = callNextMethod(x, ...)
+            plotres = callNextMethod(x, y, ...)
             thres = infolist(x)$thresholds
             if (!is.null(thres) && is.list(thres))
             {
@@ -101,6 +102,7 @@ setMethod('quantiles', 'GEVAQuantiles', function(object) levels(object))
 setMethod('qcount', 'GEVAQuantiles', function(object) object@qcount)
 setMethod('sv.scores', 'GEVAQuantiles', function(object) object@svscores)
 setMethod('cluster.method', 'GEVAQuantiles', function(object) 'quantiles')
+setMethod('quantiles.method', 'GEVAQuantiles', function(object) object@qmethod)
 setMethod('dim', 'GEVAQuantiles', function(x) dim(sv.scores(x)))
 
 

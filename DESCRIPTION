@@ -44,6 +44,7 @@ Collate:
     'finalize.R'
     'geva-package.R'
     'hclustering.R'
+    'idealtesting.R'
     'matrixhelpers.R'
     'statmath.R'
     'input.R'

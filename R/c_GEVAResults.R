@@ -72,3 +72,14 @@ setMethod('plot', c('GEVAResults', 'missing'), function(x, y, ...) plot(quantile
 # S4 Methods
 setMethod('quantiles', 'GEVAResults', function(object) object@quantdata)
 setMethod('results.table', 'GEVAResults', function(gres) gres@resultstable)
+
+setMethod('sv.data', 'GEVAResults', function(object) object@svdata)
+setMethod('sv', 'GEVAResults', function(object) sv(sv.data(object)))
+
+setMethod('inputdata', 'GEVAResults', function(object) inputdata(object@svdata))
+setMethod('inputvalues', 'GEVAResults', function(object) inputvalues(object@svdata))
+setMethod('inputweights', c('GEVAResults', 'logical'), function(object, normalized) inputweights(object@svdata, normalized))
+setMethod('inputweights', c('GEVAResults', 'missing'), function(object, normalized=FALSE) inputweights(object@svdata))
+
+
+

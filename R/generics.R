@@ -13,7 +13,7 @@
 # === S4 ===
 
 setGeneric('inputvalues', function(object) standardGeneric('inputvalues'))
-setGeneric('inputweights', function(object) standardGeneric('inputweights'))
+setGeneric('inputweights', function(object, normalized) standardGeneric('inputweights'))
 setGeneric('inputdata', function(object) standardGeneric('inputdata'))
 setGeneric('inputnames', function(object) standardGeneric('inputnames'))
 
@@ -62,6 +62,7 @@ setGeneric('qindexes', function(object) standardGeneric('qindexes'))
 setGeneric('qareasizes', function(object) standardGeneric('qareasizes'))
 setGeneric('qcount', function(object) standardGeneric('qcount'))
 setGeneric('quantiles', function(object) standardGeneric('quantiles'))
+setGeneric('quantiles.method', function(object) standardGeneric('quantiles.method'))
 
 # GEVAQuantilesAdjusted-class
 setGeneric('group.rels', function(object) standardGeneric('group.rels'))
@@ -71,6 +72,7 @@ setGeneric('cluster.method', function(object) standardGeneric('cluster.method'))
 
 # GEVAResults-class
 setGeneric('results.table', function(gres) standardGeneric('results.table'))
+setGeneric('sv.data', function(object) standardGeneric('sv.data'))
 
 
 # === S3 ===
@@ -87,3 +89,5 @@ first <- function(x, ...) UseMethod('first')
 where <- function(x, ...) UseMethod('where')
 as.typed.list <- function(x, elem.class=NA_character_) UseMethod('as.typed.list')
 distinct <- function(x, ..., incomparables=FALSE) UseMethod('distinct')
+
+normalize.scale <- function(x, ...) UseMethod('normalize.scale')

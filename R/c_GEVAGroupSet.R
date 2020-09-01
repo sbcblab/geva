@@ -77,7 +77,14 @@ setMethod('show', 'GEVAGroupSet',
 setMethod('plot', c('GEVAGroupSet', 'missing'),
           function(x, y, ...)
           {
-            svdata = sv(x)
+            svdata = sv.data(x)
+            plot(x, y=svdata, ...)
+          })
+
+setMethod('plot', c('GEVAGroupSet', 'SVTable'),
+          function(x, y, ...)
+          {
+            svdata = y
             clrs = infolist(x)$colors
             if (is.null(clrs))
             {
@@ -89,6 +96,9 @@ setMethod('plot', c('GEVAGroupSet', 'missing'),
                                  plotargs.sv.proportional(svdata))
             call.plot(svdata, ..., defargs=defargs)
           })
+
+setMethod('plot', c('SVTable', 'GEVAGroupSet'),
+          function(x, y, ...) plot(y, x, ...))
 
 # S4 Methods
 setMethod('groups', 'GEVAGroupSet', function(object) object@grouping)
@@ -106,13 +116,21 @@ setMethod('infolist<-', c('GEVAGroupSet', 'list'), function(object, value) { obj
 
 setMethod('featureTable', 'GEVAGroupSet', function(object) object@ftable)
 
-setMethod('sv', 'GEVAGroupSet',
+setMethod('sv.data', 'GEVAGroupSet',
           function(object)
           {
-            mcentoffs = sv(centroids(object))[as.character(groups(object)), ] + sv(offsets(object))
+            mcentoffs = sv(object)
             mcentoffs = svtable(mcentoffs[,1], mcentoffs[,2], names(scores(object)))
             mcentoffs
           })
+
+setMethod('sv', 'GEVAGroupSet',
+          function(object) 
+          {
+            mcentoffs = sv(centroids(object))[as.character(groups(object)), ] + sv(offsets(object))
+            mcentoffs
+          })
+
 setMethod('cluster.method', 'GEVAGroupSet', function(object) NA_character_ )
 
 setMethod('classification.table', 'GEVAGroupSet', function(object) infolist(object)$classification.table  )

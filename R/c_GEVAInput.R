@@ -90,7 +90,12 @@ setMethod('[', c('GEVAInput', 'ANY', 'ANY', 'ANY'),
 # S4 Methods
 setMethod('inputdata', 'GEVAInput', function(object) object)
 setMethod('inputvalues', 'GEVAInput', function(object) object@values)
-setMethod('inputweights', 'GEVAInput', function(object) object@weights)
+setMethod('inputweights', c('GEVAInput', 'logical'),
+          function(object, normalized)
+          {
+            if (normalized) rows.normalize.weights(object@weights) else object@weights
+          })
+setMethod('inputweights', c('GEVAInput', 'missing'), function(object, normalized=FALSE) object@weights)
 setMethod('inputnames', 'GEVAInput', function(object) names(object@values))
 setMethod('featureTable', 'GEVAInput', function(object) object@ftable)
 setMethod('featureTable<-', c('GEVAInput', 'data.frame'),

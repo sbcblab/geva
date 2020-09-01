@@ -49,8 +49,18 @@ call.plot <- function(x, ..., defargs=list(), plotfn=plot)
 # Gets the default arguments used to plot proportional SV data
 plotargs.sv.proportional <- function(x)
 {
-  rngs = max(abs(summary(x))) * c(-1, 1)
-  rngv = max(abs(variation(x))) * c(0, 1)
+  if (inherits(x, 'SVTable'))
+  {
+    vsum = summary(x)
+    vvar = variation(x)
+  }
+  else
+  {
+    vsum = x[,1,drop=TRUE]
+    vvar = x[,2,drop=TRUE]
+  }
+  rngs = max(abs(vsum)) * c(-1, 1)
+  rngv = max(abs(vvar)) * c(0, 1)
   defargs = list(xlim = rngs,
                  ylim = rngv)
   defargs
