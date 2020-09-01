@@ -38,8 +38,68 @@ calc.inbetweens <- function(x)
   return((x[-1L]+x[-length(x)]) / 2)
 }
 
+# Gets the initial threshold from proportional area slide
+qthreshold.proportional <- function(x, nq.split, maxval=max(abs(x)), ...)
+{
+  qthres = maxval * nq.split
+  qthres
+}
+
+# Gets the initial threshold from the value containg the maximum standard-deviation from its k neighbor values
+qthreshold.k.max.sd <- function(x, k=16, ...)
+{
+  mkneigh = k.neighbors(x, k)
+  vsd = apply(mkneigh, 1, weighted.sd)
+  ind.mid = which.max(vsd)
+  qthres = vsd[ind.mid]
+  qthres
+}
+
+# Gets the initial threshold from the value positioned near the range division
+qthreshold.range.slice <- function(x, qslice=0.25, ...)
+{
+  xabs = abs(x)
+  ind.slice = which.slice(xabs, qslice)
+  qthres = abs(xabs[ind.slice])
+  qthres
+}
+
+# Gets the initial threshold from proximal density by the standard deviation of k neighbors
+qthreshold.density <- function(x, nq, qslice=0.25, k=16, nq.split=1/nq, ...)
+{
+  mkneigh = k.neighbors(x, k)
+  vdens = apply(mkneigh, 1, weighted.sd)
+  mkvars = k.neighbors(vdens, k)
+  vdens = apply(mkvars, 1, mean)
+  ind.mid.dense = which.slice(vdens, qslice * nq.split)
+  qthres = abs(x[ind.mid.dense])
+  qthres
+}
+
+# Gets the quantile's initial threshold (nearest to zero index)
+calc.quantile.initial.threshold <- function(x, nq, qmethod, nq.split=1/nq, ...)
+{
+  if (qmethod == 'density')
+  {
+    qthres = qthreshold.density(x, nq, ...)
+  }
+  else if (qmethod == 'k.max.sd')
+  {
+    qthres = qthreshold.k.max.sd(x, ...)
+  }
+  else if (qmethod == 'range.slice')
+  {
+    qthres = qthreshold.range.slice(x, ...)
+  }
+  else
+  {
+    qthres = qthreshold.proportional(x, nq.split, ...)
+  }
+  qthres
+}
+
 # Calculates the quantile thresholds from values (x) and number of quantiles (nq)
-calc.quantile.thresholds <- function(x, nq, init.threshold=NA_real_, has.negative=TRUE)
+calc.quantile.thresholds <- function(x, nq, qmethod, init.threshold=NA_real_, has.negative=TRUE, ...)
 {
   nq = as.integer(nq)
   if (nq == 0L) return(numeric(0))
@@ -52,8 +112,10 @@ calc.quantile.thresholds <- function(x, nq, init.threshold=NA_real_, has.negativ
   iseven = nq %% 2L == 0L
   if (is.na(init.threshold))
   {
-    init.threshold = maxval / nq
-    if (has.negative && iseven) init.threshold = init.threshold * 2
+    # If it's not a custom threshold and the quantiles are even,
+    # adapt them to the positive and negative values
+    nq.split = if (has.negative && iseven) { 2 / nq } else { 1 / nq }
+    init.threshold = calc.quantile.initial.threshold(x, nq, nq.split=nq.split, qmethod=qmethod, maxval=maxval, ...)
   }
   if (init.threshold > maxval) init.threshold = maxval
   if (has.negative)
@@ -73,13 +135,13 @@ calc.quantile.thresholds <- function(x, nq, init.threshold=NA_real_, has.negativ
 }
 
 # Calculates the quantile centroids from values (x) and number of quantiles (nq)
-calc.quantile.centroids <- function(x, nq, init.threshold=NA_real_)
+calc.quantile.centroids <- function(x, nq, qmethod, init.threshold=NA_real_)
 {
   nq = as.integer(nq)
   if (nq == 0L) return(numeric(0))
   has.negative = any(x < 0, na.rm = T)
   qinds = calc.quantile.indexes(nq, has.negative)
-  qthres = calc.quantile.thresholds(x, nq, init.threshold, has.negative)
+  qthres = calc.quantile.thresholds(x, nq, qmethod, init.threshold, has.negative)
   if (nq == 1L)
   {
     qcents = if (has.negative) 0.0 else max(qthres) / 2
@@ -181,6 +243,10 @@ generate.quantile.colors <- function(svinds)
   clrs
 }
 
+#' Returns a vector with the supported methods of quantiles separation
+#' @export
+#' @rdname geva.quantiles
+options.quantiles <- c('proportional', 'density', 'k.max.sd', 'range.slice', 'custom')
 
 
 #' Calculates the quantiles of a SVTable 
@@ -188,14 +254,18 @@ generate.quantile.colors <- function(svinds)
 #' @param sv SVTable
 #' @param nq.s number of quantiles in S-axis
 #' @param nq.v number of quantiles in V-axis
+#' @param quantile.method method to detect the initial quantile thresholds. Ignored if initial.thresholds are set
 #' @param initial.thresholds named numeric vector with the threshold used for the first quantile
 #' @param comb.score.fn function to merge S and V scores into a single column. prod and mean are some examples
 #' 
 #' @export
-geva.quantiles <- function(sv, nq.s = 3L, nq.v = 2L, initial.thresholds=c(S=NA_real_, V=NA_real_), comb.score.fn = prod, ...)
+#' @rdname geva.quantiles
+geva.quantiles <- function(sv, nq.s = 3L, nq.v = 2L, quantile.method = options.quantiles,
+                           initial.thresholds=c(S=NA_real_, V=NA_real_), comb.score.fn = prod, ...)
 {
   assert.names.equal(sv, colnames=c('S', 'V'))
   assert.dim(initial.thresholds, length=2L)
+  quantile.method = assert.choices(quantile.method)
   nq.s = as.integer(nq.s)
   nq.v = as.integer(nq.v)
   assert.operator(nq.s, `>=` = 3L)
@@ -205,8 +275,17 @@ geva.quantiles <- function(sv, nq.s = 3L, nq.v = 2L, initial.thresholds=c(S=NA_r
   if (!is.named(initial.thresholds)) names(initial.thresholds) = c('S', 'V')
   thrs = initial.thresholds[['S']]
   thrv = initial.thresholds[['V']]
-  vsm.cents = calc.quantile.centroids(vsm, nq.s, thrs)
-  vvr.cents = calc.quantile.centroids(vvr, nq.v, thrv)
+  if (anyNA(initial.thresholds))
+  {
+    if (quantile.method == 'custom')
+      quantile.method = options.quantiles[1]
+  }
+  else
+  {
+    quantile.method = 'custom'
+  }
+  vsm.cents = calc.quantile.centroids(vsm, nq.s, quantile.method, thrs)
+  vvr.cents = calc.quantile.centroids(vvr, nq.v, quantile.method, thrv)
   if (is.na(thrs)) thrs = attr(vsm.cents, 'init.threshold')
   if (is.na(thrv)) thrv = attr(vvr.cents, 'init.threshold')
   maxs = max(abs(vsm))
@@ -256,7 +335,8 @@ geva.quantiles <- function(sv, nq.s = 3L, nq.v = 2L, initial.thresholds=c(S=NA_r
       qareasizes=qsizes,
       qindexes=svinds,
       qcount=qcount,
-      qcutoff=qcutoff)
+      qcutoff=qcutoff,
+      quantiles.method=quantile.method)
 }
 
 
