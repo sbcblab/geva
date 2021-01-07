@@ -48,7 +48,7 @@ setMethod('show', 'GEVACluster',
           {
             catline('GEVA Cluster (%s-class)', class(object)[1])
             catline('Clusters (%d): %s', length(levels(object)), fmt.limit(levels(object)))
-            catline('Scores (%d): %s', length(object), fmt.limit(round(scores(object), 3)  ))
+            catline('Scores (%d): %s', length(scores(object)), fmt.limit(round(scores(object), 3)  ))
             if (length(infolist(object)) != 0) catline('Additional information (%d): %s', length(infolist(object)), fmt.limit(names(infolist(object))))
           })
 
@@ -61,3 +61,10 @@ setMethod('plot', c('GEVACluster', 'SVTable'),
 
 # S4 Methods
 setMethod('cluster.method', 'GEVACluster', function(object) object@cluster.method)
+
+# S3 Methods
+lines.GEVACluster <- function(x, ...)
+{
+  do.call(hull.lines, list.merge(list(x=sv(x), cl=groups(x), col=color.values(x)), list(...)))
+  invisible()
+}
