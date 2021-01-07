@@ -85,13 +85,7 @@ setMethod('plot', c('GEVAGroupSet', 'SVTable'),
           function(x, y, ...)
           {
             svdata = y
-            clrs = infolist(x)$colors
-            if (is.null(clrs))
-            {
-              clrs = generate.colors(length(levels(x)))[as.integer(groups(x))]
-            } else {
-              clrs = clrs[groups(x)]
-            }
+            clrs = color.values(x, ...)
             defargs = list.merge(list(col=clrs),
                                  plotargs.sv.proportional(svdata))
             call.plot(svdata, ..., defargs=defargs)
@@ -99,6 +93,17 @@ setMethod('plot', c('GEVAGroupSet', 'SVTable'),
 
 setMethod('plot', c('SVTable', 'GEVAGroupSet'),
           function(x, y, ...) plot(y, x, ...))
+
+setMethod('plot', c('GEVAGroupSet', 'GEVAGroupSet'),
+          function(x, y, ...) 
+          {
+            plotres = plot(x, ...)
+            if (isS3implemented('lines', class(y)))
+            {
+              lines(y, ...)
+            }
+            invisible(plotres)
+          })
 
 # S4 Methods
 setMethod('groups', 'GEVAGroupSet', function(object) object@grouping)
@@ -111,7 +116,8 @@ setMethod('scores', c('GEVAGroupSet', 'missing'), function(object, group) object
 setMethod('scores', c('GEVAGroupSet', 'character'), function(object, group) object@scores[groups(object) %in% group])
 
 
-setMethod('infolist', c('GEVAGroupSet', 'missing'), function(object, recursive) object@info )
+setMethod('infolist', c('GEVAGroupSet', 'missing'), function(object, field, ...) object@info )
+setMethod('infolist', c('GEVAGroupSet', 'character'), function(object, field, ...) getElement(object@info, field) )
 setMethod('infolist<-', c('GEVAGroupSet', 'list'), function(object, value) { object@info = value; object })
 
 setMethod('featureTable', 'GEVAGroupSet', function(object) object@ftable)
@@ -127,7 +133,12 @@ setMethod('sv.data', 'GEVAGroupSet',
 setMethod('sv', 'GEVAGroupSet',
           function(object) 
           {
-            mcentoffs = sv(centroids(object))[as.character(groups(object)), ] + sv(offsets(object))
+            mcents = sv(centroids(object))
+            gs = groups(object)
+            sel.valid.gs = !is.na(gs)
+            ginds = match(gs[sel.valid.gs], rownames(mcents))
+            mcentoffs = sv(offsets(object))
+            mcentoffs[sel.valid.gs, ] = mcentoffs[sel.valid.gs,,drop=FALSE] + mcents[ginds,,drop=FALSE]
             mcentoffs
           })
 
@@ -141,7 +152,85 @@ setMethod('classification.table<-', c('GEVAGroupSet', 'data.frame'),
             object
           })
 
-
+setMethod('analysis.params', 'GEVAGroupSet', function(gobject)
+  list.merge(list(cluster.method=cluster.method(gobject)), infolist(gobject, 'analysis.params')))
+  
 # S3 Methods
+
 levels.GEVAGroupSet <- function(x) levels(groups(x))
 
+as.data.frame.GEVAGroupSet <- function(x, row.names=names(x), ...)
+{
+  data.frame(groups=groups(x), scores=scores(x), row.names = row.names)
+}
+
+color.values.GEVAGroupSet <- function(x, point.col=NULL, ...)
+{
+  if (!is.null(point.col))
+  {
+    clrs = point.col
+    if (length(point.col) == 1L)
+      clrs = rep(point.col, length(groups(x)))
+    if (length(clrs) != length(groups(x)))
+      stop("'point.col' (color vector) must be of the same length as the grouping from the given groupset")
+    clrs = color.adjust(clrs, ...)
+    return(clrs)
+  }
+  clrs = infolist(x)$colors
+  if (is.null(clrs))
+  {
+    clrs = color.values.factor(x=groups(x), ...)
+  } else {
+    clrs = color.adjust(clrs[groups(x)])
+  }
+  clrs
+}
+
+points.GEVAGroupSet <- function(x, ...)
+{
+  call.plot(sv(x), ..., defargs = list(col=color.values(x, ...)), plotfn = points.default)
+}
+
+as.expression.GEVAGroupSet <- function(x, sv, ...)
+{
+  parls = analysis.params(x)
+  parls$sv = if (missing(sv))
+    parse(text=sprintf("sv.data(%s)", deparse(substitute(x))))
+  else
+    substitute(sv)
+  expr = function2expression(geva.cluster,
+                             args.list = parls,
+                             ...)
+  expr
+}
+
+as.SVTable.GEVAGroupSet <- function(x, which=c('sv', 'offsets', 'centroids'), ...)
+{
+  which = match.arg(which)
+  if (which == 'sv') return(sv.data(x))
+  if (which == 'offsets') return(offsets(x))
+  if (which == 'centroids')
+  {
+    mcents = sv(centroids(x))
+    gs = groups(x)
+    sel.valid.gs = !is.na(gs)
+    ginds = match(gs[sel.valid.gs], rownames(mcents))
+    mcentoffs = sv(offsets(x))
+    mcentoffs[sel.valid.gs, ] = mcents[ginds,,drop=FALSE]
+    as.SVTable(mcentoffs, ...)
+  }
+}
+
+# Helper methods
+
+score.plot <- function(ggset, y, ..., clrs=NULL)
+{
+  assert.class(ggset, inherits='GEVAGroupSet')
+  if (missing(y)) y = sv.data(ggset)
+  
+  if (is.null(clrs) || length(clrs) == 0L)
+  {
+    clrs = if (inherits(ggset, 'GEVAQuantiles')) '#0000FF' else '#FF0000'
+  }
+  plot(x=ggset, y=y, clrs=clrs, alpha=clamp(scores(ggset), min.value = 0, max.value = 1), ...)
+}
