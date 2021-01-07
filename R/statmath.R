@@ -96,13 +96,36 @@ restore.weights.pvals <- function(w)
   w
 }
 
+# Gets the indexes of possible outliers in a numeric vector
+which.outliers <- function(x, eps=1.1)
+{
+  n = length(x)
+  if (n == 0L) return(integer(0))
+  sel.outs = rep(FALSE, length(x))
+  sel.invalids = is.na(x) | is.infinite(x)
+  if (any(sel.invalids))
+  {
+    sel.outs[sel.invalids] = TRUE
+    x = x[!sel.invalids]
+    n = length(x)
+  }
+  mat = matrix(c(1:n, x), ncol=2)
+  dbres = dbscan::dbscan(mat, eps=eps, minPts = 2)
+  vcl = dbres$cluster
+  vug = unique(vcl)
+  if (length(vug) <= 1L) return(which(sel.invalids))
+  gcore = as.integer(names(sort(table(vcl), decreasing = TRUE))[1])
+  sel.outs[!sel.invalids] = vcl != gcore
+  outinds = which(sel.outs)
+  outinds
+}
+
 # Gets the row indexes where all values are above a cutoff
 which.rows.outside.cutoff <- function(mat, cutoff=0.05, na.val=0)
 {
   mat = as.matrix(mat)
   if (anyNA(mat))
     mat[is.na(mat)] = na.val
-  mat = 1 - mat
   vinds = which(all.apply(mat, `>`, e2=cutoff))
   vinds
 }
