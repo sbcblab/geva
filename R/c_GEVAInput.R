@@ -54,7 +54,7 @@ setMethod('initialize', 'GEVAInput',
             assert.dim(.Object@weights, ncol=ncol(mvals), nrow=nrow(mvals))
             assert.dim(.Object@factors, length=ncol(mvals))
             
-            check.suitable.factors(.Object@factors)
+            check.suitable.factors(.Object@factors, warn = FALSE, msg = FALSE)
             
             validObject(.Object)
             .Object
@@ -112,7 +112,8 @@ setMethod('featureTable<-', c('GEVAInput', 'data.frame'),
           })
 
 
-setMethod('infolist', c('GEVAInput', 'missing'), function(object, recursive=FALSE) object@info)
+setMethod('infolist', c('GEVAInput', 'missing'), function(object, field=NULL, ...) object@info)
+setMethod('infolist', c('GEVAInput', 'character'), function(object, field, ...) getElement(object@info, field))
 setMethod('infolist<-', c('GEVAInput', 'list'), function(object, value) { object@info = value; object })
 
 setMethod('factors', 'GEVAInput', function(object) object@factors)
@@ -124,7 +125,7 @@ setMethod('factors<-', c('GEVAInput', 'factor'),
               object@factors = factor(rep(NA, ncol(object)))
             } else {
               assert.dim(value, length = ncol(object))
-              check.suitable.factors(value)
+              check.suitable.factors(value, warn = FALSE, msg = FALSE)
               object@factors = value
             }
             validObject(object)
@@ -148,7 +149,7 @@ setMethod('names', 'GEVAInput', function(x) colnames(inputvalues(x)))
 setMethod('as.indexes', 'matrix', function(x) matrix(1:length(x), ncol=ncol(x), dimnames = dimnames(x)))
 
 setMethod('as.indexes', 'GEVAInput', function(x) as.indexes(inputvalues(x)))
-
+setMethod('analysis.params', 'GEVAInput', function(gobject) infolist(gobject, 'input.params'))
 
 
 # S3 Methods
