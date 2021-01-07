@@ -95,17 +95,24 @@ assert.class <- function(object, ...)
   objname = call.objname(object, 1)
   argls = list(...)
   posscalls = list(
-    class = "'%s' must belong the %s class",
-    is = "'%s' must be a '%s'",
-    inherits = "'%s' must inherit the %s class"
+    class = "'%s' must be %s",
+    is = "'%s' must be a %s",
+    inherits = "'%s' must inherit the %s class",
+    typeof = "'%s' must be a %s object"
+  )
+  callfns = list(
+    class = function(obj, cl) any(class(obj) %in% cl, na.rm = TRUE),
+    is = function(obj, cl) any(sapply(cl, is, object=obj)),
+    typeof = function(obj, cl) typeof(obj) %in% cl
   )
   for (fnm in intersect(names(argls), names(posscalls)))
   {
-    reqclass = argls[[fnm]][1]
-    if (reqclass == 'ANY') next
-    if (!(do.call(fnm, list(object, reqclass))))
+    reqclass = argls[[fnm]]
+    if (length(reqclass) == 1L && reqclass == 'ANY') next
+    fn = if (fnm %in% names(callfns)) callfns[[fnm]] else fnm
+    if (!(do.call(fn, list(object, reqclass))))
     {
-      stop(sprintf(posscalls[[fnm]], objname, reqclass))
+      stop(sprintf(posscalls[[fnm]], objname, strconjunct(reqclass, conj = " or ")))
     }
   }
   invisible(T)
