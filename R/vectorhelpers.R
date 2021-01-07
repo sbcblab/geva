@@ -79,6 +79,57 @@ list.merge <- function(...)
   fls
 }
 
+# Flatten a list putting the underlying lists to the same recursive level
+list.flatten <- function(x, overwrite.dups=TRUE, ignore.class=character(0), recursive=TRUE)
+{
+  n = length(x)
+  if (n == 0L) return(x)
+  assert.class(x, typeof='list')
+  nms = names(x)
+  hasnms = !is.null(nms)
+  sel.lists = sapply(x, is.list)
+  if (!any(sel.lists)) return(x)
+  sel.ignored = sapply(x, function(it) any(sapply(ignore.class, is, object=it)))
+  if (all(sel.ignored)) return(x)
+  resls = list()
+  lsit.inds = which(sel.lists & !sel.ignored)
+  j = 0L
+  for (i in 1L:n)
+  {
+    j = j + 1L
+    if (!(i %in% lsit.inds))
+    {
+      resls[[(if (hasnms) nms[i] else j)]] = x[[i]]
+      next
+    }
+    subls = x[[i]]
+    if (recursive)
+      subls = list.flatten(subls, overwrite.dups, ignore.class, recursive)
+    ns = length(subls)
+    if (ns == 0L)
+    {
+      j = j - 1L
+      next
+    }
+    subls.nms = names(subls)
+    if (ns == 1L && is.null(subls.nms))
+    {
+      resls[[(if (hasnms) nms[i] else j)]] = x[[1L]]
+      next
+    }
+    if (is.null(subls.nms))
+      subls.nms = seq(j, length.out = ns)
+    else if (!overwrite.dups)
+      subls.nms = setdiff(make.unique(c(names(x), subls.nms)), names(x))
+    nold = length(resls)
+    resls[subls.nms] = subls
+    j = j + (length(resls) - nold) - 1L
+  }
+  resls
+}
+
+
+
 # Applies the tapply function using a function that returns a vector of the same length of its arguments. The return vector has the same order and size from the X argument
 gtapply <- function(X, INDEX, FUN, ...)
 {
