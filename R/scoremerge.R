@@ -28,7 +28,7 @@ quantiles.assoc.gset <- function(gquant, ggset)
   ggs.cents = centroids(ggset)
   gq.cents = centroids(gquant)
   gq.aszs = qareasizes(gquant)
-  gassocs = calc.quantile.nearest.SVTable(ggs.cents, gq.cents, gq.aszs)
+  gassocs = calc.quantile.nearest.SVTable(ggs.cents, gquant)
   gassocs
 }
 
@@ -49,6 +49,8 @@ quantiles.scores.merge <- function(gsumm, ...)
   ggnms = make.names(ggnms)
   moffs = as.matrix(offsets(gquant))
   gqcents = centroids(gquant)
+  mqinds = sv(as.SVTable.GEVAQuantiles(gquant, 'qindexes'))
+  mqinds.ref = sv(qindexes(gquant))
   i = 0L
   for (ggs in ggsets)
   {
@@ -64,7 +66,10 @@ quantiles.scores.merge <- function(gsumm, ...)
     if (any(selmism))
     {
       seladj = selmism
-      seladj[selmism] = vggscore[selmism] > vqscore[selmism] # Groups with greater cluster score than the current quantile score
+      mqinds.dist = mqinds[selmism,,drop=FALSE] - mqinds.ref[as.character(fggs[selmism]),,drop=FALSE]
+      vqdist = sqrt(rowSums(mqinds.dist^2))
+      vqscore.adj = vqscore[selmism]^(1/clamp(vqdist, min.value = 1L)) # Adjusts the score if the cluster's quantile is not a neighbor quantile
+      seladj[selmism] = vggscore[selmism] > vqscore.adj # Groups with greater cluster score than the current quantile score
       if (any(seladj))
       {
         vcurrqs = as.character(fquant[seladj])
@@ -76,11 +81,19 @@ quantiles.scores.merge <- function(gsumm, ...)
       }
     }
   }
-  if (length(lfassocs) != 0L)
+  if (length(ggnms) != 0L)
+  {
+    names(ggsets) = ggnms
+    gsumm = promote.class(gsumm, 'GEVAGroupedSummary', groupsetlist=ggsets)
+  }
+  gquant.adj = if (length(lfassocs) != 0L)
   {
     attr(lfassocs, 'title') = 'List of GroupSet-Quantile relationships'
-    gquant = promote.class(gquant, 'GEVAQuantilesAdjusted', grouprels=lfassocs, grouping=fquant, scores=vqscore, offsets=as.SVTable(moffs))
+    promote.class(gquant, 'GEVAQuantilesAdjusted', grouprels=lfassocs, grouping=fquant, scores=vqscore, offsets=as.SVTable(moffs))
   }
-  gquant
+  else gquant
+  list(
+    gsummary=gsumm,
+    gquant.adj=gquant.adj)
 }
 
