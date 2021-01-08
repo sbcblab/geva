@@ -79,22 +79,13 @@ qthreshold.density <- function(x, nq, qslice=0.25, k=16, nq.split=1/nq, ...)
 # Gets the quantile's initial threshold (nearest to zero index)
 calc.quantile.initial.threshold <- function(x, nq, qmethod, nq.split=1/nq, ...)
 {
-  if (qmethod == 'density')
-  {
-    qthres = qthreshold.density(x, nq, ...)
-  }
-  else if (qmethod == 'k.max.sd')
-  {
-    qthres = qthreshold.k.max.sd(x, ...)
-  }
-  else if (qmethod == 'range.slice')
-  {
-    qthres = qthreshold.range.slice(x, ...)
-  }
-  else
-  {
-    qthres = qthreshold.proportional(x, nq.split, ...)
-  }
+  qthres = switch (qmethod,
+    density = qthreshold.density(x, nq, ...),
+    k.max.sd = qthreshold.k.max.sd(x, ...),
+    range.slice = qthreshold.range.slice(x, ...),
+    proportional =,
+    qthreshold.proportional(x, nq.split, ...)
+  )
   qthres
 }
 
@@ -175,11 +166,11 @@ calc.quantile.nearest.vector <- function(x, qcents, qsizes=NULL)
 }
 
 # Calculates the nearest quantiles from the given points, centroids and sizes
-calc.quantile.nearest.SVTable <- function(svx, svcents, svsizes)
+calc.quantile.nearest.SVTable <- function(svx, gq)
 {
   svx = as.SVTable(svx)
-  svcents = as.SVTable(svcents)
-  svsizes = as.SVTable(svsizes)
+  svcents = centroids(gq) #as.SVTable(svcents)
+  svsizes = qareasizes(gq) #as.SVTable(svsizes)
   qnms = rownames(svcents)
   assert.dim(svsizes, dim=dim(svcents))
   assert.names.equal(svcents, rownames=rownames(svsizes))
@@ -201,11 +192,32 @@ calc.quantile.nearest.SVTable <- function(svx, svcents, svsizes)
   qassocs
 }
 
+# Calculates the nearest quantile index for Summary axis of one or more numeric values
+calc.quantile.nearest.sindex <- function(vs, gquants, qsthresholds=NULL, qsindexes=NULL)
+{
+  if (length(vs) == 0L) return(numeric(0L))
+  if (is.null(qsthresholds)) qsthresholds = sort(infolist(gquants)$thresholds$S)
+  if (is.null(qsindexes)) qsindexes = sort(unique(qindexes(gquants)$S))
+  vres = vs * NA_integer_
+  mode(vres) = 'integer'
+  for (j in 1L:length(vs))
+  {
+    vj = vs[j]
+    for (i in 1L:length(qsindexes))
+    {
+      vres[j] = qsindexes[i]
+      if (vj < qsthresholds[i+1L])
+        break
+    }
+  }
+  vres
+}
+
 # Gets a table of quantiles default classification table based on quantile indexes
 get.quantiles.default.classification <- function(gquants)
 {
   assert.class(gquants, inherits='GEVAQuantiles')
-  qinds = qindexes(gq)
+  qinds = qindexes(gquants)
   qnms = rownames(qinds)
   
   qclasstable = data.frame(row.names=qnms)
@@ -246,7 +258,7 @@ generate.quantile.colors <- function(svinds)
 #' Returns a vector with the supported methods of quantiles separation
 #' @export
 #' @rdname geva.quantiles
-options.quantiles <- c('proportional', 'density', 'k.max.sd', 'range.slice', 'custom')
+options.quantiles <- c('range.slice', 'proportional', 'density', 'k.max.sd', 'custom')
 
 
 #' Calculates the quantiles of a SVTable 
@@ -263,8 +275,22 @@ options.quantiles <- c('proportional', 'density', 'k.max.sd', 'range.slice', 'cu
 geva.quantiles <- function(sv, nq.s = 3L, nq.v = 2L, quantile.method = options.quantiles,
                            initial.thresholds=c(S=NA_real_, V=NA_real_), comb.score.fn = prod, ...)
 {
+  if (is(sv, 'GEVAInput')) sv = geva.summarize(sv)
   assert.names.equal(sv, colnames=c('S', 'V'))
+  assert.class(initial.thresholds, is='numeric')
+  if (length(initial.thresholds) == 1L && is.named(initial.thresholds) &&
+      any(names(initial.thresholds) %in% c('S', 'V')))
+  {
+    initial.thresholds = setNames(initial.thresholds[c('S', 'V')], c('S', 'V'))
+  }
+    
   assert.dim(initial.thresholds, length=2L)
+  if (is.character(comb.score.fn))
+  {
+    comb.score.fn = eval(parse(text=comb.score.fn))
+  }
+  if (!is.function(comb.score.fn))
+    stop("'comb.score.fn' must be a function or a valid function name with a single numeric vector as argument")
   quantile.method = assert.choices(quantile.method)
   nq.s = as.integer(nq.s)
   nq.v = as.integer(nq.v)
@@ -323,8 +349,14 @@ geva.quantiles <- function(sv, nq.s = 3L, nq.v = 2L, quantile.method = options.q
   
   # Generating colors
   clrs = generate.quantile.colors(svinds)
-  qinfo = list(thresholds = lthres, colors=clrs)
-  
+  qinfo = list(thresholds = lthres,
+               colors=clrs,
+               analysis.params=list(nq.s=nq.s,
+                                    nq.v=nq.v,
+                                    quantile.method=quantile.method,
+                                    initial.thresholds=initial.thresholds,
+                                    comb.score.fn=deparse(substitute(comb.score.fn)))
+               )
   new('GEVAQuantiles',
       grouping=qgroups,
       scores=qscores,
@@ -336,7 +368,7 @@ geva.quantiles <- function(sv, nq.s = 3L, nq.v = 2L, quantile.method = options.q
       qindexes=svinds,
       qcount=qcount,
       qcutoff=qcutoff,
-      quantiles.method=quantile.method)
+      qmethod=quantile.method)
 }
 
 

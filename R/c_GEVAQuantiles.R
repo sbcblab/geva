@@ -77,14 +77,7 @@ setMethod('plot', c('GEVAQuantiles', 'SVTable'),
           function(x, y, ...)
           {
             plotres = callNextMethod(x, y, ...)
-            thres = infolist(x)$thresholds
-            if (!is.null(thres) && is.list(thres))
-            {
-              ns = length(thres$S)
-              nv = length(thres$V)
-              if (ns >= 3L) abline(v=thres$S[c(-1, -ns)], lty=2, col='#33333344')
-              if (nv >= 3L) abline(h=thres$V[c(-1, -nv)], lty=2, col='#33333344')
-            }
+            lines(x, ...)
             invisible(plotres)
           })
 
@@ -119,3 +112,48 @@ setMethod('classification.table<-', c('GEVAQuantiles', 'data.frame'),
             infolist(object)$classification.table = value
             object
           })
+          
+
+# S3 Methods
+lines.GEVAQuantiles <- function(x, ...)
+{
+  thres = infolist(x)$thresholds
+  if (!is.null(thres) && is.list(thres))
+  {
+    ns = length(thres$S)
+    nv = length(thres$V)
+    if (ns >= 3L) abline(v=thres$S[c(-1, -ns)], lty=2, col='#33333344')
+    if (nv >= 3L) abline(h=thres$V[c(-1, -nv)], lty=2, col='#33333344')
+    return(invisible(TRUE))
+  }
+  invisible(FALSE)
+}
+
+as.expression.GEVAQuantiles <- function(x, sv, ...)
+{
+  parls = analysis.params(x)
+  parls$cluster.method = NULL
+  parls$sv = if (missing(sv))
+    parse(text=sprintf("sv.data(%s)", deparse(substitute(x))))
+  else
+    substitute(sv)
+  expr = function2expression(geva.quantiles,
+                             args.list = parls,
+                             ...)
+  expr
+}
+
+as.SVTable.GEVAQuantiles <- function(x, which=c('sv', 'offsets', 'centroids', 'qindexes'), ..., row.names=names(x))
+{
+  which = match.arg(which)
+  if (which %in% c('sv', 'offsets', 'centroids'))
+    return(as.SVTable.GEVAGroupSet(x, which=which, ...))
+  if (which == 'qindexes')
+  {
+    minds = sv(qindexes(x))
+    gs = groups(x)
+    ginds = match(gs, rownames(minds))
+    svinds = as.SVTable(qindexes(x)[ginds,,drop=FALSE], row.names=row.names, ...)
+    return(svinds)
+  }
+}
