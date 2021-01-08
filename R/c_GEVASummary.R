@@ -82,8 +82,6 @@ setMethod('inputvalues', 'GEVASummary', function(object) inputvalues(inputdata(o
 setMethod('inputweights', c('GEVASummary', 'logical'), function(object, normalized) inputweights(inputdata(object), normalized))
 setMethod('inputweights', c('GEVASummary', 'missing'), function(object, normalized=FALSE) inputweights(inputdata(object)))
 
-
-
 setMethod('inputnames', 'GEVASummary', function(object) names(inputdata(object)))
 setMethod('featureTable', 'GEVASummary', function(object) featureTable(inputdata(object)))
 setMethod('factors', 'GEVASummary', function(object) factors(inputdata(object)))
@@ -97,17 +95,22 @@ setMethod('factors<-', c('GEVASummary', 'factor'),
             object
           })
 
+setMethod('factors<-', c('GEVASummary', 'character'), function(object, value) { factors(object) = as.factor(value); object })
+
 setMethod('infolist', c('GEVASummary', 'missing'),
-          function(object, recursive)
+          function(object, field=NULL, recursive = FALSE, ...)
           {
-            if (missing(recursive)) recursive = FALSE
             if (!recursive) return(object@info)
             infols = unlist(list(object@info, infolist(inputdata(object))), recursive = FALSE)
             infols
           })
 setMethod('infolist<-', c('GEVASummary', 'list'), function(object, value) { object@info = value; object })
 
+setMethod('featureTable', 'GEVASummary', function(object) featureTable(inputdata(object)))
+
 setMethod('sv.method', 'GEVASummary', function(gevasummary) gevasummary@sv.method)
+
+setMethod('quantiles', 'GEVASummary', function(object) geva.quantiles(object))
 
 setMethod('groupsets', 'GEVASummary', function(object) typed.list(elem.class = 'GEVAGroupSet') )
 setMethod('groupsets<-', c('GEVASummary', 'TypedList'), function(object, value)
@@ -116,8 +119,29 @@ setMethod('groupsets<-', c('GEVASummary', 'TypedList'), function(object, value)
   gs2
 })
 
+setMethod('analysis.params', 'GEVASummary', function(gobject)
+{
+  svmets = sv.method(gobject)
+  list(summary.method=svmets$S,
+       variation.method=svmets$V)
+})
+
 
 # S3 Methods
 get.summary.method.GEVASummary <- function(gevasummary) get.summary.method(sv.method(gevasummary)$S)
 get.variation.method.GEVASummary <- function(gevasummary) get.variation.method(sv.method(gevasummary)$V)
 
+as.matrix.GEVASummary <- function(x, ...) sv(x)
+
+as.expression.GEVASummary <- function(x, ginput, ...)
+{
+  parls = analysis.params(x)
+  parls$ginput = if (missing(ginput))
+    parse(text=sprintf("inputdata(%s)", deparse(substitute(x))))
+  else
+    substitute(ginput)
+  expr = function2expression(geva.summarize,
+                             args.list = parls,
+                             ...)
+  expr
+}

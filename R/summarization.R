@@ -19,12 +19,12 @@ NULL
 #' Returns a vector with the supported methods of summarization
 #' @export
 #' @rdname geva.summarize
-options.summary <- c('median', 'mean')
+options.summary <- c('mean', 'median')
 
 #' Returns a vector with the supported methods of summarization
 #' @export
 #' @rdname geva.summarize
-options.variation <- c('mad', 'sd', 'var')
+options.variation <- c('sd', 'var', 'mad')
 
 # Calculates the weighted summary of a matrix
 rows.weighted.summary <- function(mv, mw, summary.method = options.summary)
@@ -110,25 +110,27 @@ weighted.sd <- function(x, w = NULL, idxs = NULL, na.rm = FALSE, center = NULL, 
 #' Summarizes the GEVAInput
 #' @export
 #' @rdname geva.summarize
-geva.summarize <- function(gevainput, summary.method = options.summary, variation.method = options.variation)
+geva.summarize <- function(ginput, summary.method = options.summary, variation.method = options.variation, ...)
 {
-  assert.class(gevainput, is='GEVAInput')
+  assert.class(ginput, is='GEVAInput')
   summary.method = assert.choices(summary.method)
   variation.method = assert.choices(variation.method)
+  if (ncol(ginput) < 2L)
+    stop(sprintf("ginput must contain at least two value columns (has %s)", ncol(ginput)))
   if (ncol(ginput) <= 3L && variation.method == 'mad')
   {
     variation.method = setdiff(options.variation, 'mad')[1]
     warning(sprintf("'mad' option for variation method requires at least 4 columns.\nUsing '%s' instead", variation.method))
   }
-  mv = inputvalues(gevainput)
-  mw = inputweights(gevainput)
+  mv = inputvalues(ginput)
+  mw = inputweights(ginput)
   vsumm = rows.weighted.summary(mv, mw, summary.method)
   vvar = rows.weighted.variation(mv, mw, vsumm, variation.method)
   dfsv = data.frame(S=vsumm, V=vvar)
   svmets = svattr(summary.method, variation.method)
   infols = list(summary.method=summary.method, variation.method=variation.method)
   vprint("Input summarized")
-  new('GEVASummary', sv=dfsv, inputdata=gevainput, sv.method=svmets, info=infols)
+  new('GEVASummary', sv=dfsv, inputdata=ginput, sv.method=svmets, info=infols)
 }
 
 # Gets the function for summarization (central point calculation)
