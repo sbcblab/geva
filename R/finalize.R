@@ -87,11 +87,11 @@ results.table.from.classif <- function(gq, cltable, p.value=0.05)
   vquantnms = rownames(mclassif)
   sel.basal = groups(gq) %in% vquantnms[mclassif[,'basal'] == 1]
   sel.sparse = groups(gq) %in% vquantnms[mclassif[,'sparse'] == 1]
-  sel.consistent = groups(gq) %in% vquantnms[mclassif[,'consistent'] == 1]
+  sel.similar = groups(gq) %in% vquantnms[mclassif[,'similar'] == 1]
   classification = rep(NA_character_, nprobes)
   classification[sel.basal] = 'basal'
   classification[sel.sparse] = 'sparse'
-  classification[sel.consistent] = 'consistent'
+  classification[sel.similar] = 'similar'
   vdep.pvals = cltable$factoring.dep.pval
   if (any(is.na(vdep.pvals)))
     vdep.pvals[is.na(vdep.pvals)] = 1

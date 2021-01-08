@@ -177,7 +177,7 @@ as.expression.GEVAResults <- function(x, gsummary, gquants, ...)
 
 
 # Specific methods
-top.genes <- function(gevaresults, classif=c('consistent', 'factor-dependent', 'factor-specific'),
+top.genes <- function(gevaresults, classif=c('similar', 'factor-dependent', 'factor-specific'),
                       which.spec=levels(gevaresults), add.cols=NULL, ..., names.only=FALSE)
 {
   classif = match.arg(classif, c(call.default.arg(classif), 'basal', 'sparse'), several.ok = TRUE)
