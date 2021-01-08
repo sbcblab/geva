@@ -56,6 +56,9 @@ geva.ideal.example <- function(probecount=10000, condcount=3, respercond=3, seed
     }
   }
   infols = list(column.weight='adj.P.Val')
-  ginput = new('GEVAInput', values=as.matrix(dtlfc), weights=as.matrix(dtpval), factors=as.factor(condnms), info=infols)
+  dtfeats = data.frame(row.names=probnms, paste0("GENE_", LETTERS, 1:probecount))
+  ginput = new('GEVAInput', values=as.matrix(dtlfc),
+               weights=as.matrix(dtpval), factors=as.factor(condnms),
+               ftable=dtfeats, info=infols)
   ginput
 }
