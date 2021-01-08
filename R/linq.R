@@ -26,7 +26,7 @@ first.default <- function(x, fn, ..., default=NULL)
     if (!(is.logical(sresp) || is.null(sresp))) stop("test function must return a logical value")
     if (any(sresp, na.rm = T)) return(elem)
   }
-  eval.parent(default)
+  eval.parent(default, n = 2L)
 }
 
 first.formula <- function(formula, ..., default=NULL)
@@ -35,7 +35,7 @@ first.formula <- function(formula, ..., default=NULL)
   x = eval.parent(formula[[2]])
   fn = formula2function(formula, ...)
   defexpr = substitute(default)
-  first.default(x, fn, default=defexpr)
+  eval.parent(first.default(x, fn, default=defexpr))
 }
 
 # Gets all elements in a collection that satisfy a function or formula
@@ -86,4 +86,17 @@ distinct.formula <- function(formula, ..., incomparables=FALSE)
   distinct.default(x, fn, incomparables=incomparables)
 }
 
-
+# Gets the ordered index from a vector by value occurrences. Values not included in the list are placed after
+orderby.occur <- function(x, occurs, descending=FALSE)
+{
+  ind.order = rep(0L, length(x))
+  i = 1L
+  j = if(descending) 1L else -1L
+  for (occur in occurs)
+  {
+    ind.order[match(occur, x)] = i * j
+    i = i + 1L
+  }
+  return(order(ind.order, decreasing = descending))
+}
+sortby.occur <- function(x, occurs, descending=FALSE) x[orderby.occur(x, occurs, descending)]

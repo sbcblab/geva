@@ -39,6 +39,28 @@ call.default.arg <- function(obj, prevfns=0L)
   return(argres)
 }
 
+# Gets the number of parent frames from which the dots were called
+call.dots.which.frame <- function(...)
+{
+  nfr = sys.nframe()
+  if (nfr == 0L) return(0L)
+  wfr = min(which(sapply(lapply(sys.calls(), as.character), `%in%`, x='...' )))
+  if (wfr != 1L)
+  {
+    syspars = sys.parents()
+    if (wfr %in% 1:length(syspars))
+      wfr = syspars[wfr]
+  }
+  wfr
+  #for (i in 1L:nfr)
+  #{
+  #  callargs = as.character(sys.call(i - 1L))
+  #  if (!('...' %in% callargs))
+  #    return(i-1L)
+  #}
+  #0L
+}
+
 # Gets a character vector with the argument names used in dots. This does not evaluate the arguments
 call.dots.argnames <- function(...)
 {
@@ -50,7 +72,16 @@ call.dots.argnames <- function(...)
 call.dots.args <- function(..., .prevfns=0L)
 {
   if (...length() == 0L) return(NULL)
-  match.call(expand.dots = FALSE, envir = sys.frame(.prevfns))$`...`
+  nframe = call.dots.which.frame(...)
+  argls = match.call(expand.dots = FALSE, call = sys.call(nframe), envir=sys.frame(nframe))$`...`
+  argls = if (is.named(argls))
+    argls[!(names(argls) %in% formalArgs(sys.function(nframe)))]
+  else
+  {
+    argls[-(1L:(which(grepl("...", formalArgs(sys.function(nframe)), fixed = TRUE))[1L] - 1L))]
+  }
+  argls
+  #match.call(expand.dots = FALSE, envir = sys.frame(.prevfns))$`...`
   #eval.parent(quote(match.call(expand.dots = FALSE)$`...`), n = .prevfns + 1L)
 }
 
@@ -79,7 +110,7 @@ call.dots.named.list <- function(..., .trimquotes=TRUE, .replacefn=NULL)
   selempts = nchar(argnms) == 0L
   if (any(selempts))
   {
-    pls = match.call(expand.dots = FALSE)[['...']] #eval.parent(substitute(match.call(expand.dots = FALSE)[['...']]))
+    pls = call.dots.args(...) # match.call(expand.dots = FALSE)[['...']] #eval.parent(substitute(match.call(expand.dots = FALSE)[['...']]))
     rnms = sapply(pls[selempts], deparse)
     if (is.function(.replacefn)) # Used to select the element name when not present. The pattern is function(element, name)
     {
@@ -102,7 +133,7 @@ call.dots.named.list <- function(..., .trimquotes=TRUE, .replacefn=NULL)
 call.dots.namesorargs <- function(..., .trimquotes=TRUE)
 {
   if (...length() == 0L) return(character(0))
-  pargs = call.dots.args(..., .prevfns=1L)
+  pargs = call.dots.args(...)
   nargs = length(pargs)
   if (nargs == 0L) return(character(0))
   argnms = names(pargs)
@@ -154,7 +185,7 @@ call.arg.characters <- function(callarg)
 {
   argnm = trimws(deparse(substitute(name)), whitespace = '[\'\"\t\n]')
   dotexpr = substitute(call.dots.args(...))
-  argls = eval(dotexpr, envir = sys.frame(1L))
+  argls = eval.parent(dotexpr)
   nodef = missing(default)
   ret = if (argnm %in% names(argls)) argls[[argnm]] else if (!nodef) default else stop(sprintf("object '%s' not found", argnm), call. = F)
   ret

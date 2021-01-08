@@ -16,6 +16,7 @@
 # Writes a formatted text (same as sprintf) followed by a new line
 catline <- function(fmt, ...)
 {
+  if (!is.character(fmt)) fmt = as.character(fmt)
   lin = sprintf(fmt, ...)
   cat(lin)
   cat("\n")

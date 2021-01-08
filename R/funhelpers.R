@@ -69,3 +69,24 @@ formula2function <- function(formula, ...)
   fn
 }
 
+# Converts a function to a call using the specified arguments
+function2expression <- function(fn, ..., args.list=NULL)
+{
+  fname = deparse(substitute(fn))
+  forms = formals(fn)
+  forms$... = NULL
+  fargnms = names(forms)
+  forms = lapply(forms, deparse)
+  args.list = lapply(lapply(args.list, function(a) if (is.expression(a) || is.call(a)) as.character(a) else deparse(a)), as.character)
+  dotsls = lapply(call.dots.args(...), deparse)
+  vargs = unlist(list.merge(dotsls, args.list, forms))
+  vargs = vargs[nchar(vargs) != 0L]
+  if (length(vargs) == 0L) return(parse(text=sprintf("%s()", fname)))
+  argnms = if(is.named(vargs)) names(vargs) else rep("", length(vargs))
+  argorder = order(match(argnms, fargnms, nomatch = length(vargs) + 1L))
+  argnms = argnms[argorder]
+  vargs = vargs[argorder]
+  argnms = sapply(argnms, function(nm) if(nchar(nm) == 0L) "" else sprintf("%s = ", nm))
+  fncall = parse(text=sprintf("%s(%s)", fname, paste0(paste0(argnms, vargs), collapse=", ") ))
+  fncall
+}

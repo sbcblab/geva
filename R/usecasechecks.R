@@ -14,11 +14,12 @@
 
 # ---------------------
 # GEVAInput
-check.suitable.factors <- function(fs, warn=TRUE)
+check.suitable.factors <- function(fs, warn=TRUE, msg=TRUE)
 {
   if (length(levels(fs)) == 1)
   {
     if (warn) warning("'factors' has only one level. All analyses using factors will be ignored")
+    if (msg) catline("Factoring analysis ignored (two or more levels required)")
     return(invisible(F))
   }
   invisible(T)
@@ -46,10 +47,14 @@ check.quantiles.count <- function(qs, qv)
 
 # ---------------------
 # WANOVA's
-check.factors.are.specific <- function(fs, warn=TRUE)
+check.factors.are.specific <- function(fs, warn=TRUE, msg=TRUE)
 {
   lvls = levels(fs)
   is.spec = length(lvls) >= 2L
-  if (!is.spec && warn) warning("'factors' have less than 2 levels. No factor-specific analysis will be performed")
+  if (!is.spec)
+  {
+    if (warn) warning("'factors' have less than 2 levels. Specific factoring analysis will not be performed")
+    if (msg) catline("Factor-specific analysis ignored (less than 2 levels in factors)")
+  }
   is.spec
 }

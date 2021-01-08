@@ -19,5 +19,7 @@ The \code{GEVAResults} class contains the final results from GEVA analyses. It r
 \item{\code{factoring}}{data.frame with detailed factoring information}
 
 \item{\code{classiftable}}{data.frame used as reference to classify the data points}
+
+\item{\code{info}}{list with additional information}
 }}
 

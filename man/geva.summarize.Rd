@@ -17,9 +17,10 @@ options.summary
 options.variation
 
 geva.summarize(
-  gevainput,
+  ginput,
   summary.method = options.summary,
-  variation.method = options.variation
+  variation.method = options.variation,
+  ...
 )
 }
 \description{

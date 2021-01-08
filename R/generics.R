@@ -17,7 +17,7 @@ setGeneric('inputweights', function(object, normalized) standardGeneric('inputwe
 setGeneric('inputdata', function(object) standardGeneric('inputdata'))
 setGeneric('inputnames', function(object) standardGeneric('inputnames'))
 
-setGeneric('infolist', function(object, recursive) standardGeneric('infolist'))
+setGeneric('infolist', function(object, field, ...) standardGeneric('infolist'))
 setGeneric('infolist<-', function(object, value) standardGeneric('infolist<-'))
 
 setGeneric('factors', function(object) standardGeneric('factors'))
@@ -25,6 +25,8 @@ setGeneric('factors<-', function(object, value) standardGeneric('factors<-'))
 
 setGeneric('classification.table', function(object) standardGeneric('classification.table'))
 setGeneric('classification.table<-', function(object, value) standardGeneric('classification.table<-'))
+
+setGeneric('analysis.params', function(gobject) standardGeneric('analysis.params'))
 
 setGeneric('as.indexes', function(x) standardGeneric('as.indexes'))
 
@@ -77,17 +79,26 @@ setGeneric('sv.data', function(object) standardGeneric('sv.data'))
 
 # === S3 ===
 
-variation <- function(object, ...) UseMethod('variation')
 
+# Summarization
+variation <- function(object, ...) UseMethod('variation') # summary() generic already defined
 get.summary.method <- function(x) UseMethod('get.summary.method')
 get.variation.method <- function(x) UseMethod('get.variation.method')
 
+# Analysis methods
 get.distance.method <- function(x) UseMethod('get.distance.method')
-as.SVTable <- function(x) UseMethod('as.SVTable')
 
+# Converters
+as.SVTable <- function(x, ...) UseMethod('as.SVTable')
+
+# Linq-type
 first <- function(x, ...) UseMethod('first')
 where <- function(x, ...) UseMethod('where')
 as.typed.list <- function(x, elem.class=NA_character_) UseMethod('as.typed.list')
 distinct <- function(x, ..., incomparables=FALSE) UseMethod('distinct')
 
+# Statistics
 normalize.scale <- function(x, ...) UseMethod('normalize.scale')
+
+# Plotting
+color.values <- function(x, ...) UseMethod('color.values')

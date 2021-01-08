@@ -111,7 +111,13 @@ summary.SVTable <- function(object, ...) sv(object)[, 'S']
 variation.SVTable <- function(object, ...) sv(object)[, 'V']
 head.SVTable <- function(x, n = 6L, ...) head(sv(x), n=n, ...)
 is.na.SVTable <- function(x) is.na(sv(x))
-as.SVTable.matrix <- function(x) if(all(c('S', 'V') %in% colnames(x))) svtable(x[,'S'], x[,'V'], rownames(x)) else svtable(x[,1], x[,2], rownames(x))
-as.SVTable.data.frame <- function(x) if(all(c('S', 'V') %in% names(x))) svtable(x$S, x$V, rownames(x)) else svtable(x[,1], x[,2], rownames(x))
-as.SVTable.SVTable <- function(x) x
+as.SVTable.matrix <- function(x, row.names=rownames(x), ...) if(all(c('S', 'V') %in% colnames(x))) svtable(x[,'S'], x[,'V'], row.names = row.names) else svtable(x[,1], x[,2], row.names = row.names)
+as.SVTable.data.frame <- function(x, row.names=rownames(x), ...) if(all(c('S', 'V') %in% names(x))) svtable(x$S, x$V, row.names=row.names) else svtable(x[,1], x[,2], row.names=row.names)
+as.SVTable.SVTable <- function(x, ...) x
 points.SVTable <- function(x, ...) call.plot(sv(x), ..., plotfn = points.default)
+with.SVTable <- function(data, expr, ...)
+{
+  dt = as.data.frame(data)
+  eval(substitute(expr), dt, ...)
+}
+format.SVTable <- function(x, ...) format(sv(x), ...)

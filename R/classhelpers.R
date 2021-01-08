@@ -59,3 +59,16 @@ promote.class <- function(obj, Class, ...)
                     setNames(lapply(slotNames(obj), function(snm) slot(obj, snm)), slotNames(obj)))
   do.call(new, args)
 }
+
+# Checks if a S3 method is implemented for a class or its derived classes
+isS3implemented <- function(method, classname, include.default=FALSE)
+{
+  s3methods = as.character(.S3methods(method, classname))
+  if (sprintf("%s.%s", method, classname) %in% s3methods)
+    return(TRUE)
+  if (include.default && sprintf("%s.default", method) %in% s3methods)
+    return(TRUE)
+  classes = getAllSuperClasses(getClassDef(classname))
+  if (length(classes) == 0L) return(FALSE)
+  return (any(sprintf("%s.%s", method, classes) %in% s3methods))
+}
