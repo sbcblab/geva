@@ -18,7 +18,6 @@ Collate:
     'vectorhelpers.R'
     'printhelpers.R'
     'asserts.R'
-    'base.R'
     'usecasechecks.R'
     'plotting.R'
     'generics.R'
