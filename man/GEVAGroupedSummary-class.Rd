@@ -3,13 +3,76 @@
 \docType{class}
 \name{GEVAGroupedSummary-class}
 \alias{GEVAGroupedSummary-class}
+\alias{show,GEVAGroupedSummary-method}
+\alias{plot,GEVAGroupedSummary,missing-method}
+\alias{groupsets,GEVAGroupedSummary-method}
+\alias{quantiles,GEVAGroupedSummary-method}
+\alias{cluster.method,GEVAGroupedSummary-method}
+\alias{analysis.params,GEVAGroupedSummary-method}
+\alias{as.matrix.GEVAGroupedSummary}
+\alias{as.expression.GEVAGroupedSummary}
+\alias{lines.GEVAGroupedSummary}
+\alias{points.GEVAGroupedSummary}
 \title{GEVA Grouped Summary-Variation Table}
+\usage{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 \description{
-The \code{GEVAGroupedSummary} class inherits from \code{GEVASummary}.
+The \code{GEVAGroupedSummary} class inherits the \code{\linkS4class{GEVASummary}} class and includes group analysis data (\emph{e.g.}, clustering and quantile detection).
 }
 \section{Slots}{
 
 \describe{
-\item{\code{groupsetlist}}{TypedList containing elements of GEVAGroupSet-class}
+\item{\code{sv}}{\code{numeric matrix} composed by two columns: \code{S} (summary) and \code{V} (variation)
+\cr (Inherited from \code{\linkS4class{SVTable}})}
+
+\item{\code{inputdata}}{GEVAInput-class with the data input
+\cr (Inherited from \code{\linkS4class{GEVASummary}})}
+
+\item{\code{sv.method}}{Names of the statistical methods used to summarize data
+\cr (Inherited from \code{\linkS4class{GEVASummary}})}
+
+\item{\code{info}}{list with additional information
+\cr (Inherited from \code{\linkS4class{GEVASummary}})}
+
+\item{\code{groupsetlist}}{\code{\linkS4class{TypedList}} of \code{\linkS4class{GEVAGroupSet}} objects}
 }}
+
+\section{Methods}{
+
+\describe{
+\item{\code{cluster.method(object)}}{Gets a \code{character} vector listing the \code{cluster.method} from each group set}
+}
+\cr\strong{Dimension accessors}
+\describe{
+\item{\code{lines(x, ...)}}{Draws delimiters within quantiles and convex hulls around the clustered points}
+}
+\cr\strong{Properties}
+\describe{
+\item{\code{analysis.params(gobject)}}{Returns a \code{list} of analysis parameters passed to \code{\link{geva.cluster}} to obtain this object}
+}
+\cr\strong{Slot accessors}
+\describe{
+\item{\code{groupsets(object)}}{Gets the \code{TypedList} from the \code{groupsetlist} slot}
+\item{\code{quantiles(object)}}{Gets the \code{\linkS4class{GEVAQuantiles}}, or \code{NULL} if not present}
+}
+}
 

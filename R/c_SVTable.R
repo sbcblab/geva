@@ -6,9 +6,7 @@
 # Represents a table for summary (S) and variation (V)
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
-
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include asserts.R
 #' @include classhelpers.R
@@ -17,16 +15,19 @@
 #' @include vectorhelpers.R
 #' @include callhelpers.R
 #' @include plotting.R
+NULL
 
 #' @title Summary-Variation Table
 #'
-#' @description The \code{SVTable} class stores a \code{matrix} composed by two columns: \code{summary} and \code{variation}.
+#' @description The `SVTable` class stores a `matrix` composed by two columns: `S` (for *summary*) and `V` (for *variation*).
+#' 
+#' This class is inherited by [`GEVASummary-class`].
 #'
-#' @slot sv matrix composed by two columns: summary and variation
+#' @slot sv `matrix` composed by two columns: `S` (summary) and `V` (variation)
+#' 
+#' @note The matrix from `sv` slot can `numeric`, `character`, or any other supported type by `matrix`. The same slot from [`GEVASummary-class`], however, is always a numeric `matrix`.
 #'
-#' @name SVTable-class
-#' @rdname SVTable-class
-#' @export
+#' @declareS4class
 setClass('SVTable',
          slots = c(
            sv = 'matrix'
@@ -65,6 +66,7 @@ svtable <- function(S, V, row.names=NULL)
 }
 
 # SHOW
+#' @s4method
 setMethod('show', 'SVTable',
           function(object)
           {
@@ -74,6 +76,7 @@ setMethod('show', 'SVTable',
           })
 
 # PLOT
+#' @s4method
 setMethod('plot', c('SVTable', 'missing'),
           function(x, y, ...)
           {
@@ -81,6 +84,7 @@ setMethod('plot', c('SVTable', 'missing'),
           })
 
 # INDEXERS
+#' @s4method
 setMethod('[', c('SVTable', 'ANY', 'ANY', 'ANY'),
           function(x, i, j, ... , drop = TRUE)
           {
@@ -89,11 +93,22 @@ setMethod('[', c('SVTable', 'ANY', 'ANY', 'ANY'),
 
 
 # S4 Methods
+#' @s4method
+#' @s4accessor
 setMethod('sv', 'SVTable', function(object) object@sv)
 
+#' @category Dimension accessors
+
+#' @s4method Gets the dimensions from the `sv` slot
 setMethod('dim', 'SVTable', function(x) dim(sv(x)))
+
+#' @s4method Gets a \code{list} with the row and column names from the `sv` slot. \cr Individual dimension names can also be accessed through \code{rownames} and \code{colnames}
 setMethod('dimnames', 'SVTable', function(x) dimnames(sv(x)))
+
+#' @s4method
 setMethod('names', 'SVTable', function(x) colnames(sv(x)))
+
+#' @s4method
 setMethod('$', 'SVTable',
           function(x, name)
           {
@@ -101,23 +116,51 @@ setMethod('$', 'SVTable',
             if (name %in% c('V', 'v', 'variation')) return(variation(x))
             NULL
           })
+
+#' @s4method
 setMethod('sv.data', 'SVTable', function(object) object)
 
 
 # S3 Methods
+
+#' @s3method
 as.matrix.SVTable <- function(x, ...) sv(x)
+
+#' @s3method
 as.data.frame.SVTable <- function(x, ...) as.data.frame(sv(x))
+
+#' @s3method
 summary.SVTable <- function(object, ...) sv(object)[, 'S']
+
+#' @s3method
 variation.SVTable <- function(object, ...) sv(object)[, 'V']
+
+#' @s3method
 head.SVTable <- function(x, n = 6L, ...) head(sv(x), n=n, ...)
+
+#' @s3method
 is.na.SVTable <- function(x) is.na(sv(x))
+
+#' @s3method
 as.SVTable.matrix <- function(x, row.names=rownames(x), ...) if(all(c('S', 'V') %in% colnames(x))) svtable(x[,'S'], x[,'V'], row.names = row.names) else svtable(x[,1], x[,2], row.names = row.names)
+
+#' @s3method
 as.SVTable.data.frame <- function(x, row.names=rownames(x), ...) if(all(c('S', 'V') %in% names(x))) svtable(x$S, x$V, row.names=row.names) else svtable(x[,1], x[,2], row.names=row.names)
+
+#' @s3method
 as.SVTable.SVTable <- function(x, ...) x
+
+#' @category Plotting
+
+#' @s3method Draws the SV points in the plot
 points.SVTable <- function(x, ...) call.plot(sv(x), ..., plotfn = points.default)
+
+#' @s3method
 with.SVTable <- function(data, expr, ...)
 {
   dt = as.data.frame(data)
   eval(substitute(expr), dt, ...)
 }
+
+#' @s3method
 format.SVTable <- function(x, ...) format(sv(x), ...)

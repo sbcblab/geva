@@ -6,24 +6,27 @@
 # Functions to summarize the processed data for GEVA
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include c_GEVAInput.R
 #' @include c_GEVASummary.R
 #' @include asserts.R
-
-#' GEVA summarization
 NULL
 
-#' Returns a vector with the supported methods of summarization
-#' @export
+#' @name geva.summarize
 #' @rdname geva.summarize
+NULL
+
+#' @options [geva.summarize]
+#' @details The `options.summary` refer to the available operations to calculate central *logFC* values (`mean` or `median`), whereas `options.variation` presents three functions to calculate *logFC* variation (`sd`: Standard Deviation; `var`: Variance; and `mad`: Median Absolute Deviation).
+#' Moreover, all those operations include a weighted counterpart applied using the `weights` table from the [`GEVAInput-class`] object.
+#' @seealso [base::mean()], [stats::median()]
+#' @order 2
 options.summary <- c('mean', 'median')
 
-#' Returns a vector with the supported methods of summarization
-#' @export
-#' @rdname geva.summarize
+#' @options [geva.summarize]
+#' @seealso [stats::var()], [stats::sd()], [stats::mad()]
+#' @order 3
 options.variation <- c('sd', 'var', 'mad')
 
 # Calculates the weighted summary of a matrix
@@ -107,9 +110,25 @@ weighted.sd <- function(x, w = NULL, idxs = NULL, na.rm = FALSE, center = NULL, 
   wsd
 }
 
-#' Summarizes the GEVAInput
+#' @title Summarizes the GEVAInput
+#' 
+#' @description Performs the summarization step by calculating the central points and variation estimates of *logFC* values from the input data.
+#' 
+#' @param ginput a [`GEVAInput-class`] object
+#' @param summary.method single `character`, method used to calculate the central (summarized) *logFC* values
+#' @param variation.method single `character`, method used to calculate the distribution degree (variation) of the *logFC* values
+#' 
+#' @return A [`GEVASummary-class`] object
+#' 
+#' @examples
+#' ## Summarization of a randomly generated input
+#' ginput <- geva.ideal.example()     # Generates a random input example
+#' gsummary <- geva.summarize(ginput) # Summarizes with the default parameters
+#' plot(gsummary)                     # Plots the summarized data
+#' 
 #' @export
 #' @rdname geva.summarize
+#' @order 1
 geva.summarize <- function(ginput, summary.method = options.summary, variation.method = options.variation, ...)
 {
   assert.class(ginput, is='GEVAInput')

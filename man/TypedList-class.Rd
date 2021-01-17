@@ -3,13 +3,47 @@
 \docType{class}
 \name{TypedList-class}
 \alias{TypedList-class}
+\alias{elem.class,TypedList-method}
+\alias{elem.class<-,TypedList,character-method}
+\alias{show,TypedList-method}
+\alias{[,TypedList,ANY,missing,missing-method}
+\alias{as.list.TypedList}
+\alias{as.typed.list.vector}
+\alias{as.typed.list.list}
+\alias{as.typed.list.TypedList}
 \title{Type-strict List (TypedList-class)}
+\usage{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 \description{
-List containing elements of the same class.
+List containing elements of the same class or inheritance.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{elem.class}}{character representing the class related to the elements}
+\item{\code{elem.class}}{\code{character} representing the class related to the elements}
 }}
+
+\section{Methods}{
+
+\cr\strong{Slot accessors}
+\describe{
+\item{\code{elem.class(typedlist)}}{Gets the \code{character} from the \code{elem.class} slot}
+\item{\code{elem.class(typedlist) <- value}}{Sets a value to the \code{elem.class} slot}
+}
+}
 

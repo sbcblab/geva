@@ -6,20 +6,17 @@
 # Functions to perform factoring (such as weighted ANOVA) considering GEVA inputs and quantiles
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include asserts.R
 #' @include usecasechecks.R
 #' @include summarization.R
 #' @include quantiles.R
+NULL
 
-# TODO: Methods for anova(v ~ f, weights=w)
-# TODO: Combine anova for input values and quantiles. For quantiles, weights are their score
-# 
-
-#' Returns a vector with the supported methods of p-value adjustment for factors analysis
-#' @export
+# Returns a vector with the supported methods of p-value adjustment for factors analysis
+#' @options [geva.finalize]
+#' @order 2
 options.factoring.p.adjust <- c('partial.quantiles', stats::p.adjust.methods)
 
 # Creates a model.matrix for a row to be used in weighted fit based on specific factors

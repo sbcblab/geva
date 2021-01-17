@@ -6,8 +6,7 @@
 # Helper methods to manipulate vectors
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 
 # Gets the initial and final indexes within a limit

@@ -3,14 +3,14 @@
 # LINQ-STYLE HELPER FUNCTIONS
 # -----------------------
 # 
-# Helper methods to manipulate collections in a C#'s linq-style
+# Helper methods to manipulate collections in a C# LINQ-style
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include funhelpers.R
 #' @include generics.R
+NULL
 
 # Gets the first element that satisfies a function, or a default value if no such item was found
 # The default value is lazily evaluated

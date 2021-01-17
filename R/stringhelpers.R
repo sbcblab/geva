@@ -6,8 +6,7 @@
 # Helper methods to manipulate strings
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 # Override of plus function to support string concatenation
 `+` <- function(x, y)

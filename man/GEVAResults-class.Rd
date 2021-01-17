@@ -3,23 +3,122 @@
 \docType{class}
 \name{GEVAResults-class}
 \alias{GEVAResults-class}
+\alias{show,GEVAResults-method}
+\alias{plot,GEVAResults,missing-method}
+\alias{[,GEVAResults,ANY,ANY,ANY-method}
+\alias{$,GEVAResults-method}
+\alias{quantiles,GEVAResults-method}
+\alias{results.table,GEVAResults-method}
+\alias{sv.data,GEVAResults-method}
+\alias{sv,GEVAResults-method}
+\alias{infolist,GEVAResults,missing-method}
+\alias{infolist,GEVAResults,character-method}
+\alias{inputdata,GEVAResults-method}
+\alias{inputvalues,GEVAResults-method}
+\alias{inputweights,GEVAResults,logical-method}
+\alias{featureTable,GEVAResults-method}
+\alias{dim,GEVAResults-method}
+\alias{dimnames,GEVAResults-method}
+\alias{names,GEVAResults-method}
+\alias{analysis.params,GEVAResults-method}
+\alias{levels.GEVAResults}
+\alias{points.GEVAResults}
+\alias{as.expression.GEVAResults}
 \title{GEVA Results Table}
+\usage{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 \description{
-The \code{GEVAResults} class contains the final results from GEVA analyses. It represents the results of multiple statistical approaches from summary/variation data, groupings and quantiles.
+The \code{GEVAResults} class contains the final results from GEVA analyses. It represents the results of multiple statistical approaches from summary/variation data, clustering, quantile detection, and factor analysis (if applicable).
 }
 \section{Slots}{
 
 \describe{
-\item{\code{resultstable}}{data.frame with classification results for data points}
+\item{\code{resultstable}}{\code{data.frame} (\emph{m} lines) with classification results for the genes/probes}
 
-\item{\code{svdata}}{GEVASummary object with summarized data}
+\item{\code{svdata}}{\code{\linkS4class{GEVASummary}} used as input}
 
-\item{\code{quantdata}}{GEVAQuantiles object with final quantiles definitions (e.g. adjusted quantiles)}
+\item{\code{quantdata}}{\code{\linkS4class{GEVAQuantiles}} or \code{\linkS4class{GEVAQuantilesAdjusted}} with the final quantile assignments for the summarized data}
 
-\item{\code{factoring}}{data.frame with detailed factoring information}
+\item{\code{factoring}}{\code{data.frame} (\emph{m} lines) with detailed results for the factor analyses, such as p-values for each factor. If there was no factor analysis, this slot is \code{NULL} or empty}
 
-\item{\code{classiftable}}{data.frame used as reference to classify the data points}
+\item{\code{classiftable}}{\code{data.frame} used as reference for the final classification}
 
-\item{\code{info}}{list with additional information}
+\item{\code{info}}{\code{list} of supplementary information}
 }}
+
+\section{Methods}{
+
+\cr\strong{Dimension accessors}
+\describe{
+\item{\code{dim(x)}}{Gets the dimensions from the \code{results.table} slot}
+\item{\code{dimnames(x)}}{Gets a \code{list} with the row and column names from the \code{results.table} slot. \cr Individual dimension names can also be accessed through \code{rownames} and \code{colnames}}
+}
+\cr\strong{Plotting}
+\describe{
+\item{\code{points(x, which, ..., classif)}}{Draws the results points.
+\cr If \code{which} (\code{character} vector) is given, plots only the matching genes/probes.
+\cr If \code{classif} (\code{character} vector) is given, plots only points with the matching classification}
+}
+\cr\strong{Properties}
+\describe{
+\item{\code{analysis.params(gobject)}}{Returns a \code{list} of analysis parameters passed to \code{\link{geva.finalize}} or \code{\link{geva.quick}} to obtain this object}
+}
+\cr\strong{Slot accessors}
+\describe{
+\item{\code{infolist(object, field, ...)}}{Gets the \code{list} from the \code{info} slot}
+\item{\code{infolist(object, field, ...)}}{Gets the \code{list} from the \code{info} slot}
+\item{\code{quantiles(object)}}{Gets the \code{GEVAQuantiles} from the \code{quantdata} slot}
+\item{\code{results.table(gres)}}{Gets the \code{data.frame} from the \code{resultstable} slot}
+\item{\code{sv.data(object)}}{Gets the \code{GEVASummary} from the \code{svdata} slot}
+}
+\cr\strong{Sub-slot accessors}
+\describe{
+\item{\code{featureTable(object)}}{Returns the features \code{data.frame} from the internal \code{\linkS4class{GEVAInput}}}
+\item{\code{inputdata(object)}}{Returns the internal \code{\linkS4class{GEVAInput}}}
+\item{\code{inputvalues(object)}}{Returns the values \code{matrix} from the internal \code{\linkS4class{GEVAInput}}}
+\item{\code{inputweights(object, normalized)}}{Returns the weights \code{matrix} from the internal \code{\linkS4class{GEVAInput}}}
+\item{\code{levels(x)}}{Returns the factors used in factor analysis, if present}
+}
+}
 

@@ -6,17 +6,44 @@
 # Represents classification data for GEVA summaries separated by quantiles corrected using parameters from other grouping methods
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 
 #' @include c_GEVAQuantiles.R
+NULL
 
-#' @slot grouprels typed list of named factors representing external group relationships to the current quantiles
+#' @title GEVA Adjusted Quantiles Results
+#' 
+#' @description The \code{GEVAQuantilesAdjusted} class represents the results of a quantile detection analysis with adjusted assignments based on relationships with other \code{GEVAGroupSet} objects. For each probe/gene, there is a assigned quantile among the \emph{g} defined quantiles.
+#' 
+#' This class inherits from \code{\linkS4class{GEVAQuantiles}}.
+#' 
+#' @slot grouping \code{factor} (\emph{m} elements, \emph{g} levels), quantile assignment for each gene/probe
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot scores \code{numeric} vector (\emph{m} elements) with the assigned quantile scores for each gene/probe
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot ftable \code{data.frame} (\emph{m} lines) with additional quantile assignment data
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot centroids \code{numeric SVTable} (\emph{g} lines) with the S and V centroid coordinates for each quantile
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot offsets \code{numeric SVTable} (\emph{m} lines) with the S and V coordinate offsets each gene/probe from its quantile centroid
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot info \code{list} of additional information
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot svscores \code{numeric \linkS4class{SVTable}} (\emph{m} lines) with individual partial scores for the assigned quantiles
+#' \cr (Inherited from \code{\linkS4class{GEVAQuantiles}})
+#' @slot qareasizes \code{numeric \linkS4class{SVTable}} (\emph{g} lines) with the S and V sizes for each quantile
+#' \cr (Inherited from \code{\linkS4class{GEVAQuantiles}})
+#' @slot qindexes \code{integer \linkS4class{SVTable}} (\emph{g} lines) representing the position index to each quantile, in terms of summary and variation
+#' \cr (Inherited from \code{\linkS4class{GEVAQuantiles}})
+#' @slot qcount integer attributes (\code{\linkS4class{SVIntAttribute}}) with the defined number of quantiles for the S and V axes
+#' \cr (Inherited from \code{\linkS4class{GEVAQuantiles}})
+#' @slot qcutoff numeric attributes (\code{\linkS4class{SVNumAttribute}}) with the initial quantile cutoff in S and V, starting from the point zero
+#' \cr (Inherited from \code{\linkS4class{GEVAQuantiles}})
+#' 
+#' @slot grouprels \code{\linkS4class{TypedList}} of \code{named factor} elements representing external group relationships to the current quantiles
 #'
-#' @name GEVAQuantilesAdjusted-class
-#' @rdname GEVAQuantiles-class
-#' @export
+#' @declareS4class
 setClass('GEVAQuantilesAdjusted',
          slots = c(
            grouprels = 'TypedList'
@@ -42,6 +69,7 @@ setMethod('initialize', 'GEVAQuantilesAdjusted',
           })
 
 # SHOW
+#' @s4method
 setMethod('show', 'GEVAQuantilesAdjusted',
           function(object)
           {
@@ -51,4 +79,9 @@ setMethod('show', 'GEVAQuantilesAdjusted',
           })
 
 # S4 Methods
+
+#' @methodsnote (See also the inherited methods from [`GEVAQuantiles-class`] and [`GEVAGroupSet-class`])
+
+#' @s4method
+#' @s4accessor grouprels
 setMethod('group.rels', 'GEVAQuantilesAdjusted', function(object) object@grouprels)

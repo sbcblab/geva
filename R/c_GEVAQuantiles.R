@@ -6,27 +6,40 @@
 # Represents classification data for GEVA summaries separated by quantiles
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 
 #' @include c_GEVAGroupSet.R
 #' @include c_SVAttribute.R
 #' @include usecasechecks.R
+NULL
 
 #' @title GEVA Quantiles Grouping Results
 #'
-#' @description The \code{GEVAQuantiles} class inherits the grouping properties from \code{GEVAGroupSet} and additionally stores the indexes associated to summary and variation.
+#' @description The \code{GEVAQuantiles} class represents the results of a quantile detection analysis. For each probe/gene, there is a assigned quantile among the \emph{g} defined quantiles.
 #' 
-#' @slot svscores SVTable with individual scores for summary and variation
-#' @slot qareasizes SVTable with nominal area sizes of the quantiles in terms of summary and variation
-#' @slot qindexes SVTable with indexes representing the magnitude index of summary and variation
-#' @slot qcount SVIntAttribute with number of quantiles for summary and variation
-#' @slot qcutoff SVNumAttribute with the initial quantile cut-offs, starting from zero
+#' This class inherits from \code{\linkS4class{GEVAGroupSet}} and is inherited by \code{\linkS4class{GEVAQuantilesAdjusted}}.
+#' 
+#' @slot grouping \code{factor} (\emph{m} elements, \emph{g} levels), quantile assignment for each gene/probe
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot scores \code{numeric} vector (\emph{m} elements) with the assigned quantile scores for each gene/probe
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot ftable \code{data.frame} (\emph{m} lines) with additional quantile assignment features
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot centroids \code{numeric SVTable} (\emph{g} lines) with the S and V centroid coordinates for each quantile
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot offsets \code{numeric SVTable} (\emph{m} lines) with the S and V coordinate offsets each gene/probe from its quantile centroid
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot info \code{list} of additional information
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' 
+#' @slot svscores \code{numeric \linkS4class{SVTable}} (\emph{m} lines) with individual partial scores for the assigned quantiles
+#' @slot qareasizes \code{numeric \linkS4class{SVTable}} (\emph{g} lines) with the S and V sizes for each quantile
+#' @slot qindexes \code{integer \linkS4class{SVTable}} (\emph{g} lines) representing the position index to each quantile, in terms of summary and variation
+#' @slot qcount integer attributes (\code{\linkS4class{SVIntAttribute}}) with the defined number of quantiles for the S and V axes
+#' @slot qcutoff numeric attributes (\code{\linkS4class{SVNumAttribute}}) with the initial quantile cutoff in S and V, starting from the point zero
 #'
-#' @name GEVAQuantiles-class
-#' @rdname GEVAQuantiles-class
-#' @export
+#' @declareS4class
 setClass('GEVAQuantiles',
          slots = c(
            svscores = 'SVTable',
@@ -63,6 +76,7 @@ setMethod('initialize', 'GEVAQuantiles',
           )
 
 # SHOW
+#' @s4method
 setMethod('show', 'GEVAQuantiles',
           function(object)
           {
@@ -73,6 +87,7 @@ setMethod('show', 'GEVAQuantiles',
           })
 
 # PLOT
+#' @s4method
 setMethod('plot', c('GEVAQuantiles', 'SVTable'),
           function(x, y, ...)
           {
@@ -82,6 +97,7 @@ setMethod('plot', c('GEVAQuantiles', 'SVTable'),
           })
 
 # INDEXERS
+#' @s4method
 setMethod('[', c('GEVAQuantiles', 'ANY', 'ANY', 'ANY'),
           function(x, i, j, ... , drop = TRUE)
           {
@@ -89,15 +105,38 @@ setMethod('[', c('GEVAQuantiles', 'ANY', 'ANY', 'ANY'),
           })
 
 # S4 Methods
-setMethod('qindexes', 'GEVAQuantiles', function(object) object@qindexes)
-setMethod('qareasizes', 'GEVAQuantiles', function(object) object@qareasizes)
-setMethod('quantiles', 'GEVAQuantiles', function(object) levels(object))
-setMethod('qcount', 'GEVAQuantiles', function(object) object@qcount)
-setMethod('sv.scores', 'GEVAQuantiles', function(object) object@svscores)
-setMethod('cluster.method', 'GEVAQuantiles', function(object) 'quantiles')
-setMethod('quantiles.method', 'GEVAQuantiles', function(object) object@qmethod)
-setMethod('dim', 'GEVAQuantiles', function(x) dim(sv.scores(x)))
 
+#' @methodsnote (See also the inherited methods from [`GEVAGroupSet-class`])
+
+#' @s4method
+#' @s4accessor
+setMethod('qindexes', 'GEVAQuantiles', function(object) object@qindexes)
+
+#' @s4method
+#' @s4accessor
+setMethod('qareasizes', 'GEVAQuantiles', function(object) object@qareasizes)
+
+
+
+#' @s4method
+#' @s4accessor
+setMethod('qcount', 'GEVAQuantiles', function(object) object@qcount)
+
+#' @s4method
+#' @s4accessor svscores
+setMethod('sv.scores', 'GEVAQuantiles', function(object) object@svscores)
+
+#' @s4method
+setMethod('cluster.method', 'GEVAQuantiles', function(object) 'quantiles')
+
+#' @s4method
+#' @s4accessor qmethod
+setMethod('quantiles.method', 'GEVAQuantiles', function(object) object@qmethod)
+
+#' @category Sub-slot accessors
+
+#' @s4method Gets the unique quantile names
+setMethod('quantiles', 'GEVAQuantiles', function(object) levels(object))
 
 setMethod('classification.table', 'GEVAQuantiles',
           function(object)
@@ -113,8 +152,14 @@ setMethod('classification.table<-', c('GEVAQuantiles', 'data.frame'),
             object
           })
           
+#' @category Dimension accessors
+
+#' @s4method
+setMethod('dim', 'GEVAQuantiles', function(x) dim(sv.scores(x)))
 
 # S3 Methods
+
+#' @s3method Draws the quantile delimiter lines
 lines.GEVAQuantiles <- function(x, ...)
 {
   thres = infolist(x)$thresholds
@@ -129,6 +174,7 @@ lines.GEVAQuantiles <- function(x, ...)
   invisible(FALSE)
 }
 
+#' @s3method
 as.expression.GEVAQuantiles <- function(x, sv, ...)
 {
   parls = analysis.params(x)
@@ -143,6 +189,7 @@ as.expression.GEVAQuantiles <- function(x, sv, ...)
   expr
 }
 
+#' @s3method
 as.SVTable.GEVAQuantiles <- function(x, which=c('sv', 'offsets', 'centroids', 'qindexes'), ..., row.names=names(x))
 {
   which = match.arg(which)

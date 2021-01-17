@@ -12,6 +12,6 @@
 #' @name geva
 NULL
 
-#' @importFrom matrixStats weightedMean weightedMedian weightedSd weightedVar weightedMad
+#' @importFrom matrixStats rowAnys weightedMean weightedMedian weightedSd weightedVar weightedMad
 #' @importFrom fastcluster hclust.vector
 NULL

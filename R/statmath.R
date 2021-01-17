@@ -6,10 +6,10 @@
 # Helper methods for math and statistical calculations
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include matrixhelpers.R
+NULL
 
 # Normalizes the weights so that the values are proportionally distributed between 0 and 1
 normalize.weights <- function(w, by.min=FALSE, na.val=0)
@@ -121,12 +121,12 @@ which.outliers <- function(x, eps=1.1)
 }
 
 # Gets the row indexes where all values are above a cutoff
-which.rows.outside.cutoff <- function(mat, cutoff=0.05, na.val=0)
+which.rows.outside.cutoff <- function(mat, cutoff=0.05, na.val=0, by.any=FALSE)
 {
   mat = as.matrix(mat)
   if (anyNA(mat))
     mat[is.na(mat)] = na.val
-  vinds = which(all.apply(mat, `>`, e2=cutoff))
+  vinds = (if (by.any) which(any.apply(mat, `>`, e2=cutoff)) else which(all.apply(mat, `>`, e2=cutoff)))
   vinds
 }
 

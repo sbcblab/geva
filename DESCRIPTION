@@ -11,6 +11,7 @@ LazyData: true
 Depends: R (>= 3.5.0)
 Imports: dbscan, fastcluster, matrixStats, sp, SearchTrees
 Suggests: AnnotationDbi, DBI, devtools, topGO
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Collate: 
     'stringhelpers.R'
@@ -20,6 +21,7 @@ Collate:
     'asserts.R'
     'usecasechecks.R'
     'plotting.R'
+    'dochelpers.R'
     'generics.R'
     'classhelpers.R'
     'c_SVTable.R'

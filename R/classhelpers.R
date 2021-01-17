@@ -6,8 +6,7 @@
 # Helper methods for class definition and initialization
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 # Returns a named character vector such as c(slotname = slottype)
 # Called only inside 'initialize' generic methods

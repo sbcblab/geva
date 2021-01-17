@@ -6,13 +6,13 @@
 # Functions to calculate quantiles from summarized data
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include c_GEVASummary.R
 #' @include c_GEVAQuantilesAdjusted.R
 #' @include asserts.R
 #' @include vectorhelpers.R
+NULL
 
 # Gets the quantile's label from the given indexes
 qindex2label <- function(si, vi) sprintf("s%sv%s", si, vi)
@@ -225,7 +225,7 @@ get.quantiles.default.classification <- function(gquants)
   selbasal = qinds$V == min(qinds$V)
   qclasstable$basal = ifelse(selbasal, 1L, 0L)
   qclasstable$sparse = ifelse(!selbasal, 1L, 0L)
-  qclasstable$consistent = ifelse(selbasal & !(qnms %in% minqss), 1L, 0L)
+  qclasstable$similar = ifelse(selbasal & !(qnms %in% minqss), 1L, 0L)
   qclasstable = as.matrix(qclasstable)
   attr(qclasstable, 'relevance') = setNames(1L:3L, colnames(qclasstable))
   qclasstable
@@ -256,24 +256,74 @@ generate.quantile.colors <- function(svinds)
 }
 
 #' Returns a vector with the supported methods of quantiles separation
-#' @export
-#' @rdname geva.quantiles
+#' @options [geva.quantiles]
+#' @order 2
+#' @seealso [geva.cluster]
 options.quantiles <- c('range.slice', 'proportional', 'density', 'k.max.sd', 'custom')
 
 
-#' Calculates the quantiles of a SVTable 
+#' @title GEVA Quantiles Detection
 #' 
-#' @param sv SVTable
-#' @param nq.s number of quantiles in S-axis
-#' @param nq.v number of quantiles in V-axis
-#' @param quantile.method method to detect the initial quantile thresholds. Ignored if initial.thresholds are set
-#' @param initial.thresholds named numeric vector with the threshold used for the first quantile
-#' @param comb.score.fn function to merge S and V scores into a single column. prod and mean are some examples
+#' Calculates the quantiles of a [`SVTable-class`] 
+#' 
+#' @param sv a [`SVTable-class`] object (usually [`GEVASummary-class`])
+#' @param quantile.method `character`, method to detect the initial quantile thresholds. Ignored if `initial.thresholds` is specified with no `NA` elements
+#' @param initial.thresholds named `numeric` vector with the threshold that delimits the initial quantile
+#' @param nq.s `integer`, number of quantiles in S-axis (experimental, see `Note')
+#' @param nq.v `integer`, number of quantiles in V-axis (experimental, see `Note')
+#' @param comb.score.fn `function` applied to merge `S` and `V` score columns into a single column. The function must require only one argument of `numeric vector` type and return a single `numeric` value. Examples include `prod` or `mean`
+#' @param ... additional arguments include:
+#' \itemize{
+#' \item{`qslice` : `numeric` (`0` to `1`), the axis fraction used by `"range.slice"` and `"density"` methods (see 'Details'). Default is `0.25`}
+#' \item{`k` : `integer`, neighbor points used by `"density"` and `"k.max.sd"` methods (see 'Details'). Default is `16`}
+#' \item{`verbose` : `logical`, whether to print the current progress. Default is `TRUE`}
+#' }
+#' 
+#' @details
+#' The `quantile.method` defines how the initial quantile (usually the one at the bottom center) is calculated. Each method has a specific way to estimate the first spatial delimiter, as described below: 
+#' \describe{
+#' \item{`"range.slice"` (default)}{Separation is set at the nearest point to a fraction of the spatial range. This fraction can be specified by the `qslice` optional argument (`numeric`, default is 0.25, or 25%);}
+#' \item{`"density"`}{Separation is set at the point with the most proportional density by *k* neighbor points to its current spatial fraction. This method uses the optional arguments `qslice` (`numeric`, default is 0.25, or 25%) for the desired spatial fraction, and `k` (`numeric`, default is `16`) for the number of neighbor points;}
+#' \item{`"k.max.sd"`}{Separation is set at the point with the greatest standard deviation of distance to its *k* neighbor points. The number of neighbor points can be specified by the `k` optional argument (`numeric`, default is `16`);}
+#' \item{`"proportional"`}{Separation is set at the exact axis division so that all quantiles have the size;}
+#' \item{`"custom"`}{Uses the values specified in the `initial.thresholds` argument.}
+#' }
+#' 
+#' A custom initial separation point can be specified in the `initial.thresholds` as a `numeric` vector of two elements, where the first element refers to `S` axis and the second, to `V` axis. If one of the elements is `NA`, the initial quantile is calculated for that axis only. If both values are not `NA`, the quantile separation method is ignored and automatically set to `"custom"`.
+#' 
+#' The `nq.s` and `nq.v` arguments determine the number of quantiles for the `S` and `V` axes, respectively. These parameters can be used to increase the number of possible partitions in the SV space, but their applicability is currently being tested (see `Note').
+#' 
+#' The `comb.score.fn` is a function applied to the partial scores for each SV point to combine them into a single value. The result value is defined as the "quantile score" for a SV point. The function is applied iteratively to two-element `numeric` vectors.
+#' 
+#' @note
+#' Customizing the number of quantiles by `nq.s` and `nq.v` is a **experimental feature** and the remaining analysis steps are mostly based on the default parameters for these arguments. Tests are being conducted to determine this feature's applicability for the next releases.
+#' 
+#' @examples 
+#' ## Quantile detection from a randomly generated input 
+#' 
+#' # Preparing the data
+#' ginput <- geva.ideal.example()      # Generates a random input example
+#' gsummary <- geva.summarize(ginput)  # Summarizes with the default parameters
+#' 
+#' # Default usage
+#' gquants <- geva.quantiles(gsummary) # Detects the quantiles
+#' plot(gquants)                       # Plots the quantiles
+#' 
+#' # Custom initial delimiters
+#' gquants <- geva.quantiles(gsummary,
+#'                           initial.thresholds = c(S=1.00, V=0.5))
+#' plot(gquants)                       # Plots the quantiles
+#' 
+#' # Quantile detection using densities
+#' gquants <- geva.quantiles(gsummary, quantile.method = 'density')
+#' plot(gquants)                       # Plots the quantiles
 #' 
 #' @export
+#' @family geva.cluster
 #' @rdname geva.quantiles
-geva.quantiles <- function(sv, nq.s = 3L, nq.v = 2L, quantile.method = options.quantiles,
-                           initial.thresholds=c(S=NA_real_, V=NA_real_), comb.score.fn = prod, ...)
+#' @order 1
+geva.quantiles <- function(sv, quantile.method = options.quantiles,
+                           initial.thresholds=c(S=NA_real_, V=NA_real_), nq.s = 3L, nq.v = 2L, comb.score.fn = prod, ...)
 {
   if (is(sv, 'GEVAInput')) sv = geva.summarize(sv)
   assert.names.equal(sv, colnames=c('S', 'V'))

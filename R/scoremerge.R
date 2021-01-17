@@ -6,17 +6,13 @@
 # Functions to merge score data from clustered data in GEVA
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include asserts.R
 #' @include clusteringbase.R
 #' @include quantiles.R
 #' @include classhelpers.R
-
-#' GEVA classification score merge
 NULL
-
 
 # Computes the association between a GEVAGroupSet and a GEVAQuantiles
 # A group is associated to a quantile when its centroid is located inside each other's area

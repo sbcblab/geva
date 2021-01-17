@@ -5,23 +5,31 @@
 # Table containing summary (S) and variation (V) of a GEVAInput and a list of GEVAGroupSet for data classification.
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Written by Nunes et al
 
 #' @include c_GEVASummary.R
 #' @include c_GEVAGroupSet.R
 #' @include c_TypedList.R
 #' @include linq.R
+NULL
 
 #' @title GEVA Grouped Summary-Variation Table
 #'
-#' @description The \code{GEVAGroupedSummary} class inherits from \code{GEVASummary}.
+#' @description The \code{GEVAGroupedSummary} class inherits the \code{\linkS4class{GEVASummary}} class and includes group analysis data (\emph{e.g.}, clustering and quantile detection).
 #'
-#' @slot groupsetlist TypedList containing elements of GEVAGroupSet-class
 #'
-#' @name GEVAGroupedSummary-class
-#' @rdname GEVAGroupedSummary-class
-#' @export
+#' @slot sv \code{numeric matrix} composed by two columns: \code{S} (summary) and \code{V} (variation)
+#' \cr (Inherited from \code{\linkS4class{SVTable}})
+#' @slot inputdata GEVAInput-class with the data input
+#' \cr (Inherited from \code{\linkS4class{GEVASummary}})
+#' @slot sv.method Names of the statistical methods used to summarize data
+#' \cr (Inherited from \code{\linkS4class{GEVASummary}})
+#' @slot info list with additional information
+#' \cr (Inherited from \code{\linkS4class{GEVASummary}})
+#'
+#' @slot groupsetlist \code{\linkS4class{TypedList}} of \code{\linkS4class{GEVAGroupSet}} objects
+#'
+#' @declareS4class
 setClass('GEVAGroupedSummary',
          slots = c(
            groupsetlist = 'TypedList'
@@ -46,6 +54,7 @@ setMethod('initialize', 'GEVAGroupedSummary',
           })
 
 # SHOW
+#' @s4method
 setMethod('show', 'GEVAGroupedSummary', function(object)
 {
   callNextMethod(object)
@@ -56,6 +65,7 @@ setMethod('show', 'GEVAGroupedSummary', function(object)
 })
 
 # PLOT
+#' @s4method
 setMethod('plot', c('GEVAGroupedSummary', 'missing'),
           function(x, y, ..., include.groupsets = TRUE)
           {
@@ -79,8 +89,14 @@ setMethod('plot', c('GEVAGroupedSummary', 'missing'),
           })
 
 # S4 METHODS
+
+#' @s4method
+#' @s4accessor groupsetlist
 setMethod('groupsets', 'GEVAGroupedSummary', function(object) object@groupsetlist)
 
+#' @category Sub-slot accessors
+
+#' @s4method Gets the [`GEVAQuantiles-class`], or `NULL` if not present
 setMethod('quantiles', 'GEVAGroupedSummary',
           function(object)
           {
@@ -90,8 +106,12 @@ setMethod('quantiles', 'GEVAGroupedSummary',
             gq
           })
 
+#' @s4method Gets a `character` vector listing the `cluster.method` from each group set
 setMethod('cluster.method', 'GEVAGroupedSummary', function(object) sapply(cluster.method, groupsets(object)))
 
+#' @category Properties
+
+#' @s4method Returns a `list` of analysis parameters passed to [`geva.cluster`] to obtain this object
 setMethod('analysis.params', 'GEVAGroupedSummary', function(gobject)
 {
   parls = callNextMethod(gobject=gobject)
@@ -101,8 +121,10 @@ setMethod('analysis.params', 'GEVAGroupedSummary', function(gobject)
 })
 
 # S3 METHODS
+#' @s3method
 as.matrix.GEVAGroupedSummary <- function(x, ...) sv(x)
 
+#' @s3method
 as.expression.GEVAGroupedSummary <- function(x, ginput, ...)
 {
   parls = analysis.params(x)
@@ -122,6 +144,9 @@ as.expression.GEVAGroupedSummary <- function(x, ginput, ...)
   expr
 }
 
+#' @category Plotting
+
+#' @s3method Draws delimiters within quantiles and convex hulls around the clustered points
 lines.GEVAGroupedSummary <- function(x, ...)
 {
   for (gg in groupsets(x))
@@ -134,6 +159,7 @@ lines.GEVAGroupedSummary <- function(x, ...)
   }
 }
 
+#' @s3method
 points.GEVAGroupedSummary <- function(x, ...)
 {
   for (gg in groupsets(x))

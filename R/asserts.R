@@ -6,12 +6,12 @@
 # Assertion methods to check arguments inside functions
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include callhelpers.R
 #' @include printhelpers.R
 #' @include stringhelpers.R
+NULL
 
 # Base function to assert that the result of calling functions matches the input arguments
 # The 'posscalls' argument must be a list like: list(functionname = "Error message objname %s: expected %s, got %s")

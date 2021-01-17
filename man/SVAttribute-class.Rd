@@ -3,15 +3,46 @@
 \docType{class}
 \name{SVAttribute-class}
 \alias{SVAttribute-class}
+\alias{SVAttribute}
+\alias{SVNumAttribute}
+\alias{SVIntAttribute}
+\alias{svattr,character,character-method}
+\alias{svattr,numeric,numeric-method}
+\alias{svattr,integer,integer-method}
+\alias{summary.SVAttribute}
+\alias{variation.SVAttribute}
 \title{Summary-Variation Attribute Field}
+\usage{
+\S4method{svattr}{character,character}(S, V)
+
+\S4method{svattr}{numeric,numeric}(S, V)
+
+\S4method{svattr}{integer,integer}(S, V)
+
+
+
+
+}
 \description{
-This simple S4 class stores two character slots representing attribute fields for summary and variation.
+This S4 class stores two character slots representing attribute fields for summary and variation. The \code{SVAttribute} class is abstract and must be instantiated as \code{SVChrAttribute} (for \code{character}), \code{SVNumAttribute} (for \code{numeric}), or \code{SVIntAttribute} (for \code{integer}).
 }
 \section{Slots}{
 
 \describe{
-\item{\code{S}}{character or numeric of length one}
+\item{\code{S}}{either \code{character} or \code{numeric} or \code{integer} of length one}
 
-\item{\code{V}}{character or numeric of length one}
+\item{\code{V}}{either \code{character} or \code{numeric} or \code{integer} of length one}
 }}
+
+\note{
+The slots \code{S} and \code{V} must be of the same class (either \code{character}, \code{numeric}, or \code{integer}).
+}
+\section{Methods}{
+
+\cr\strong{Slot accessors}
+\describe{
+\item{\code{summary(object, ...)}}{Gets the \code{value} from the \code{S} slot}
+\item{\code{variation(object, ...)}}{Gets the \code{value} from the \code{V} slot}
+}
+}
 

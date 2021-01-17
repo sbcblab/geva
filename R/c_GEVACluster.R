@@ -6,22 +6,34 @@
 # Represents classification data for GEVA summaries separated by clusters
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
-
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include c_GEVAGroupSet.R
 #' @include usecasechecks.R
+NULL
 
 #' @title GEVA Clustering Results
 #'
-#' @description The \code{GEVACluster} class inherits the grouping properties from \code{GEVAGroupSet}.
+#' @description The \code{GEVACluster} class represents the classification results from a cluster analysis. For each probe/gene, there is a assigned cluster among the \emph{g} defined clusters.
+#' 
+#' This class inherits from \code{\linkS4class{GEVAGroupSet}}.
 #'
-#' @slot cluster.method Method used to obtain the clustering results
+#' @slot grouping \code{factor} (\emph{m} elements, \emph{g} levels), cluster assignment for each gene/probe
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot scores \code{numeric} vector (\emph{m} elements) comprising a score value for each cluster assignment
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot ftable \code{data.frame} (\emph{m} lines) with additional cluster assignment features
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot centroids \code{numeric SVTable} (\emph{g} lines) with the S and V centroid coordinates for each cluster
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot offsets \code{numeric SVTable} (\emph{m} lines) with the S and V coordinate offsets each gene/probe from its cluster centroid
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
+#' @slot info \code{list} of supplementary information
+#' \cr (Inherited from \code{\linkS4class{GEVAGroupSet}})
 #'
-#' @name GEVACluster-class
-#' @rdname GEVACluster-class
-#' @export
+#' @slot cluster.method \code{character}, method used in the cluster analysis (see \code{\link{geva.cluster}})
+#'
+#' @declareS4class
 setClass('GEVACluster',
          slots = c(
            cluster.method = 'character'
@@ -43,6 +55,7 @@ setMethod('initialize', 'GEVACluster',
 )
 
 # SHOW
+#' @s4method
 setMethod('show', 'GEVACluster',
           function(object)
           {
@@ -53,6 +66,9 @@ setMethod('show', 'GEVACluster',
           })
 
 # PLOT
+
+#' @category Plotting
+#' @s4method
 setMethod('plot', c('GEVACluster', 'SVTable'),
           function(x, y, ...)
           {
@@ -60,9 +76,19 @@ setMethod('plot', c('GEVACluster', 'SVTable'),
           })
 
 # S4 Methods
+
+#' @methodsnote (See also the inherited methods from [`GEVAGroupSet-class`])
+
+#' @s4method
+#' @s4accessor
 setMethod('cluster.method', 'GEVACluster', function(object) object@cluster.method)
 
+
 # S3 Methods
+
+#' @category Plotting
+
+#' @s3method Draws convex hulls around the clustered points
 lines.GEVACluster <- function(x, ...)
 {
   do.call(hull.lines, list.merge(list(x=sv(x), cl=groups(x), col=color.values(x)), list(...)))

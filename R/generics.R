@@ -7,8 +7,10 @@
 # Common generic methods used among declared classes
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
+
+#' @include dochelpers.R
+NULL
 
 # === S4 ===
 

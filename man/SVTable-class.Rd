@@ -3,13 +3,99 @@
 \docType{class}
 \name{SVTable-class}
 \alias{SVTable-class}
+\alias{show,SVTable-method}
+\alias{plot,SVTable,missing-method}
+\alias{[,SVTable,ANY,ANY,ANY-method}
+\alias{sv,SVTable-method}
+\alias{dim,SVTable-method}
+\alias{dimnames,SVTable-method}
+\alias{names,SVTable-method}
+\alias{$,SVTable-method}
+\alias{sv.data,SVTable-method}
+\alias{as.matrix.SVTable}
+\alias{as.data.frame.SVTable}
+\alias{summary.SVTable}
+\alias{variation.SVTable}
+\alias{head.SVTable}
+\alias{is.na.SVTable}
+\alias{as.SVTable.matrix}
+\alias{as.SVTable.data.frame}
+\alias{as.SVTable.SVTable}
+\alias{points.SVTable}
+\alias{with.SVTable}
+\alias{format.SVTable}
 \title{Summary-Variation Table}
+\usage{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 \description{
-The \code{SVTable} class stores a \code{matrix} composed by two columns: \code{summary} and \code{variation}.
+The \code{SVTable} class stores a \code{matrix} composed by two columns: \code{S} (for \emph{summary}) and \code{V} (for \emph{variation}).
+
+This class is inherited by \code{\linkS4class{GEVASummary}}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{sv}}{matrix composed by two columns: summary and variation}
+\item{\code{sv}}{\code{matrix} composed by two columns: \code{S} (summary) and \code{V} (variation)}
 }}
+
+\note{
+The matrix from \code{sv} slot can \code{numeric}, \code{character}, or any other supported type by \code{matrix}. The same slot from \code{\linkS4class{GEVASummary}}, however, is always a numeric \code{matrix}.
+}
+\section{Methods}{
+
+\cr\strong{Dimension accessors}
+\describe{
+\item{\code{dim(x)}}{Gets the dimensions from the \code{sv} slot}
+\item{\code{dimnames(x)}}{Gets a \code{list} with the row and column names from the \code{sv} slot. \cr Individual dimension names can also be accessed through \code{rownames} and \code{colnames}}
+}
+\cr\strong{Plotting}
+\describe{
+\item{\code{points(x, which, ..., classif)}}{Draws the SV points in the plot}
+}
+\cr\strong{Slot accessors}
+\describe{
+\item{\code{sv(object)}}{Gets the \code{matrix} from the \code{sv} slot}
+}
+}
 

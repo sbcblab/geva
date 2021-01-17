@@ -6,11 +6,11 @@
 # Helper methods for function manipulation
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include callhelpers.R
 #' @include stringhelpers.R
+NULL
 
 # Gets the variables at the left, right, or both sides of a formula
 vars.formula <- function(formula, side=c('both', 'left', 'right'), unique=TRUE)

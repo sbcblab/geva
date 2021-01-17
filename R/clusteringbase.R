@@ -6,24 +6,26 @@
 # Essential functions to perform clustering on GEVA summarized data
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include linq.R
 #' @include summarization.R
 #' @include c_GEVAGroupedSummary.R
-
+NULL
 
 # Supported clustering methods
-#' @export
+#' @options [geva.cluster]
+#' @order 4
 options.cluster.method <- c('hierarchical', 'density', 'quantiles')
 
 # Cluster score calculation methods
-#' @export
+#' @options [geva.cluster]
+#' @order 5
 options.cl.score.method <- c('auto', 'hclust.height', 'density', 'centroid')
 
 # Distance options
-#' @export
+#' @options [geva.cluster]
+#' @order 6
 options.distance <- c('euclidean', 'manhattan')
 
 
@@ -182,20 +184,75 @@ get.distance.method.character <- function(method=options.distance)
   fn
 }
 
-# Performs the cluster analysis of a GEVASummary object
+#' @title GEVA Cluster Analysis
+#' 
+#' @description Performs a cluster analysis from summarized data.
+#' 
+#' @param sv a `numeric` [`SVTable-class`] object (usually [`GEVASummary-class`])
+#' @param cluster.method `character`, one of the main grouping methods (see `Details')
+#' @param cl.score.method `character`, method used to calculate the cluster scores for each point. Ignored if `cluster.method` is `quantiles`
+#' @param resolution `numeric` (`0` to `1`), used as a "zoom" parameter for cluster detection. A zero value returns the minimum number of clusters that can detected by the `cluster.method`, while `1` returns the maximum amount of clusters. Ignored if `cluster.method` is `quantiles`
+#' @param distance.method `character`, two-point distance calculation method. Options are `"eucludian"` or `"manhattan"` distances
+#' @param ... further arguments passed to [`geva.dcluster()`], [`geva.hcluster()`], or [`geva.quantiles()`].
+#' \cr In addition, the following arguments are accepted:
+#' \itemize{
+#' \item{`eps` : `numeric`, defines the *epsilon* coefficient for density clustering (see 'Details')}
+#' \item{`mink.p` : `numeric`, parameter for the Minkowsky metric used in hierarchial clustering. Used as the `p` argument for [fastcluster::hclust.vector()]}
+#' \item{`verbose` : `logical`, whether to print the current progress (default is `TRUE`)}
+#' }
+#' @param grouped.return `logical`, whether to concatenate the clustered and summarized data into a single object
+#' 
+#' @return This function produces a [`GEVAGroupSet-class`]-derived object, particularly a [`GEVACluster-class`] for the `"hierarchical"` and `"density"` cluster methods or a [`GEVAQuantiles-class`] for the `"quantiles"` method.
+#' 
+#' However, if `grouped.return` is `TRUE` and `sv` is a [`GEVASummary-class`] object, the produced `GEVAGroupSet` data will be concatenated to the input and returned as a [`GEVAGroupedSummary-class`]
+#' 
+#' @details
+#' The `cluster.method` determines which grouping subroutine is used to classify the summarized data points based on distance and partitioning. Each option has their equivalent functions that can be called directly: `"density"` uses [`geva.dcluster()`]; `"hierarchical"` uses [`geva.hcluster()`]; and `"quantiles"` calls [`geva.quantiles()`]. However, this wrapper function can also be used to join `GEVASummary` and `GEVAGroupSet` objects into a single `GEVAGroupedSummary` object by setting `grouped.return` to `TRUE`.
+#' 
+#' The `cl.score.method` argument defines how scores are calculated for each SV point (row in `sv`) that was assigned to a cluster, (*i.e.*, excluding non-clustered points). If specified as `"auto"`, the parameter will be selected based on the `cluster.method`: `"density"` (rate of neighbor points) for the density method; and `"hclust.height"` (local hierarchy height) for the hierarchical method. The `"centroid"` method calculates the scores based on the proportional distance between each point to its cluster's centroid. Note that the `cl.score.method` argument is ignored if `cluster.method` is `"quantiles"`, since quantile scores are always based on their local centroid distances.
+#' 
+#' The `resolution` value is a more accessible way to define the cluster separation threshold used in density and hierarchical clustering methods. Density clusters uses an *epsilon* value that represents the minimum distance of separation, whereas hierarchical clusters are defined by cutting the hierarchy tree wherever there is a minimum distance between two hierarchies. In this sense, `resolution` translates a value between `0` and `1` to propotional value for *epsilon* or hierarchical height (depending on the `cluster.method`) that would result in the least number of possible clusters for `0` and the highest number for `1`. Nevertheless, if *epsilon* is specified as `eps` in the optinal arguments, its value is used and `resolution` is ignored.
+#' 
+#' @examples
+#' ## Cluster analysis from a randomly generated input 
+#' 
+#' # Preparing the data
+#' ginput <- geva.ideal.example()      # Generates a random input example
+#' gsummary <- geva.summarize(ginput)  # Summarizes with the default parameters
+#' 
+#' # Hierarchical clustering
+#' gclust <- geva.cluster(gsummary, cluster.method="hierarchical")
+#' plot(gclust)
+#' 
+#' # Density clustering
+#' gclust <- geva.cluster(gsummary, cluster.method="density")
+#' plot(gclust)
+#' 
+#' # Density clustering with slightly more resolution
+#' gclust <- geva.cluster(gsummary,
+#'                        cluster.method="density",
+#'                        resolution=0.35)
+#' plot(gclust)
+#' 
 #' @export
-geva.cluster <- function(sv, cluster.method=options.cluster.method, cl.score.method=options.cl.score.method, resolution=0.3, ..., grouped.return=FALSE)
+#' @family geva.cluster
+#' @rdname geva.cluster
+#' @order 1
+geva.cluster <- function(sv, cluster.method=options.cluster.method, cl.score.method=options.cl.score.method, resolution=0.3, distance.method=options.distance, ..., grouped.return=FALSE)
 {
-  cluster.method = assert.choices(cluster.method)
+  cluster.method = match.arg(cluster.method)
+  distance.method = match.arg(distance.method)
   if (inherits(sv, 'GEVAInput'))
   {
     sv = geva.summarize(sv, ...)
   }
   argls = list(...)
   gclust = switch(cluster.method,
-                  density = geva.dcluster(sv, resolution=resolution, cl.score.method=cl.score.method, ...),
-                  hierarchical = geva.hcluster(sv, resolution=resolution, cl.score.method=cl.score.method, ...),
-                  quantiles = geva.quantiles(sv, ...)
+                  density = geva.dcluster(sv, resolution=resolution, cl.score.method=cl.score.method,
+                                          distance.method=distance.method, ...),
+                  hierarchical = geva.hcluster(sv, resolution=resolution, cl.score.method=cl.score.method,
+                                               distance.method=distance.method, ...),
+                  quantiles = geva.quantiles(sv, distance.method=distance.method, ...)
                   )
   if (grouped.return && inherits(sv, 'GEVASummary'))
   {

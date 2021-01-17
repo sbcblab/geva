@@ -6,26 +6,24 @@
 # Represents classification data for GEVA summaries
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 
 #' @include c_SVTable.R
+NULL
 
 #' @title GEVA Grouping Results
 #'
-#' @description The \code{GEVAGroupSet} class stores a factor that confers the grouping of summary/variation (SV) data.
+#' @description The \code{GEVAGroupSet} class represents the classification of summarized values from a \code{\linkS4class{SVTable}}, where each gene/probe has one assigned group among \code{g} defined groups. This is an abstract class. Inherits the \code{\linkS4class{GEVACluster}} and \code{\linkS4class{GEVAQuantiles}} classes.
 #'
-#' @slot grouping factor used to group genes or probes
-#' @slot scores numeric vector with grouping scores
-#' @slot ftable data.frame with additional information related to the grouped features (genes or probes)
-#' @slot centroids SVTable describing the position of centroids
-#' @slot offsets SVTable with distances between the centroids and SV data
-#' @slot info list with additional information
+#' @slot grouping \code{factor} (\emph{m} elements, \emph{g} levels) used to group the genes/probes
+#' @slot scores \code{numeric} vector (\emph{m} elements) with the assigned grouping scores for each gene/probe
+#' @slot ftable \code{data.frame} (\emph{m} lines) with additional grouping features
+#' @slot centroids \code{numeric SVTable} (\emph{g} lines) with the S and V centroid coordinates for each group
+#' @slot offsets \code{numeric SVTable} (\emph{m} lines) with the S and V coordinate offsets each gene/probe from its group centroid
+#' @slot info \code{list} of additional information
 #'
-#' @name GEVAGroupSet-class
-#' @rdname GEVAGroupSet-class
-#' @export
+#' @declareS4class
 setClass('GEVAGroupSet',
          slots = c(
            grouping = 'factor',
@@ -74,6 +72,8 @@ setMethod('show', 'GEVAGroupSet',
           })
 
 # PLOT
+
+#' @s4method
 setMethod('plot', c('GEVAGroupSet', 'missing'),
           function(x, y, ...)
           {
@@ -81,6 +81,7 @@ setMethod('plot', c('GEVAGroupSet', 'missing'),
             plot(x, y=svdata, ...)
           })
 
+#' @s4method
 setMethod('plot', c('GEVAGroupSet', 'SVTable'),
           function(x, y, ...)
           {
@@ -91,9 +92,11 @@ setMethod('plot', c('GEVAGroupSet', 'SVTable'),
             call.plot(svdata, ..., defargs=defargs)
           })
 
+#' @s4method
 setMethod('plot', c('SVTable', 'GEVAGroupSet'),
           function(x, y, ...) plot(y, x, ...))
 
+#' @s4method
 setMethod('plot', c('GEVAGroupSet', 'GEVAGroupSet'),
           function(x, y, ...) 
           {
@@ -106,30 +109,51 @@ setMethod('plot', c('GEVAGroupSet', 'GEVAGroupSet'),
           })
 
 # S4 Methods
+
+#' @s4method
+#' @s4accessor
 setMethod('groups', 'GEVAGroupSet', function(object) object@grouping)
+
+#' @s4method
+#' @s4accessor
 setMethod('centroids', 'GEVAGroupSet', function(object) object@centroids)
+
+#' @s4method
+#' @s4accessor
 setMethod('offsets', 'GEVAGroupSet', function(object) object@offsets)
 
+
+#' @s4method 
 setMethod('names', 'GEVAGroupSet', function(x) names(scores(x)))
 
+#' @s4method
+#' @s4accessor
+#' If `scores` is a group name, returns only the scores from this group
 setMethod('scores', c('GEVAGroupSet', 'missing'), function(object, group) object@scores)
+
+#' @s4method
 setMethod('scores', c('GEVAGroupSet', 'character'), function(object, group) object@scores[groups(object) %in% group])
 
-
+#' @s4method
+#' @s4accessor info
+#' If \code{field} is a \code{character}, returns the element with the matching name (\code{infolist(object)$<field name>})
 setMethod('infolist', c('GEVAGroupSet', 'missing'), function(object, field, ...) object@info )
+
+#' @s4method
 setMethod('infolist', c('GEVAGroupSet', 'character'), function(object, field, ...) getElement(object@info, field) )
+
+#' @s4method
+#' @s4accessor info
 setMethod('infolist<-', c('GEVAGroupSet', 'list'), function(object, value) { object@info = value; object })
 
+#' @s4method
+#' @s4accessor ftable
 setMethod('featureTable', 'GEVAGroupSet', function(object) object@ftable)
 
-setMethod('sv.data', 'GEVAGroupSet',
-          function(object)
-          {
-            mcentoffs = sv(object)
-            mcentoffs = svtable(mcentoffs[,1], mcentoffs[,2], names(scores(object)))
-            mcentoffs
-          })
 
+#' @category Sub-slot accessors
+
+#' @s4method Returns the `numeric matrix` in the `SVTable` from `sv.data(object)`
 setMethod('sv', 'GEVAGroupSet',
           function(object) 
           {
@@ -142,9 +166,21 @@ setMethod('sv', 'GEVAGroupSet',
             mcentoffs
           })
 
+#' @s4method Returns a `SVTable` with the source SV coordinates
+setMethod('sv.data', 'GEVAGroupSet',
+          function(object)
+          {
+            mcentoffs = sv(object)
+            mcentoffs = svtable(mcentoffs[,1], mcentoffs[,2], names(scores(object)))
+            mcentoffs
+          })
+
+#' @s4method
 setMethod('cluster.method', 'GEVAGroupSet', function(object) NA_character_ )
 
+#' @s4method
 setMethod('classification.table', 'GEVAGroupSet', function(object) infolist(object)$classification.table  )
+#' @s4method
 setMethod('classification.table<-', c('GEVAGroupSet', 'data.frame'),
           function(object, value)
           {
@@ -152,18 +188,27 @@ setMethod('classification.table<-', c('GEVAGroupSet', 'data.frame'),
             object
           })
 
+#' @category Properties
+
+#' @s4method Returns a `list` of analysis parameters passed to [`geva.cluster`] to obtain this object
 setMethod('analysis.params', 'GEVAGroupSet', function(gobject)
   list.merge(list(cluster.method=cluster.method(gobject)), infolist(gobject, 'analysis.params')))
   
 # S3 Methods
 
+#' @s3method
 levels.GEVAGroupSet <- function(x) levels(groups(x))
 
+#' @s3method
 as.data.frame.GEVAGroupSet <- function(x, row.names=names(x), ...)
 {
   data.frame(groups=groups(x), scores=scores(x), row.names = row.names)
 }
 
+#' @category Plotting
+
+#' @s3method Gets the colors associated to the grouped data points. If not present, generates random group colors.
+#' \cr If `point.col` is a single `character` or an vector of the same length of data points, adjusts the color values to web RGBA
 color.values.GEVAGroupSet <- function(x, point.col=NULL, ...)
 {
   if (!is.null(point.col))
@@ -186,11 +231,13 @@ color.values.GEVAGroupSet <- function(x, point.col=NULL, ...)
   clrs
 }
 
+#' @s3method Draws the grouped points
 points.GEVAGroupSet <- function(x, ...)
 {
   call.plot(sv(x), ..., defargs = list(col=color.values(x, ...)), plotfn = points.default)
 }
 
+#' @s3method
 as.expression.GEVAGroupSet <- function(x, sv, ...)
 {
   parls = analysis.params(x)
@@ -204,6 +251,7 @@ as.expression.GEVAGroupSet <- function(x, sv, ...)
   expr
 }
 
+#' @s3method
 as.SVTable.GEVAGroupSet <- function(x, which=c('sv', 'offsets', 'centroids'), ...)
 {
   which = match.arg(which)

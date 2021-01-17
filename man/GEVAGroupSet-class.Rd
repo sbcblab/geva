@@ -3,23 +3,130 @@
 \docType{class}
 \name{GEVAGroupSet-class}
 \alias{GEVAGroupSet-class}
+\alias{plot,GEVAGroupSet,missing-method}
+\alias{plot,GEVAGroupSet,SVTable-method}
+\alias{plot,SVTable,GEVAGroupSet-method}
+\alias{plot,GEVAGroupSet,GEVAGroupSet-method}
+\alias{groups,GEVAGroupSet-method}
+\alias{centroids,GEVAGroupSet-method}
+\alias{offsets,GEVAGroupSet-method}
+\alias{names,GEVAGroupSet-method}
+\alias{scores,GEVAGroupSet,missing-method}
+\alias{scores,GEVAGroupSet,character-method}
+\alias{infolist,GEVAGroupSet,missing-method}
+\alias{infolist,GEVAGroupSet,character-method}
+\alias{infolist<-,GEVAGroupSet,list-method}
+\alias{featureTable,GEVAGroupSet-method}
+\alias{sv,GEVAGroupSet-method}
+\alias{sv.data,GEVAGroupSet-method}
+\alias{cluster.method,GEVAGroupSet-method}
+\alias{classification.table,GEVAGroupSet-method}
+\alias{classification.table<-,GEVAGroupSet,data.frame-method}
+\alias{analysis.params,GEVAGroupSet-method}
+\alias{levels.GEVAGroupSet}
+\alias{as.data.frame.GEVAGroupSet}
+\alias{color.values.GEVAGroupSet}
+\alias{points.GEVAGroupSet}
+\alias{as.expression.GEVAGroupSet}
+\alias{as.SVTable.GEVAGroupSet}
 \title{GEVA Grouping Results}
+\usage{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 \description{
-The \code{GEVAGroupSet} class stores a factor that confers the grouping of summary/variation (SV) data.
+The \code{GEVAGroupSet} class represents the classification of summarized values from a \code{\linkS4class{SVTable}}, where each gene/probe has one assigned group among \code{g} defined groups. This is an abstract class. Inherits the \code{\linkS4class{GEVACluster}} and \code{\linkS4class{GEVAQuantiles}} classes.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{grouping}}{factor used to group genes or probes}
+\item{\code{grouping}}{\code{factor} (\emph{m} elements, \emph{g} levels) used to group the genes/probes}
 
-\item{\code{scores}}{numeric vector with grouping scores}
+\item{\code{scores}}{\code{numeric} vector (\emph{m} elements) with the assigned grouping scores for each gene/probe}
 
-\item{\code{ftable}}{data.frame with additional information related to the grouped features (genes or probes)}
+\item{\code{ftable}}{\code{data.frame} (\emph{m} lines) with additional grouping features}
 
-\item{\code{centroids}}{SVTable describing the position of centroids}
+\item{\code{centroids}}{\code{numeric SVTable} (\emph{g} lines) with the S and V centroid coordinates for each group}
 
-\item{\code{offsets}}{SVTable with distances between the centroids and SV data}
+\item{\code{offsets}}{\code{numeric SVTable} (\emph{m} lines) with the S and V coordinate offsets each gene/probe from its group centroid}
 
-\item{\code{info}}{list with additional information}
+\item{\code{info}}{\code{list} of additional information}
 }}
+
+\section{Methods}{
+
+\describe{
+\item{\code{sv(object)}}{Returns the \verb{numeric matrix} in the \code{SVTable} from \code{sv.data(object)}}
+}
+\cr\strong{Plotting}
+\describe{
+\item{\code{color.values(x, point.col = NULL, ...)}}{Gets the colors associated to the grouped data points. If not present, generates random group colors.
+\cr If \code{point.col} is a single \code{character} or an vector of the same length of data points, adjusts the color values to web RGBA}
+\item{\code{points(x, which, ..., classif)}}{Draws the grouped points}
+}
+\cr\strong{Properties}
+\describe{
+\item{\code{analysis.params(gobject)}}{Returns a \code{list} of analysis parameters passed to \code{\link{geva.cluster}} to obtain this object}
+}
+\cr\strong{Slot accessors}
+\describe{
+\item{\code{centroids(object)}}{Gets the \code{SVTable} from the \code{centroids} slot}
+\item{\code{featureTable(object)}}{Gets the \code{data.frame} from the \code{ftable} slot}
+\item{\code{groups(object)}}{Gets the \code{value} from the \code{groups} slot}
+\item{\code{infolist(object, field, ...)}}{Gets the \code{list} from the \code{info} slot. \cr If \code{field} is a \code{character}, returns the element with the matching name (\code{infolist(object)$<field name>})}
+\item{\code{infolist(object) <- value}}{Sets a value to the \code{info} slot}
+\item{\code{offsets(object)}}{Gets the \code{SVTable} from the \code{offsets} slot}
+\item{\code{scores(object, group)}}{Gets the \code{value} from the \code{If} slot. \code{scores} is a group name, returns only the scores from this group}
+\item{\code{sv.data(object)}}{Returns a \code{SVTable} with the source SV coordinates}
+}
+}
 

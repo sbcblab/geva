@@ -3,7 +3,80 @@
 \docType{class}
 \name{GEVAInput-class}
 \alias{GEVAInput-class}
+\alias{show,GEVAInput-method}
+\alias{[,GEVAInput,ANY,ANY,ANY-method}
+\alias{plot,GEVAInput,missing-method}
+\alias{inputdata,GEVAInput-method}
+\alias{inputvalues,GEVAInput-method}
+\alias{inputweights,GEVAInput,missing-method}
+\alias{inputweights,GEVAInput,logical-method}
+\alias{featureTable,GEVAInput-method}
+\alias{featureTable<-,GEVAInput,data.frame-method}
+\alias{infolist,GEVAInput,missing-method}
+\alias{infolist,GEVAInput,character-method}
+\alias{infolist<-,GEVAInput,list-method}
+\alias{factors,GEVAInput-method}
+\alias{factors<-,GEVAInput,factor-method}
+\alias{factors<-,GEVAInput,character-method}
+\alias{dim,GEVAInput-method}
+\alias{dimnames,GEVAInput-method}
+\alias{dimnames<-,GEVAInput,list-method}
+\alias{inputnames,GEVAInput-method}
+\alias{names,GEVAInput-method}
+\alias{analysis.params,GEVAInput-method}
+\alias{levels.GEVAInput}
+\alias{head.GEVAInput}
+\alias{as.array.GEVAInput}
 \title{GEVA Input Data}
+\usage{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 \description{
 The \code{GEVAInput} class contains the initial data for \code{GEVA} usage.
 It stores numeric matrices of \emph{logFC} values from differential expression comparison results. Options for calculations and summarizing are also included.
@@ -11,14 +84,43 @@ It stores numeric matrices of \emph{logFC} values from differential expression c
 \section{Slots}{
 
 \describe{
-\item{\code{values}}{numeric matrix (m*n) of log-ratio values, usually \emph{logFC}}
+\item{\code{values}}{\verb{numeric matrix} (\emph{m*n}) of log-ratio values, usually \emph{logFC}}
 
-\item{\code{weights}}{numeric matrix (m*n) of weighted values. If not defined, all weight values are equal to 1}
+\item{\code{weights}}{\verb{numeric matrix} (\emph{m*n}) of weighted values. If not defined, all weight values are equal to 1}
 
-\item{\code{factors}}{factor representing the grouping of the n columns. If not defined, all factors are equal to NA}
+\item{\code{factors}}{\code{factor} (\emph{n} elements) representing the grouping of the n columns. If not defined, all factors are equal to \code{NA}}
 
-\item{\code{ftable}}{data.frame with m rows containing attribute columns associated to the features (e.g. probes or genes)}
+\item{\code{ftable}}{\code{data.frame} with \emph{m} rows containing attribute columns associated to the features (\emph{e.g.}, probes or genes)}
 
-\item{\code{info}}{list containg additional information included in the input}
+\item{\code{info}}{\code{list} of supplementary information related to the input}
 }}
+
+\section{Methods}{
+
+\cr\strong{Dimension accessors}
+\describe{
+\item{\code{dim(x)}}{Gets the dimensions defined for both matrices in \code{values} and \code{weights} slots}
+\item{\code{dimnames(x)}}{Gets a \code{list} with the row and column names. \cr Individual dimension names can also be accessed through \code{rownames} and \code{colnames}}
+\item{\code{dimnames(x) <- value}}{Sets the \code{list} with the row and column names. \cr Individual dimension names can also be set using \code{rownames<-} and \code{colnames<-}}
+}
+\cr\strong{Properties}
+\describe{
+\item{\code{analysis.params(gobject)}}{Returns a \code{list} of analysis parameters passed to \code{\link{geva.merge.input}} or \code{\link{geva.read.tables}} to obtain this object}
+}
+\cr\strong{Slot accessors}
+\describe{
+\item{\code{factors(object)}}{Gets the \code{factor} from the \code{factors} slot}
+\item{\code{factors(object) <- value}}{Sets a value to the \code{factors} slot}
+\item{\code{featureTable(object)}}{Gets the \code{data.frame} from the \code{ftable} slot}
+\item{\code{featureTable(object) <- value}}{Sets a value to the \code{ftable} slot}
+\item{\code{infolist(object, field = NULL, ...)}}{Gets the \code{list} from the \code{info} slot. \cr If \code{field} is a \code{character}, returns the element with the matching name (\code{infolist(object)$<field name>})}
+\item{\code{infolist(object) <- value}}{Sets a value to the \code{info} slot}
+\item{\code{inputvalues(object)}}{Gets the \code{matrix} from the \code{values} slot}
+\item{\code{inputweights(object, normalized = FALSE)}}{Gets the \code{matrix} from the \code{weights} slot. \cr If \code{normalized} is \code{TRUE}, returns the weights matrix in the normalized form}
+}
+\cr\strong{Sub-slot accessors}
+\describe{
+\item{\code{inputnames(object)}}{Gets the input column names (same as \code{colnames(object)})}
+}
+}
 

@@ -6,27 +6,27 @@
 # Table containing summary (S) and variation (V) of a GEVAInput
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include c_SVTable.R
 #' @include c_GEVAInput.R
 #' @include c_SVAttribute.R
 #' @include c_TypedList.R
+NULL
 
 #' @title GEVA Summary-Variation Table
 #'
 #' @description The \code{GEVASummary} class represents the calculation results for summary and variation from a \code{GEVAInput}.
+#' 
 #' This class inherits from \code{SVTable}.
 #'
+#' @slot sv \code{numeric matrix} composed by two columns: \code{S} (summary) and \code{V} (variation)
+#' \cr (Inherited from \code{\linkS4class{SVTable}})
 #' @slot inputdata GEVAInput-class with the data input
 #' @slot sv.method Names of the statistical methods used to summarize data
 #' @slot info list with additional information
 #' 
-#'
-#' @name GEVASummary-class
-#' @rdname GEVASummary-class
-#' @export
+#' @declareS4class
 setClass('GEVASummary',
          slots = c(
            inputdata = 'GEVAInput',
@@ -53,6 +53,7 @@ setMethod('initialize', 'GEVASummary',
 )
 
 # SHOW
+#' @s4method
 setMethod('show', 'GEVASummary',
           function(object)
           {
@@ -66,6 +67,7 @@ setMethod('show', 'GEVASummary',
           })
 
 # PLOT
+#' @s4method
 setMethod('plot', c('GEVASummary', 'missing'),
           function(x, y, ...)
           {
@@ -77,15 +79,37 @@ setMethod('plot', c('GEVASummary', 'missing'),
           })
 
 # S4 Methods
+
+#' @methodsnote (See also the inherited methods from [`SVTable-class`]
+
+#' @s4method
+#' @s4accessor
 setMethod('inputdata', 'GEVASummary', function(object) object@inputdata)
+
+#' @s4accessor
+setMethod('sv.method', 'GEVASummary', function(gevasummary) gevasummary@sv.method)
+
+#' @category Sub-slot accessors
+
+#' @s4method Gets the `matrix` from the `values` slot in the internal [`GEVAInput-class`]
 setMethod('inputvalues', 'GEVASummary', function(object) inputvalues(inputdata(object)))
+
+#' @s4method Gets the `matrix` from the `weights` slot in the internal [`GEVAInput-class`]
 setMethod('inputweights', c('GEVASummary', 'logical'), function(object, normalized) inputweights(inputdata(object), normalized))
+
+#' @s4method
 setMethod('inputweights', c('GEVASummary', 'missing'), function(object, normalized=FALSE) inputweights(inputdata(object)))
 
+#' @s4method
 setMethod('inputnames', 'GEVASummary', function(object) names(inputdata(object)))
+
+#' @s4method Gets the `data.frame` from the `ftable` slot in the internal [`GEVAInput-class`]
 setMethod('featureTable', 'GEVASummary', function(object) featureTable(inputdata(object)))
+
+#' @s4method Gets the `factor` defined in the `factors` slot in the internal [`GEVAInput-class`]
 setMethod('factors', 'GEVASummary', function(object) factors(inputdata(object)))
 
+#' @s4method Sets the value to the `factor` slot in the internal [`GEVAInput-class`]
 setMethod('factors<-', c('GEVASummary', 'factor'),
           function(object, value)
           {
@@ -95,8 +119,11 @@ setMethod('factors<-', c('GEVASummary', 'factor'),
             object
           })
 
+#' @s4method
 setMethod('factors<-', c('GEVASummary', 'character'), function(object, value) { factors(object) = as.factor(value); object })
 
+#' @s4method Gets the `list` from the `info` slot.
+#' \cr If `recursive` is `TRUE`, appends the contents from the `info` slot in the internal [`GEVAInput-class`]
 setMethod('infolist', c('GEVASummary', 'missing'),
           function(object, field=NULL, recursive = FALSE, ...)
           {
@@ -104,21 +131,25 @@ setMethod('infolist', c('GEVASummary', 'missing'),
             infols = unlist(list(object@info, infolist(inputdata(object))), recursive = FALSE)
             infols
           })
+
+#' @s4method
 setMethod('infolist<-', c('GEVASummary', 'list'), function(object, value) { object@info = value; object })
 
-setMethod('featureTable', 'GEVASummary', function(object) featureTable(inputdata(object)))
-
-setMethod('sv.method', 'GEVASummary', function(gevasummary) gevasummary@sv.method)
-
+#' @s4method
 setMethod('quantiles', 'GEVASummary', function(object) geva.quantiles(object))
 
+#' @s4method
 setMethod('groupsets', 'GEVASummary', function(object) typed.list(elem.class = 'GEVAGroupSet') )
+#' @s4method
 setMethod('groupsets<-', c('GEVASummary', 'TypedList'), function(object, value)
 {
   gs2 = promote.class(object, 'GEVAGroupedSummary', groupsetlist=value)
   gs2
 })
 
+#' @category Properties
+
+#' @s4method Returns a `list` of analysis parameters passed to [`geva.summarize`] to obtain this object
 setMethod('analysis.params', 'GEVASummary', function(gobject)
 {
   svmets = sv.method(gobject)
@@ -128,11 +159,17 @@ setMethod('analysis.params', 'GEVASummary', function(gobject)
 
 
 # S3 Methods
+
+#' @s3method Gets a `character` for the summarization method name
 get.summary.method.GEVASummary <- function(gevasummary) get.summary.method(sv.method(gevasummary)$S)
+
+#' @s3method Gets a `character` for the variation calculation method name
 get.variation.method.GEVASummary <- function(gevasummary) get.variation.method(sv.method(gevasummary)$V)
 
+#' @s3method
 as.matrix.GEVASummary <- function(x, ...) sv(x)
 
+#' @s3method
 as.expression.GEVASummary <- function(x, ginput, ...)
 {
   parls = analysis.params(x)

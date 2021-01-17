@@ -3,18 +3,111 @@
 \docType{class}
 \name{GEVASummary-class}
 \alias{GEVASummary-class}
+\alias{show,GEVASummary-method}
+\alias{plot,GEVASummary,missing-method}
+\alias{inputdata,GEVASummary-method}
+\alias{inputvalues,GEVASummary-method}
+\alias{inputweights,GEVASummary,logical-method}
+\alias{inputweights,GEVASummary,missing-method}
+\alias{inputnames,GEVASummary-method}
+\alias{featureTable,GEVASummary-method}
+\alias{factors,GEVASummary-method}
+\alias{factors<-,GEVASummary,factor-method}
+\alias{factors<-,GEVASummary,character-method}
+\alias{infolist,GEVASummary,missing-method}
+\alias{infolist<-,GEVASummary,list-method}
+\alias{quantiles,GEVASummary-method}
+\alias{groupsets,GEVASummary-method}
+\alias{groupsets<-,GEVASummary,TypedList-method}
+\alias{analysis.params,GEVASummary-method}
+\alias{get.summary.method.GEVASummary}
+\alias{get.variation.method.GEVASummary}
+\alias{as.matrix.GEVASummary}
+\alias{as.expression.GEVASummary}
 \title{GEVA Summary-Variation Table}
+\usage{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 \description{
 The \code{GEVASummary} class represents the calculation results for summary and variation from a \code{GEVAInput}.
+
 This class inherits from \code{SVTable}.
 }
 \section{Slots}{
 
 \describe{
+\item{\code{sv}}{\code{numeric matrix} composed by two columns: \code{S} (summary) and \code{V} (variation)
+\cr (Inherited from \code{\linkS4class{SVTable}})}
+
 \item{\code{inputdata}}{GEVAInput-class with the data input}
 
 \item{\code{sv.method}}{Names of the statistical methods used to summarize data}
 
 \item{\code{info}}{list with additional information}
 }}
+
+\section{Methods}{
+(See also the inherited methods from \code{\linkS4class{SVTable}}\cr
+
+\cr\strong{Properties}
+\describe{
+\item{\code{analysis.params(gobject)}}{Returns a \code{list} of analysis parameters passed to \code{\link{geva.summarize}} to obtain this object}
+\item{\code{get.summary.method(gevasummary)}}{Gets a \code{character} for the summarization method name}
+\item{\code{get.variation.method(gevasummary)}}{Gets a \code{character} for the variation calculation method name}
+}
+\cr\strong{Slot accessors}
+\describe{
+\item{\code{infolist(object, field, ...)}}{Gets the \code{list} from the \code{info} slot.
+\cr If \code{recursive} is \code{TRUE}, appends the contents from the \code{info} slot in the internal \code{\linkS4class{GEVAInput}}}
+\item{\code{inputdata(object)}}{Gets the \code{GEVAInput} from the \code{inputdata} slot}
+}
+\cr\strong{Sub-slot accessors}
+\describe{
+\item{\code{factors(object)}}{Gets the \code{factor} defined in the \code{factors} slot in the internal \code{\linkS4class{GEVAInput}}}
+\item{\code{factors(object) <- value}}{Sets the value to the \code{factor} slot in the internal \code{\linkS4class{GEVAInput}}}
+\item{\code{featureTable(object)}}{Gets the \code{data.frame} from the \code{ftable} slot in the internal \code{\linkS4class{GEVAInput}}}
+\item{\code{inputvalues(object)}}{Gets the \code{matrix} from the \code{values} slot in the internal \code{\linkS4class{GEVAInput}}}
+\item{\code{inputweights(object, normalized)}}{Gets the \code{matrix} from the \code{weights} slot in the internal \code{\linkS4class{GEVAInput}}}
+}
+}
 

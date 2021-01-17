@@ -4,12 +4,13 @@
 # -----------------------
 # 
 # Functions to generate ideal data to perform tests with GEVA
+# The ideal data is for testing only and has no biological meaning
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
-rgauss = function(n, sigma=n/5, peak=0.5)
+# Gauss helper function for internal use
+rgauss <- function(n, sigma=n/5, peak=0.5)
 {
   n = as.integer(n)
   if (n <= 2) return(rep(0.5, n))
@@ -23,28 +24,45 @@ rgauss = function(n, sigma=n/5, peak=0.5)
   vres
 }
 
-# Generates a ideal example of GEVAInput. For testing only
+#' @title GEVA ``Ideal'' Example for Package Testing
+#' 
+#' @description Generates a random example of GEVAInput object that simulates an ideal analysis dataset. Used for testing purposes only.
+#' 
+#' @param probecount `integer`, number of probes (*i.e.*, table rows)
+#' @param nfactors `integer`, number of factors (*e.g.*, experimental groups)
+#' @param colsperfactor `integer`, number of columns (*e.g.*, experiments) per factor
+#' 
+#' @return A [`GEVAInput-class`] object. The included tables are composed by `probecount` rows and `nfactors` * `colsperfactor` columns
+#' 
+#' @examples
+#' ## "Ideal" input example
+#' ginput <- geva.ideal.example()     # Generates a random example
+#' gsummary <- geva.summarize(ginput) # Summarizes the generated data
+#' plot(gsummary)                     # Plots the summarized data
+#' 
+#' @seealso [`geva.summarize`]
+#' 
 #' @export
-geva.ideal.example <- function(probecount=10000, condcount=3, respercond=3, seed=NA_integer_)
+geva.ideal.example <- function(probecount=10000, nfactors=3, colsperfactor=3)
 {
-  if (!is.na(seed)) set.seed(seed)
-  probnms = paste0("probe_", 1:probecount)
+  if (probecount <= 0) stop("probecount must be a positive value")
+  probnms = paste0("probe_", seq.int(probecount))
   dtls = list()
   dtlfc = data.frame(row.names = probnms)
   dtpval = data.frame(row.names = probnms)
-  vi = seq(from=0, to=1 + 1 / probecount, by = 1 / (probecount - 1))[1:probecount]
+  vi = seq(from=0, to=1 + 1 / probecount, by = 1 / (probecount - 1))[seq.int(probecount)]
   wi = (rgauss(probecount, probecount/1, 0.18) * 0.02 + rgauss(probecount, probecount/64, 0.12)) / 1.02
-  condnms = rep("", condcount * respercond)
+  condnms = rep("", nfactors * colsperfactor)
   smpcntrng = as.integer(ceiling(c(probecount / 1000, probecount / 20)))
-  for(ci in 1:condcount)
+  for(ci in seq.int(nfactors))
   {
     vlfcbase = rnorm(probecount, 0, 1) #runif(probecount, -0.5, 0.5)
     zi = sample(vi, probecount, replace = T, prob = wi) * runif(1, 6, 12)
     vpvalbase = runif(probecount, 0, 1)^8
     vlfcchange = rnorm(probecount, 0, 1) * zi  #(runif(probecount, 0, 1)^500 + (-1 * runif(probecount, 0, 1)^500))
-    smpinds = sample(1:probecount, sample(smpcntrng[1]:smpcntrng[2], 1), replace = F)
+    smpinds = sample(seq.int(probecount), sample(smpcntrng[1]:smpcntrng[2], 1), replace = F)
     condname = sprintf("Cond_%d", ci)
-    for (ri in 1:respercond)
+    for (ri in seq.int(colsperfactor))
     {
       vlfc = (vlfcbase + vlfcchange * runif(1, 0.1, 1)) * 0.5
       vlfc[smpinds] = vlfc[smpinds] + rnorm(length(smpinds), 0, 0.5)
@@ -56,7 +74,7 @@ geva.ideal.example <- function(probecount=10000, condcount=3, respercond=3, seed
     }
   }
   infols = list(column.weight='adj.P.Val')
-  dtfeats = data.frame(row.names=probnms, paste0("GENE_", LETTERS, 1:probecount))
+  dtfeats = data.frame(row.names=probnms, Symbol=paste0("GENE_", LETTERS, seq.int(probecount)))
   ginput = new('GEVAInput', values=as.matrix(dtlfc),
                weights=as.matrix(dtpval), factors=as.factor(condnms),
                ftable=dtfeats, info=infols)

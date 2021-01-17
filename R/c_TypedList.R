@@ -6,24 +6,22 @@
 # List whose elements have share a common class
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include generics.R
 #' @include asserts.R
 #' @include callhelpers.R
 #' @include vectorhelpers.R
+NULL
 
 #' @title Type-strict List (TypedList-class)
 #'
-#' @description List containing elements of the same class.
+#' @description List containing elements of the same class or inheritance.
 #'
-#' @slot elem.class character representing the class related to the elements
-#' 
 #'
-#' @name TypedList-class
-#' @rdname TypedList-class
-#' @export
+#' @slot elem.class \code{character} representing the class related to the elements
+#'
+#' @declareS4class
 setClass('TypedList',
          slots = c(
            elem.class = 'character'
@@ -60,11 +58,18 @@ setMethod('initialize', 'TypedList',
           )
 
 # DEFAULT CONSTRUCTOR
+#' @export
 typed.list <- function(..., elem.class=NA_character_) new('TypedList', elem.class=elem.class, ...)
 
 
 # S4 METHODS
+
+#' @s4method
+#' @s4accessor
 setMethod('elem.class', 'TypedList', function(typedlist) typedlist@elem.class)
+
+#' @s4method
+#' @s4accessor
 setMethod('elem.class<-', c(typedlist='TypedList', value='character'),
           function(typedlist, value)
           {
@@ -78,6 +83,7 @@ setMethod('elem.class<-', c(typedlist='TypedList', value='character'),
             typedlist
           })
 
+#' @s4method
 setMethod('show', 'TypedList',
           function(object)
           {
@@ -88,6 +94,7 @@ setMethod('show', 'TypedList',
             invisible(object)
           })
 
+#' @s4method
 setMethod('[', c('TypedList', 'ANY', 'missing', 'missing'),
           function (x, i, j, ..., drop = FALSE)
           {
@@ -96,14 +103,22 @@ setMethod('[', c('TypedList', 'ANY', 'missing', 'missing'),
             return(do.call('typed.list', args=elems))
           })
 
+
 # S3 Methods
+
+#' @s3method
 as.list.TypedList <- function(x, ...) x[1:length(x), drop=TRUE]
+
+#' @s3method
 as.typed.list.vector <- function(x, elem.class=NA_character_) do.call('typed.list', list.merge(as.list(x), list(elem.class=elem.class)))
+
+#' @s3method
 as.typed.list.list <- function(x, elem.class=NA_character_) do.call('typed.list', list.merge(x, list(elem.class=elem.class)))
+
+#' @s3method
 as.typed.list.TypedList <- function(x, elem.class=NA_character_)
 {
   if (is.na(elem.class)) return(x)
   elem.class(x) = elem.class
   x
 }
-

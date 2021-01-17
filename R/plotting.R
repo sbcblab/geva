@@ -6,10 +6,10 @@
 # Helper methods for data plotting
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include vectorhelpers.R
+NULL
 
 # Generates random colors distributed by hue
 generate.colors <- function(n=1L, h.range = c(0, 1) , s.range = c(0.8, 1), v.range = c(0.8, 1))

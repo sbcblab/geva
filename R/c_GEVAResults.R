@@ -7,26 +7,24 @@
 # 
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include c_GEVAGroupedSummary.R
 #' @include c_GEVAQuantiles.R
+NULL
 
 #' @title GEVA Results Table
 #'
-#' @description The \code{GEVAResults} class contains the final results from GEVA analyses. It represents the results of multiple statistical approaches from summary/variation data, groupings and quantiles.
+#' @description The \code{GEVAResults} class contains the final results from GEVA analyses. It represents the results of multiple statistical approaches from summary/variation data, clustering, quantile detection, and factor analysis (if applicable).
 #'
-#' @slot resultstable data.frame with classification results for data points
-#' @slot svdata GEVASummary object with summarized data
-#' @slot quantdata GEVAQuantiles object with final quantiles definitions (e.g. adjusted quantiles)
-#' @slot factoring data.frame with detailed factoring information
-#' @slot classiftable data.frame used as reference to classify the data points
-#' @slot info list with additional information
+#' @slot resultstable \code{data.frame} (\emph{m} lines) with classification results for the genes/probes
+#' @slot svdata \code{\linkS4class{GEVASummary}} used as input
+#' @slot quantdata \code{\linkS4class{GEVAQuantiles}} or \code{\linkS4class{GEVAQuantilesAdjusted}} with the final quantile assignments for the summarized data
+#' @slot factoring \code{data.frame} (\emph{m} lines) with detailed results for the factor analyses, such as p-values for each factor. If there was no factor analysis, this slot is \code{NULL} or empty
+#' @slot classiftable \code{data.frame} used as reference for the final classification
+#' @slot info \code{list} of supplementary information
 #'
-#' @name GEVAResults-class
-#' @rdname GEVAResults-class
-#' @export
+#' @declareS4class
 setClass('GEVAResults',
          slots = c(
            resultstable = 'data.frame',
@@ -61,6 +59,7 @@ setMethod('initialize', 'GEVAResults',
 
 
 # SHOW
+#' @s4method
 setMethod('show', 'GEVAResults',
           function(object)
           {
@@ -82,15 +81,18 @@ setMethod('show', 'GEVAResults',
           })
 
 # PLOT
+#' @s4method
 setMethod('plot', c('GEVAResults', 'missing'), function(x, y, ...) plot(quantiles(x), ...))
 
 # INDEXERS
+#' @s4method
 setMethod('[', c('GEVAResults', 'ANY', 'ANY', 'ANY'),
           function(x, i, j, ... , drop = TRUE)
           {
             mv = results.table(x)[i,j,drop=drop]
             mv
           })
+#' @s4method
 setMethod('$', 'GEVAResults',
           function(x, name)
           {
@@ -99,27 +101,55 @@ setMethod('$', 'GEVAResults',
           })
 
 # S4 Methods
+
+#' @s4method
+#' @s4accessor quantdata
 setMethod('quantiles', 'GEVAResults', function(object) object@quantdata)
+
+#' @s4method
+#' @s4accessor resultstable
 setMethod('results.table', 'GEVAResults', function(gres) gres@resultstable)
 
+#' @s4method
+#' @s4accessor svdata
 setMethod('sv.data', 'GEVAResults', function(object) object@svdata)
+
+#' @s4method
 setMethod('sv', 'GEVAResults', function(object) sv(sv.data(object)))
 
+#' @s4method
+#' @s4accessor info
+setMethod('infolist', c('GEVAResults', 'missing'), function(object, field, ...) object@info)
+#' @s4method
+#' @s4accessor info
+setMethod('infolist', c('GEVAResults', 'character'), function(object, field, ...) getElement(object@info, field) )
+
+#' @category Sub-slot accessors
+
+#' @s4method Returns the internal [`GEVAInput-class`]
 setMethod('inputdata', 'GEVAResults', function(object) inputdata(object@svdata))
+#' @s4method Returns the values `matrix` from the internal [`GEVAInput-class`]
 setMethod('inputvalues', 'GEVAResults', function(object) inputvalues(object@svdata))
+#' @s4method Returns the weights `matrix` from the internal [`GEVAInput-class`]
 setMethod('inputweights', c('GEVAResults', 'logical'), function(object, normalized) inputweights(object@svdata, normalized))
 setMethod('inputweights', c('GEVAResults', 'missing'), function(object, normalized=FALSE) inputweights(object@svdata))
 
-setMethod('infolist', c('GEVAResults', 'missing'), function(object, field, ...) object@info)
-setMethod('infolist', c('GEVAResults', 'character'), function(object, field, ...) getElement(object@info, field) )
-
+#' @s4method Returns the features `data.frame` from the internal [`GEVAInput-class`]
 setMethod('featureTable', 'GEVAResults', function(object) featureTable(inputdata(object)))
 
+
+#' @category Dimension accessors
+
+#' @s4method Gets the dimensions from the `results.table` slot
 setMethod('dim', 'GEVAResults', function(x) dim(results.table(x)))
+#' @s4method Gets a \code{list} with the row and column names from the `results.table` slot. \cr Individual dimension names can also be accessed through \code{rownames} and \code{colnames}
 setMethod('dimnames', 'GEVAResults', function(x) dimnames(results.table(x)))
+#' @s4method
 setMethod('names', 'GEVAResults', function(x) colnames(results.table(x)))
 
+#' @category Properties
 
+#' @s4method Returns a `list` of analysis parameters passed to [`geva.finalize`] or [`geva.quick`] to obtain this object
 setMethod('analysis.params', 'GEVAResults', function(gobject)
 {
   parls = list.merge(analysis.params(sv.data(gobject)), analysis.params(quantiles(gobject)), infolist(gobject, 'analysis.params') )
@@ -128,13 +158,22 @@ setMethod('analysis.params', 'GEVAResults', function(gobject)
 
 # S3 Methods
 
+#' @category Sub-slot accessors
+
+#' @s3method Returns the factors used in factor analysis, if present
 levels.GEVAResults <- function(x) levels(inputdata(x))
+
 with.GEVAResults <- function(data, expr, ...)
 {
   dtres = results.table(data)
   eval(substitute(expr), dtres, ...)
 }
 
+#' @category Plotting
+
+#' @s3method Draws the results points.
+#' \cr If `which` (`character` vector) is given, plots only the matching genes/probes.
+#' \cr If `classif` (`character` vector) is given, plots only points with the matching classification
 points.GEVAResults <- function(x, which, ..., classif)
 {
   
@@ -153,6 +192,7 @@ points.GEVAResults <- function(x, which, ..., classif)
   points.default(dt, ...)
 }
 
+#' @s3method
 as.expression.GEVAResults <- function(x, gsummary, gquants, ...)
 {
   parls = list()
@@ -177,6 +217,50 @@ as.expression.GEVAResults <- function(x, gsummary, gquants, ...)
 
 
 # Specific methods
+#' @title Top Results from GEVA
+#' 
+#' @description Extracts the genes with a relevant classification according to the GEVA results.
+#' @param gevaresults a [`GEVAResults-class`] object
+#' @param classif `character` vector, filters the returned genes by their final classification. Possible options are `"similar"`, `"factor-dependent"`, `"factor-specific"`, `"sparse"`, and `"basal"`. Multiple options can be combined
+#' @param which.spec `factor`, filters the specific factors to be returned
+#' @param add.cols `character` vector with column names from the feature table (accessed by `featureTable(gevaresults)`). The matching columns will be added to the returned table
+#' @param ... optional arguments (not used in this version)
+#' @param names.only `logical`, set to `TRUE` to return only the table row names
+#' 
+#' @return
+#' If `names.only` is `FALSE` (the default), returns a subset of the `resultstable` slot (`data.frame`) from the `gevaresults` that includes only the filtered genes according to the function parameters.
+#' 
+#' Otherwise, if `names.only` is `TRUE`, returns only the row names (`character` vector) of this table subset.
+#'
+#' @examples
+#' ## Basic usage with a random generated input
+#' ginput <- geva.ideal.example() # Generates a random input example
+#' gresults <- geva.quick(ginput) # Performs the entire analysis (default parameters)
+#' 
+#' # Gets a table that includes all the top genes
+#' dtgenes <- top.genes(gresults) # Gets the top genes table
+#' head(dtgenes)                  # Prints the first results
+#' 
+#' # Appends the "Symbol" column to the results table
+#' dtgenes <- top.genes(gresults, add.cols="Symbol")
+#' head(dtgenes)                  # Prints the first results
+#' 
+#' # Appends all feature columns to the results table
+#' dtgenes <- top.genes(gresults, add.cols=names(featureTable(gresults)))
+#' head(dtgenes)                  # Prints the first results
+#' 
+#' # Gets only the factor-specific genes
+#' dtgenes <- top.genes(gresults, "factor-specific")
+#' head(dtgenes)                  # Prints the first results
+#' 
+#' # Gets only the factor-specific genes for "Cond_1" factor (if any)
+#' dtgenes <- top.genes(gresults, "factor-specific", "Cond_1")
+#' head(dtgenes)                  # Prints the first results
+#' 
+
+#'
+#' @rdname top.genes
+#' @export
 top.genes <- function(gevaresults, classif=c('similar', 'factor-dependent', 'factor-specific'),
                       which.spec=levels(gevaresults), add.cols=NULL, ..., names.only=FALSE)
 {

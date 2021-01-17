@@ -6,12 +6,12 @@
 # Helper methods to manipulate matrices and data.frames
 # 
 # ########################
-# Nunes et al, 2020
-# Last updated version: 0.1.0
+# Copyright (C) 2020 Nunes IJG et al
 
 #' @include callhelpers.R
 #' @include vectorhelpers.R
 #' @include funhelpers.R
+NULL
 
 # Multi-row apply, where a function is applied to each row of a matrix. If more matrices are used as arguments
 mrapply <- function(FUN, ...)

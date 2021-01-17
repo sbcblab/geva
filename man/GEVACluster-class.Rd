@@ -3,13 +3,59 @@
 \docType{class}
 \name{GEVACluster-class}
 \alias{GEVACluster-class}
+\alias{show,GEVACluster-method}
+\alias{plot,GEVACluster,SVTable-method}
+\alias{cluster.method,GEVACluster-method}
+\alias{lines.GEVACluster}
 \title{GEVA Clustering Results}
+\usage{
+
+
+
+
+
+
+
+}
 \description{
-The \code{GEVACluster} class inherits the grouping properties from \code{GEVAGroupSet}.
+The \code{GEVACluster} class represents the classification results from a cluster analysis. For each probe/gene, there is a assigned cluster among the \emph{g} defined clusters.
+
+This class inherits from \code{\linkS4class{GEVAGroupSet}}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{cluster.method}}{Method used to obtain the clustering results}
+\item{\code{grouping}}{\code{factor} (\emph{m} elements, \emph{g} levels), cluster assignment for each gene/probe
+\cr (Inherited from \code{\linkS4class{GEVAGroupSet}})}
+
+\item{\code{scores}}{\code{numeric} vector (\emph{m} elements) comprising a score value for each cluster assignment
+\cr (Inherited from \code{\linkS4class{GEVAGroupSet}})}
+
+\item{\code{ftable}}{\code{data.frame} (\emph{m} lines) with additional cluster assignment features
+\cr (Inherited from \code{\linkS4class{GEVAGroupSet}})}
+
+\item{\code{centroids}}{\code{numeric SVTable} (\emph{g} lines) with the S and V centroid coordinates for each cluster
+\cr (Inherited from \code{\linkS4class{GEVAGroupSet}})}
+
+\item{\code{offsets}}{\code{numeric SVTable} (\emph{m} lines) with the S and V coordinate offsets each gene/probe from its cluster centroid
+\cr (Inherited from \code{\linkS4class{GEVAGroupSet}})}
+
+\item{\code{info}}{\code{list} of supplementary information
+\cr (Inherited from \code{\linkS4class{GEVAGroupSet}})}
+
+\item{\code{cluster.method}}{\code{character}, method used in the cluster analysis (see \code{\link{geva.cluster}})}
 }}
+
+\section{Methods}{
+(See also the inherited methods from \code{\linkS4class{GEVAGroupSet}})\cr
+
+\cr\strong{Dimension accessors}
+\describe{
+\item{\code{lines(x, ...)}}{Draws convex hulls around the clustered points}
+}
+\cr\strong{Slot accessors}
+\describe{
+\item{\code{cluster.method(object)}}{Gets the \code{character} from the \code{cluster.method} slot}
+}
+}
 
