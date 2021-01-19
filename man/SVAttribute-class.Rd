@@ -6,6 +6,10 @@
 \alias{SVAttribute}
 \alias{SVNumAttribute}
 \alias{SVIntAttribute}
+\alias{SVChrAttribute}
+\alias{SVNumAttribute-class}
+\alias{SVIntAttribute-class}
+\alias{SVChrAttribute-class}
 \alias{svattr,character,character-method}
 \alias{svattr,numeric,numeric-method}
 \alias{svattr,integer,integer-method}

@@ -21,7 +21,7 @@ NULL
 #' 
 #' @note The slots \code{S} and \code{V} must be of the same class (either \code{character}, \code{numeric}, or \code{integer}).
 #'
-#' @aliases SVAttribute SVNumAttribute SVIntAttribute
+#' @aliases SVAttribute SVNumAttribute SVIntAttribute SVChrAttribute SVNumAttribute-class SVIntAttribute-class SVChrAttribute-class
 #' @declareS4class
 setClass('SVAttribute', contains='VIRTUAL')
 
