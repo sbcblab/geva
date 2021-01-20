@@ -61,15 +61,15 @@ The \code{GEVAGroupedSummary} class inherits the \code{\linkS4class{GEVASummary}
 \describe{
 \item{\code{cluster.method(object)}}{Gets a \code{character} vector listing the \code{cluster.method} from each group set}
 }
-\cr\strong{Dimension accessors}
+\sspace\cr\strong{Dimension accessors}
 \describe{
 \item{\code{lines(x, ...)}}{Draws delimiters within quantiles and convex hulls around the clustered points}
 }
-\cr\strong{Properties}
+\sspace\cr\strong{Properties}
 \describe{
 \item{\code{analysis.params(gobject)}}{Returns a \code{list} of analysis parameters passed to \code{\link{geva.cluster}} to obtain this object}
 }
-\cr\strong{Slot accessors}
+\sspace\cr\strong{Slot accessors}
 \describe{
 \item{\code{groupsets(object)}}{Gets the \code{TypedList} from the \code{groupsetlist} slot}
 \item{\code{quantiles(object)}}{Gets the \code{\linkS4class{GEVAQuantiles}}, or \code{NULL} if not present}

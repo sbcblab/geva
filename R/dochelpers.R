@@ -20,6 +20,7 @@ read.doc.tag <- local({
   self$last_read_lines = NULL
   self$last_method_category = ""
   self$method_descriptors = list() # Items are lists with $usage, $description, and $category
+  self$roxy = NULL
   function(x)
   {
     if (is.null(x)) return(self$last_declared_s4class)
@@ -27,6 +28,10 @@ read.doc.tag <- local({
     {
       self$last_read_file = x$file
       self$last_read_lines = readLines(x$file)
+    }
+    if (is.null(self$roxy))
+    {
+      self$roxy = environment(eval(str2lang('roxygen2::roxygenize')))
     }
     fndecl = parse(text = self$last_read_lines[seq.int(x$line, length(self$last_read_lines))], n = 1L)[[1]]
     fndecl
@@ -54,7 +59,7 @@ roxy_tag_parse.roxy_tag_declareS4class <- local({
     self$last_declared_s4method = NULL
     x$raw = sprintf("c(%s)", paste0(sprintf('"%s"', code), collapse = ", "))
     x$tag = "eval"
-    roxygen2::tag_code(x)
+    self$roxy$tag_code(x)
   }
 })
 
@@ -70,6 +75,8 @@ roxy_tag_parse.roxy_tag_s4method <- function(x)
     "@usage  ",
     "@export"
   )
+  formatfn_usage = self$roxy$function_usage
+  if (!is.function(formatfn_usage)) return(NULL)
   fndecl = read.doc.tag(x)
   if (length(fndecl) == 0) return(NULL)
   fncallname = as.character(fndecl[[1]])
@@ -78,7 +85,7 @@ roxy_tag_parse.roxy_tag_s4method <- function(x)
     fname = as.character(fndecl[[2]])
     if (isS3method(fname))
       fname = trimws(as.character(fndecl[[2]]), 'right', sprintf(".%s", clname))
-    fnusage = roxygen2:::function_usage(fname, formals(as.character(fndecl[[2]])))
+    fnusage = formatfn_usage(fname, formals(as.character(fndecl[[2]])))
     fndecl = as.call(list(as.symbol("setMethod"), f = fname, signature = clname))
   }
   else if (fncallname %in% 'setMethod')
@@ -87,7 +94,7 @@ roxy_tag_parse.roxy_tag_s4method <- function(x)
     if (is.call(fndecl$signature))
       fndecl$signature = eval(fndecl$signature)
     fname = as.character(fndecl$f)
-    fnusage = roxygen2:::function_usage(fname, formals(getMethod(fndecl$f, fndecl$signature)))
+    fnusage = formatfn_usage(fname, formals(getMethod(fndecl$f, fndecl$signature)))
   }
   self$last_declared_s4method = fndecl
   desc = ""
@@ -108,7 +115,7 @@ roxy_tag_parse.roxy_tag_s4method <- function(x)
   )
   x$raw = sprintf("c(%s)", paste0(sprintf('"%s"', code), collapse = ", "))
   x$tag = "eval"
-  roxygen2::tag_code(x)
+  self$roxy$tag_code(x)
 }
 
 roxy_tag_parse.roxy_tag_s3method <- roxy_tag_parse.roxy_tag_s4method
@@ -118,7 +125,7 @@ roxy_tag_parse.roxy_tag_s3method <- roxy_tag_parse.roxy_tag_s4method
 roxy_tag_parse.roxy_tag_s4methodDescription <- function(x)
 {
   self = environment(read.doc.tag)$self
-  xval = roxygen2::tag_two_part(x, "name", "description", required = FALSE)$val
+  xval = self$roxy$tag_two_part(x, "name", "description", required = FALSE)$val
   fname = xval$name
   metinfo = self$method_descriptors[[fname]]
   if (is.null(metinfo))
@@ -128,7 +135,7 @@ roxy_tag_parse.roxy_tag_s4methodDescription <- function(x)
   x$raw = xval$description
   x$method_name = fname
   x$method_usage = metinfo$usage
-  x = roxygen2::tag_markdown(x)
+  x = self$roxy$tag_markdown(x)
   x$cat = metinfo$category
   x
 }
@@ -137,7 +144,8 @@ roxy_tag_parse.roxy_tag_s4methodDescription <- function(x)
 roxy_tag_rd.roxy_tag_s4methodDescription <- function(tag, env, base_path)
 {
   if (is.null(tag)) return(NULL)
-  x = roxygen2::rd_section("methods", sprintf("\\item{\\code{%s}}{%s}", tag$method_usage, tag$val))
+  self = environment(read.doc.tag)$self
+  x = self$roxy$rd_section("methods", sprintf("\\item{\\code{%s}}{%s}", tag$method_usage, tag$val))
   x$name = c(tag$method_name, "")[[1]]
   x$cat = c(tag$cat, "")[[1]]
   x
@@ -147,13 +155,15 @@ roxy_tag_rd.roxy_tag_s4methodDescription <- function(tag, env, base_path)
 roxy_tag_parse.roxy_tag_methodsnote <- function(x)
 {
   if (is.null(x)) return(NULL)
-  roxygen2::tag_markdown(x)
+  self = environment(read.doc.tag)$self
+  self$roxy$tag_markdown(x)
 }
 
 roxy_tag_rd.roxy_tag_methodsnote <- function(tag, env, base_path)
 {
   if (is.null(tag)) return(NULL)
-  x = roxygen2::rd_section("methods", tag$val)
+  self = environment(read.doc.tag)$self
+  x = self$roxy$rd_section("methods", tag$val)
   x$name = ""
   x$cat = ""
   x
@@ -175,7 +185,7 @@ roxy_tag_parse.roxy_tag_s4accessor <- function(x)
   else
   {
     x$raw = sub('^(\\S+\\s*?)\\r?\\n', "\\1 \\\\cr ", trimws(x$raw), perl = TRUE)
-    xval = roxygen2::tag_two_part(x, "name", "description", required = FALSE)$val
+    xval = self$roxy$tag_two_part(x, "name", "description", required = FALSE)$val
     desc = trimws(sprintf("%s %s", xval[["description"]], desc))
     if (any(nchar(desc) != 0L))
       desc = sprintf(". %s", desc)
@@ -187,7 +197,7 @@ roxy_tag_parse.roxy_tag_s4accessor <- function(x)
   x$raw = sprintf("%s \\code{%s} slot%s", sprintf(if(is_setter) "Sets a %s to the" else "Gets the `%s` from the", valname), slotnm, desc)
   x$method_name = fname
   x$method_usage = metinfo$usage
-  x = roxygen2::tag_markdown(x)
+  x = self$roxy$tag_markdown(x)
   metinfo$category = "Slot accessors"
   x$cat = metinfo$category
   self$method_descriptors[[fname]] = metinfo
@@ -200,7 +210,7 @@ roxy_tag_rd.roxy_tag_s4accessor <- roxy_tag_rd.roxy_tag_s4methodDescription
 roxy_tag_parse.roxy_tag_category <- function(x)
 {
   self = environment(read.doc.tag)$self
-  x = roxygen2::tag_value(x)
+  x = self$roxy$tag_value(x)
   xcat = x$val
   if (is.null(xcat)) xcat = ""
   self$last_method_category = xcat
@@ -215,7 +225,7 @@ roxy_tag_parse.roxy_tag_options <- function(x)
   if (length(fndecl) != 3L) return(NULL)
   fndecl = call(as.character(fndecl[[1]]), fndecl[[2]], eval(fndecl[[3]]))
   rdname = if (trimws(x$raw) != "")
-    trimws(roxygen2::tag_value(x)$val, whitespace = '[\\[\\]]')
+    trimws(self$roxy$tag_value(x)$val, whitespace = '[\\[\\]]')
   else
     sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(x$file))
   fmtargs = deparse(fndecl[[3]], width.cutoff = 50L)
@@ -232,7 +242,7 @@ roxy_tag_parse.roxy_tag_options <- function(x)
     "@export"
   )
   x$raw = sprintf("c(%s)", paste0(sprintf('"%s"', code), collapse = ", "))
-  x = roxygen2::tag_code(x)
+  x = self$roxy$tag_code(x)
   x$tag = "eval"
   x
 }
@@ -244,7 +254,9 @@ merge.rd_section_methods <- function(x, y, ...)
   if (is.null(y$cat)) y$cat = ""
   if (is.null(x$name)) x$name = ""
   if (is.null(y$name)) y$name = ""
-  z = roxygen2:::merge.rd_section(x, y, ...)
+  self = environment(read.doc.tag)$self
+  z = self$roxy$merge.rd_section(x, y, ...)
+  if(is.null(z)) return(NULL)
   z$cat = c(x$cat, y$cat)
   z$name = c(x$name, y$name)
   ord = order(z$name, z$cat)
@@ -265,9 +277,9 @@ format.rd_section_methods <- function(x, ...)
   x$name = x$name[!sel_notes]
   fmtitems = unlist(lapply(split(x$value, x$cat), paste0, collapse='\n'))
   catitems = names(fmtitems)
-  catitems[catitems != ""] = sprintf("\\cr\\strong{%s}\n", catitems[catitems != ""])
+  catitems[catitems != ""] = sprintf("\\sspace\\cr\\strong{%s}\n", catitems[catitems != ""])
   fmtitems = sprintf("%s\\describe{\n%s\n}", catitems, fmtitems)
-  sprintf("\\section{Methods}{\n%s\n%s\n}\n", paste0(noteitems, collapse = "\\cr\n"), paste0(fmtitems, collapse = "\n"))
+  sprintf("\\section{Methods}{\n%s\n%s\n}\n", paste0(noteitems, collapse = "\\cr \n"), paste0(fmtitems, collapse = "\n"))
 }
 
 

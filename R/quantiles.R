@@ -341,7 +341,7 @@ geva.quantiles <- function(sv, quantile.method = options.quantiles,
   }
   if (!is.function(comb.score.fn))
     stop("'comb.score.fn' must be a function or a valid function name with a single numeric vector as argument")
-  quantile.method = assert.choices(quantile.method)
+  quantile.method = match.arg(quantile.method)
   nq.s = as.integer(nq.s)
   nq.v = as.integer(nq.v)
   assert.operator(nq.s, `>=` = 3L)

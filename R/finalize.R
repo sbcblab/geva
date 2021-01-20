@@ -163,7 +163,7 @@ results.table.from.classif <- function(gq, cltable, p.value=0.05)
 #' 
 #' @description Given a [`GEVAInput-class`] object, applies the [`geva.summarize()`], [`geva.quantiles`], [`geva.cluster`], and [`geva.finalize`] in a single call. Optional arguments are passed to the internal calls of these functions.
 #' 
-#' @param gobject A `GEVAInput`, or any object that returns a `GEVAInput` upon calling `inputdata(gobject)` (*e.g.*, [`GEVASummary`] or [`GEVAResults`]).
+#' @param gobject A `GEVAInput`, or any object that returns a `GEVAInput` upon calling `inputdata(gobject)` (*e.g.*, [`GEVASummary-class`] or [`GEVAResults-class`]).
 #' @param ... Optional arguments passed to [`geva.summarize()`], [`geva.quantiles()`], [`geva.cluster()`], and [`geva.finalize()`]
 #' 
 #' @details
@@ -173,15 +173,15 @@ results.table.from.classif <- function(gq, cltable, p.value=0.05)
 #' 
 #' @examples
 #' ## Basic usage using a random generated input
-#' ginput <- geva.ideal.example() # Generates a random input example
-#' gresults <- geva.quick(ginput) # Performs the entire analysis (default parameters)
+#' ginput <- geva.ideal.example()   # Generates a random input example
+#' gresults <- geva.quick(ginput)   # Performs the entire analysis (default parameters)
 #' 
-#' head(top.genes(gresults))      # Prints the results
-#' plot(gresults)                 # Plots the final SV-plot
+#' print(head(top.genes(gresults))) # Prints the results
+#' plot(gresults)                        # Plots the final SV-plot
 #' 
 #' 
 #' ## Example with non-default parameters
-#' ginput <- geva.ideal.example() # Generates a random input example
+#' ginput <- geva.ideal.example()   # Generates a random input example
 #' gresults <- geva.quick(ginput,
 #'                        summary.method="median",
 #'                        variation.method="mad",
@@ -189,8 +189,8 @@ results.table.from.classif <- function(gq, cltable, p.value=0.05)
 #'                        cluster.method="density",
 #'                        resolution=0.32)
 #' 
-#' head(top.genes(gresults))      # Prints the results
-#' plot(gresults)                 # Plots the final SV-plot
+#' print(head(top.genes(gresults))) # Prints the results
+#' plot(gresults)                   # Plots the final SV-plot
 #' 
 #' @export
 geva.quick <- function(gobject, ...)

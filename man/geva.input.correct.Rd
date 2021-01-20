@@ -37,6 +37,8 @@ geva.input.rename.rows(
 
 \item{na.val}{\code{numeric}, the replacement for \code{NA} values}
 
+\item{...}{optional arguments. Accepts \code{verbose} (\code{logical}, default is \code{TRUE}) to enable or disable printing the progress}
+
 \item{attr.column}{\code{character}, target column with the values that will replace the current row names}
 
 \item{dupl.rm.method}{\code{character}, method to remove duplicate names. The possible options are:

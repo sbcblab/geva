@@ -100,6 +100,8 @@ setMethod('$', 'SVAttribute', function(x, name) x[name] )
 #' @export
 setMethod('sv', 'SVAttribute', function(object) setNames(c(object@S, object@V), c('S', 'V')))
 
+#' @param S the *summary* value
+#' @param V the *variation* value
 #' @export
 #' @rdname SVAttribute-class
 setMethod('svattr', c(S='character', V='character'), function(S, V) new('SVChrAttribute', S=S, V=V))

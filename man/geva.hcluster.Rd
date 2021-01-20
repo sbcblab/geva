@@ -36,13 +36,15 @@ options.hc.method
 
 \item{hc.method}{\code{character}, the agglomeration method to be used. Used as the \code{method} argument for \code{\link[fastcluster:hclust.vector]{fastcluster::hclust.vector()}}}
 
-\item{hc.metric}{\code{character}, the distance measure to be used. Used as the \code{metric} argument for \code{\link[fastcluster:hclust.vector]{fastcluster::hclust.vector()}}
+\item{hc.metric}{\code{character}, the distance measure to be used. Used as the \code{metric} argument for \code{\link[fastcluster:hclust.vector]{fastcluster::hclust.vector()}}}
+
+\item{cl.score.method}{\code{character}, method used to calculate the cluster scores for each point. If \code{"auto"}, the \code{"hclust.height"} method is selected}
+
+\item{...}{additional arguments:
 \itemize{
 \item{\code{mink.p} : \code{numeric}, parameter for the Minkowsky metric. Used as the \code{p} argument for \code{\link[fastcluster:hclust.vector]{fastcluster::hclust.vector()}}}
 \item{\code{verbose} : \code{logical}, whether to print the current progress (default is \code{TRUE})}
 }}
-
-\item{cl.score.method}{\code{character}, method used to calculate the cluster scores for each point. If \code{"auto"}, the \code{"hclust.height"} method is selected}
 
 \item{include.raw.results}{\code{logical}, whether to attach intermediate results to the returned object}
 }

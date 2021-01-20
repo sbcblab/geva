@@ -4,3 +4,4 @@
 .Ruserdata
 helpertests/*
 build/*
+inst/doc

@@ -47,13 +47,13 @@ This class inherits from \code{\linkS4class{GEVAGroupSet}}.
 }}
 
 \section{Methods}{
-(See also the inherited methods from \code{\linkS4class{GEVAGroupSet}})\cr
+(See also the inherited methods from \code{\linkS4class{GEVAGroupSet}})\cr 
 
-\cr\strong{Dimension accessors}
+\sspace\cr\strong{Dimension accessors}
 \describe{
 \item{\code{lines(x, ...)}}{Draws convex hulls around the clustered points}
 }
-\cr\strong{Slot accessors}
+\sspace\cr\strong{Slot accessors}
 \describe{
 \item{\code{cluster.method(object)}}{Gets the \code{character} from the \code{cluster.method} slot}
 }

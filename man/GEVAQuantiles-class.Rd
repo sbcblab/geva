@@ -85,13 +85,13 @@ This class inherits from \code{\linkS4class{GEVAGroupSet}} and is inherited by \
 }}
 
 \section{Methods}{
-(See also the inherited methods from \code{\linkS4class{GEVAGroupSet}})\cr
+(See also the inherited methods from \code{\linkS4class{GEVAGroupSet}})\cr 
 
-\cr\strong{Dimension accessors}
+\sspace\cr\strong{Dimension accessors}
 \describe{
 \item{\code{lines(x, ...)}}{Draws the quantile delimiter lines}
 }
-\cr\strong{Slot accessors}
+\sspace\cr\strong{Slot accessors}
 \describe{
 \item{\code{qareasizes(object)}}{Gets the \code{SVTable} from the \code{qareasizes} slot}
 \item{\code{qcount(object)}}{Gets the \code{SVIntAttribute} from the \code{qcount} slot}

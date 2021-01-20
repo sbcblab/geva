@@ -87,21 +87,21 @@ This class inherits from \code{SVTable}.
 }}
 
 \section{Methods}{
-(See also the inherited methods from \code{\linkS4class{SVTable}}\cr
+(See also the inherited methods from \code{\linkS4class{SVTable}}\cr 
 
-\cr\strong{Properties}
+\sspace\cr\strong{Properties}
 \describe{
 \item{\code{analysis.params(gobject)}}{Returns a \code{list} of analysis parameters passed to \code{\link{geva.summarize}} to obtain this object}
 \item{\code{get.summary.method(gevasummary)}}{Gets a \code{character} for the summarization method name}
 \item{\code{get.variation.method(gevasummary)}}{Gets a \code{character} for the variation calculation method name}
 }
-\cr\strong{Slot accessors}
+\sspace\cr\strong{Slot accessors}
 \describe{
 \item{\code{infolist(object, field, ...)}}{Gets the \code{list} from the \code{info} slot.
 \cr If \code{recursive} is \code{TRUE}, appends the contents from the \code{info} slot in the internal \code{\linkS4class{GEVAInput}}}
 \item{\code{inputdata(object)}}{Gets the \code{GEVAInput} from the \code{inputdata} slot}
 }
-\cr\strong{Sub-slot accessors}
+\sspace\cr\strong{Sub-slot accessors}
 \describe{
 \item{\code{factors(object)}}{Gets the \code{factor} defined in the \code{factors} slot in the internal \code{\linkS4class{GEVAInput}}}
 \item{\code{factors(object) <- value}}{Sets the value to the \code{factor} slot in the internal \code{\linkS4class{GEVAInput}}}

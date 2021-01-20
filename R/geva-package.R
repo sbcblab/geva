@@ -8,8 +8,9 @@
 #'
 #' @docType package
 #' @name geva
-NULL
-
+#' @rdname geva-package
+#' 
+#' @importFrom utils head
 #' @importFrom matrixStats rowAnys weightedMean weightedMedian weightedSd weightedVar weightedMad
 #' @importFrom fastcluster hclust.vector
 NULL

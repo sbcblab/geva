@@ -150,10 +150,12 @@ setMethod('infolist<-', c('GEVAInput', 'list'), function(object, value) { object
 
 #' @s4method
 #' @s4accessor
+#' @aliases factors
 setMethod('factors', 'GEVAInput', function(object) object@factors)
 
 #' @s4method
 #' @s4accessor
+#' @aliases factors<-
 setMethod('factors<-', c('GEVAInput', 'factor'),
           function(object, value)
           {

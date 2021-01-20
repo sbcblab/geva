@@ -27,6 +27,8 @@ NULL
 #' 
 #' @note The matrix from `sv` slot can `numeric`, `character`, or any other supported type by `matrix`. The same slot from [`GEVASummary-class`], however, is always a numeric `matrix`.
 #'
+#' @aliases SVTable
+#'
 #' @declareS4class
 setClass('SVTable',
          slots = c(
@@ -48,7 +50,9 @@ setMethod('initialize', 'SVTable',
 
 
 # CONSTRUCTOR
-#' @export
+#' @category Constructor
+
+#' @s4method Creates a SVTable from the vectors `S` and `V`
 svtable <- function(S, V, row.names=NULL)
 {
   if (missing(V))

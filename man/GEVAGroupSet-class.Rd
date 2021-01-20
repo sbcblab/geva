@@ -107,17 +107,17 @@ The \code{GEVAGroupSet} class represents the classification of summarized values
 \describe{
 \item{\code{sv(object)}}{Returns the \verb{numeric matrix} in the \code{SVTable} from \code{sv.data(object)}}
 }
-\cr\strong{Plotting}
+\sspace\cr\strong{Plotting}
 \describe{
 \item{\code{color.values(x, point.col = NULL, ...)}}{Gets the colors associated to the grouped data points. If not present, generates random group colors.
 \cr If \code{point.col} is a single \code{character} or an vector of the same length of data points, adjusts the color values to web RGBA}
 \item{\code{points(x, which, ..., classif)}}{Draws the grouped points}
 }
-\cr\strong{Properties}
+\sspace\cr\strong{Properties}
 \describe{
 \item{\code{analysis.params(gobject)}}{Returns a \code{list} of analysis parameters passed to \code{\link{geva.cluster}} to obtain this object}
 }
-\cr\strong{Slot accessors}
+\sspace\cr\strong{Slot accessors}
 \describe{
 \item{\code{centroids(object)}}{Gets the \code{SVTable} from the \code{centroids} slot}
 \item{\code{featureTable(object)}}{Gets the \code{data.frame} from the \code{ftable} slot}

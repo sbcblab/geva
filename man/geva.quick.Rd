@@ -7,7 +7,7 @@
 geva.quick(gobject, ...)
 }
 \arguments{
-\item{gobject}{A \code{GEVAInput}, or any object that returns a \code{GEVAInput} upon calling \code{inputdata(gobject)} (\emph{e.g.}, \code{\link{GEVASummary}} or \code{\link{GEVAResults}}).}
+\item{gobject}{A \code{GEVAInput}, or any object that returns a \code{GEVAInput} upon calling \code{inputdata(gobject)} (\emph{e.g.}, \code{\linkS4class{GEVASummary}} or \code{\linkS4class{GEVAResults}}).}
 
 \item{...}{Optional arguments passed to \code{\link[=geva.summarize]{geva.summarize()}}, \code{\link[=geva.quantiles]{geva.quantiles()}}, \code{\link[=geva.cluster]{geva.cluster()}}, and \code{\link[=geva.finalize]{geva.finalize()}}}
 }
@@ -21,15 +21,15 @@ Therefore, this function can be useful not only as a shortcut to analyze \code{G
 }
 \examples{
 ## Basic usage using a random generated input
-ginput <- geva.ideal.example() # Generates a random input example
-gresults <- geva.quick(ginput) # Performs the entire analysis (default parameters)
+ginput <- geva.ideal.example()   # Generates a random input example
+gresults <- geva.quick(ginput)   # Performs the entire analysis (default parameters)
 
-head(top.genes(gresults))      # Prints the results
-plot(gresults)                 # Plots the final SV-plot
+print(head(top.genes(gresults))) # Prints the results
+plot(gresults)                        # Plots the final SV-plot
 
 
 ## Example with non-default parameters
-ginput <- geva.ideal.example() # Generates a random input example
+ginput <- geva.ideal.example()   # Generates a random input example
 gresults <- geva.quick(ginput,
                        summary.method="median",
                        variation.method="mad",
@@ -37,7 +37,7 @@ gresults <- geva.quick(ginput,
                        cluster.method="density",
                        resolution=0.32)
 
-head(top.genes(gresults))      # Prints the results
-plot(gresults)                 # Plots the final SV-plot
+print(head(top.genes(gresults))) # Prints the results
+plot(gresults)                   # Plots the final SV-plot
 
 }

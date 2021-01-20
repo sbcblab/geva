@@ -35,7 +35,7 @@ calc.cluster.centroids <- function(sv, cl, centroid.method=options.summary)
   svmatrix = as.matrix(sv)
   vsm = svmatrix[,'S']
   vvr = svmatrix[,'V']
-  centroid.method = assert.choices(centroid.method)
+  centroid.method = match.arg(centroid.method)
   summf = get.summary.method(centroid.method)
   svcents = svtable(tapply(vsm, cl, summf), tapply(vvr, cl, summf))
   svcents
@@ -64,7 +64,7 @@ calc.cluster.scores.centroid <- function(sv, cl, sv.centroids, distance.method=o
 {
   if (is.null(sv.centroids) || !inherits(sv, c('matrix', 'SVTable')))
     stop("'sv.centroids' must be a SVTable or a two-column numeric matrix")
-  distance.method = assert.choices(distance.method)
+  distance.method = match.arg(distance.method)
   cl = as.factor(cl)
   assert.names.equal(sv.centroids, rownames=sort(levels(cl)))
   vscores = rep(0, nrow(sv))
@@ -138,7 +138,7 @@ calc.cluster.scores <- function(sv, resolution, cl, cl.score.method=options.cl.s
   if (missing(distance.method)) distance.method = NULL
   if (missing(hctree)) hctree = NULL
   if (missing(knnd)) knnd = NULL
-  cl.score.method = assert.choices(cl.score.method)
+  cl.score.method = match.arg(cl.score.method)
   if (cl.score.method == 'auto')
     cl.score.method = tail(options.cl.score.method, n = 1L)
   cl = as.factor(cl)
@@ -176,7 +176,7 @@ append.groupsets <- function(gsummary, ...)
 # Gets the distance calculation function from the character
 get.distance.method.character <- function(method=options.distance)
 {
-  method = assert.choices(method)
+  method = match.arg(method)
   fn = switch(method,
               euclidean = function(x, r) sqrt(sum((r-x)^2)),
               manhattan = function(x, r) sum(abs(r-x))

@@ -31,6 +31,8 @@ options.variation
 \item{summary.method}{single \code{character}, method used to calculate the central (summarized) \emph{logFC} values}
 
 \item{variation.method}{single \code{character}, method used to calculate the distribution degree (variation) of the \emph{logFC} values}
+
+\item{...}{additional arguments. Accepts \code{verbose} (\code{logical}, default is \code{TRUE}) to enable or disable printing the current progress}
 }
 \value{
 A \code{\linkS4class{GEVASummary}} object

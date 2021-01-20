@@ -27,6 +27,11 @@
 
 
 }
+\arguments{
+\item{S}{the \emph{summary} value}
+
+\item{V}{the \emph{variation} value}
+}
 \description{
 This S4 class stores two character slots representing attribute fields for summary and variation. The \code{SVAttribute} class is abstract and must be instantiated as \code{SVChrAttribute} (for \code{character}), \code{SVNumAttribute} (for \code{numeric}), or \code{SVIntAttribute} (for \code{integer}).
 }
@@ -43,7 +48,7 @@ The slots \code{S} and \code{V} must be of the same class (either \code{characte
 }
 \section{Methods}{
 
-\cr\strong{Slot accessors}
+\sspace\cr\strong{Slot accessors}
 \describe{
 \item{\code{summary(object, ...)}}{Gets the \code{value} from the \code{S} slot}
 \item{\code{variation(object, ...)}}{Gets the \code{value} from the \code{V} slot}

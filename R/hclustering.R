@@ -55,6 +55,7 @@ calc.hclust.tree <- function(sv, resolution, hc.method=options.hc.method, hc.met
 #' @param resolution `numeric` (`0` to `1`), used as a "zoom" parameter for cluster detection. A zero value returns the minimum number of clusters that can detected, while `1` returns the maximum amount of detectable clusters
 #' @param hc.method `character`, the agglomeration method to be used. Used as the `method` argument for [fastcluster::hclust.vector()]
 #' @param hc.metric `character`, the distance measure to be used. Used as the `metric` argument for [fastcluster::hclust.vector()]
+#' @param ... additional arguments:
 #' \itemize{
 #' \item{`mink.p` : `numeric`, parameter for the Minkowsky metric. Used as the `p` argument for [fastcluster::hclust.vector()]}
 #' \item{`verbose` : `logical`, whether to print the current progress (default is `TRUE`)}
@@ -97,10 +98,10 @@ geva.hcluster <- function(sv, resolution=0.3, hc.method=options.hc.method, hc.me
                           cl.score.method=options.cl.score.method, ...,
                           include.raw.results=FALSE)
 {
-  cl.score.method = assert.choices(cl.score.method)
+  cl.score.method = match.arg(cl.score.method)
   svmatrix = as.matrix(sv)
-  hc.method = assert.choices(hc.method)
-  hc.metric = assert.choices(hc.metric)
+  hc.method = match.arg(hc.method)
+  hc.metric = match.arg(hc.metric)
   assert.names.equal(svmatrix, colnames=c('S', 'V'))
   assert.operator(resolution, `>` = 0, `<=` = 1)
   an.pars = list(resolution=resolution,

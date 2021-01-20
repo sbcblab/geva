@@ -22,10 +22,13 @@
 \alias{names,GEVAResults-method}
 \alias{analysis.params,GEVAResults-method}
 \alias{levels.GEVAResults}
+\alias{head.GEVAResults}
 \alias{points.GEVAResults}
 \alias{as.expression.GEVAResults}
 \title{GEVA Results Table}
 \usage{
+
+
 
 
 
@@ -89,22 +92,22 @@ The \code{GEVAResults} class contains the final results from GEVA analyses. It r
 
 \section{Methods}{
 
-\cr\strong{Dimension accessors}
+\sspace\cr\strong{Dimension accessors}
 \describe{
 \item{\code{dim(x)}}{Gets the dimensions from the \code{results.table} slot}
 \item{\code{dimnames(x)}}{Gets a \code{list} with the row and column names from the \code{results.table} slot. \cr Individual dimension names can also be accessed through \code{rownames} and \code{colnames}}
 }
-\cr\strong{Plotting}
+\sspace\cr\strong{Plotting}
 \describe{
 \item{\code{points(x, which, ..., classif)}}{Draws the results points.
 \cr If \code{which} (\code{character} vector) is given, plots only the matching genes/probes.
 \cr If \code{classif} (\code{character} vector) is given, plots only points with the matching classification}
 }
-\cr\strong{Properties}
+\sspace\cr\strong{Properties}
 \describe{
 \item{\code{analysis.params(gobject)}}{Returns a \code{list} of analysis parameters passed to \code{\link{geva.finalize}} or \code{\link{geva.quick}} to obtain this object}
 }
-\cr\strong{Slot accessors}
+\sspace\cr\strong{Slot accessors}
 \describe{
 \item{\code{infolist(object, field, ...)}}{Gets the \code{list} from the \code{info} slot}
 \item{\code{infolist(object, field, ...)}}{Gets the \code{list} from the \code{info} slot}
@@ -112,9 +115,10 @@ The \code{GEVAResults} class contains the final results from GEVA analyses. It r
 \item{\code{results.table(gres)}}{Gets the \code{data.frame} from the \code{resultstable} slot}
 \item{\code{sv.data(object)}}{Gets the \code{GEVASummary} from the \code{svdata} slot}
 }
-\cr\strong{Sub-slot accessors}
+\sspace\cr\strong{Sub-slot accessors}
 \describe{
 \item{\code{featureTable(object)}}{Returns the features \code{data.frame} from the internal \code{\linkS4class{GEVAInput}}}
+\item{\code{head(x, ...)}}{Returns the first lines of \code{results.table(x)}}
 \item{\code{inputdata(object)}}{Returns the internal \code{\linkS4class{GEVAInput}}}
 \item{\code{inputvalues(object)}}{Returns the values \code{matrix} from the internal \code{\linkS4class{GEVAInput}}}
 \item{\code{inputweights(object, normalized)}}{Returns the weights \code{matrix} from the internal \code{\linkS4class{GEVAInput}}}

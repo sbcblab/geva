@@ -163,6 +163,9 @@ setMethod('analysis.params', 'GEVAResults', function(gobject)
 #' @s3method Returns the factors used in factor analysis, if present
 levels.GEVAResults <- function(x) levels(inputdata(x))
 
+#' @s3method Returns the first lines of `results.table(x)`
+head.GEVAResults <- function(x, ...) head(results.table(x), ...)
+
 with.GEVAResults <- function(data, expr, ...)
 {
   dtres = results.table(data)

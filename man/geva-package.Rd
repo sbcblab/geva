@@ -7,5 +7,7 @@
 \title{geva: Gene Expression Variation Analysis}
 \description{
 Statistic methods to evaluate variation between multiple biological conditions.
+
+Statistic methods to evaluate variation between multiple biological conditions.
 }
 \keyword{internal}

@@ -83,7 +83,7 @@ options.dcluster.method <- c('dbscan', 'optics')
 #' @order 2
 geva.dcluster <- function(sv, resolution=0.3, dcluster.method=options.dcluster.method, cl.score.method=options.cl.score.method, minpts=2, ..., eps=NA_real_, include.raw.results=FALSE)
 {
-  cl.score.method = assert.choices(cl.score.method)
+  cl.score.method = match.arg(cl.score.method)
   assert.operator(resolution, `>` = 0, `<=` = 1)
   svmatrix = as.matrix(sv)
   dcluster.method = match.arg(dcluster.method)

@@ -58,7 +58,7 @@ setMethod('initialize', 'TypedList',
           )
 
 # DEFAULT CONSTRUCTOR
-#' @export
+#' @s4method Creates a TypedList from the elements in `...` derived from the class `elem.class`
 typed.list <- function(..., elem.class=NA_character_) new('TypedList', elem.class=elem.class, ...)
 
 

@@ -16,7 +16,9 @@
 \alias{infolist,GEVAInput,character-method}
 \alias{infolist<-,GEVAInput,list-method}
 \alias{factors,GEVAInput-method}
+\alias{factors}
 \alias{factors<-,GEVAInput,factor-method}
+\alias{factors<-}
 \alias{factors<-,GEVAInput,character-method}
 \alias{dim,GEVAInput-method}
 \alias{dimnames,GEVAInput-method}
@@ -97,17 +99,17 @@ It stores numeric matrices of \emph{logFC} values from differential expression c
 
 \section{Methods}{
 
-\cr\strong{Dimension accessors}
+\sspace\cr\strong{Dimension accessors}
 \describe{
 \item{\code{dim(x)}}{Gets the dimensions defined for both matrices in \code{values} and \code{weights} slots}
 \item{\code{dimnames(x)}}{Gets a \code{list} with the row and column names. \cr Individual dimension names can also be accessed through \code{rownames} and \code{colnames}}
 \item{\code{dimnames(x) <- value}}{Sets the \code{list} with the row and column names. \cr Individual dimension names can also be set using \code{rownames<-} and \code{colnames<-}}
 }
-\cr\strong{Properties}
+\sspace\cr\strong{Properties}
 \describe{
 \item{\code{analysis.params(gobject)}}{Returns a \code{list} of analysis parameters passed to \code{\link{geva.merge.input}} or \code{\link{geva.read.tables}} to obtain this object}
 }
-\cr\strong{Slot accessors}
+\sspace\cr\strong{Slot accessors}
 \describe{
 \item{\code{factors(object)}}{Gets the \code{factor} from the \code{factors} slot}
 \item{\code{factors(object) <- value}}{Sets a value to the \code{factors} slot}
@@ -118,7 +120,7 @@ It stores numeric matrices of \emph{logFC} values from differential expression c
 \item{\code{inputvalues(object)}}{Gets the \code{matrix} from the \code{values} slot}
 \item{\code{inputweights(object, normalized = FALSE)}}{Gets the \code{matrix} from the \code{weights} slot. \cr If \code{normalized} is \code{TRUE}, returns the weights matrix in the normalized form}
 }
-\cr\strong{Sub-slot accessors}
+\sspace\cr\strong{Sub-slot accessors}
 \describe{
 \item{\code{inputnames(object)}}{Gets the input column names (same as \code{colnames(object)})}
 }

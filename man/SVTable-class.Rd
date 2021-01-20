@@ -3,6 +3,8 @@
 \docType{class}
 \name{SVTable-class}
 \alias{SVTable-class}
+\alias{SVTable}
+\alias{svtable}
 \alias{show,SVTable-method}
 \alias{plot,SVTable,missing-method}
 \alias{[,SVTable,ANY,ANY,ANY-method}
@@ -67,6 +69,8 @@
 
 
 
+
+
 }
 \description{
 The \code{SVTable} class stores a \code{matrix} composed by two columns: \code{S} (for \emph{summary}) and \code{V} (for \emph{variation}).
@@ -84,16 +88,20 @@ The matrix from \code{sv} slot can \code{numeric}, \code{character}, or any othe
 }
 \section{Methods}{
 
-\cr\strong{Dimension accessors}
+\sspace\cr\strong{Constructor}
+\describe{
+\item{\code{svtable(S, V, row.names = NULL)}}{Creates a SVTable from the vectors \code{S} and \code{V}}
+}
+\sspace\cr\strong{Dimension accessors}
 \describe{
 \item{\code{dim(x)}}{Gets the dimensions from the \code{sv} slot}
 \item{\code{dimnames(x)}}{Gets a \code{list} with the row and column names from the \code{sv} slot. \cr Individual dimension names can also be accessed through \code{rownames} and \code{colnames}}
 }
-\cr\strong{Plotting}
+\sspace\cr\strong{Plotting}
 \describe{
 \item{\code{points(x, which, ..., classif)}}{Draws the SV points in the plot}
 }
-\cr\strong{Slot accessors}
+\sspace\cr\strong{Slot accessors}
 \describe{
 \item{\code{sv(object)}}{Gets the \code{matrix} from the \code{sv} slot}
 }

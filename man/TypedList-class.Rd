@@ -3,6 +3,7 @@
 \docType{class}
 \name{TypedList-class}
 \alias{TypedList-class}
+\alias{typed.list}
 \alias{elem.class,TypedList-method}
 \alias{elem.class<-,TypedList,character-method}
 \alias{show,TypedList-method}
@@ -13,6 +14,8 @@
 \alias{as.typed.list.TypedList}
 \title{Type-strict List (TypedList-class)}
 \usage{
+
+
 
 
 
@@ -40,7 +43,10 @@ List containing elements of the same class or inheritance.
 
 \section{Methods}{
 
-\cr\strong{Slot accessors}
+\describe{
+\item{\code{typed.list(..., elem.class = NA_character_)}}{Creates a TypedList from the elements in \code{...} derived from the class \code{elem.class}}
+}
+\sspace\cr\strong{Slot accessors}
 \describe{
 \item{\code{elem.class(typedlist)}}{Gets the \code{character} from the \code{elem.class} slot}
 \item{\code{elem.class(typedlist) <- value}}{Sets a value to the \code{elem.class} slot}

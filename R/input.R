@@ -333,6 +333,7 @@ geva.read.tables <- function(filenames=NULL, dirname=".", col.values="logFC", co
 #' @param na.rm `logical`; if `TRUE`, removes all rows containing `NA`
 #' @param inf.rm `logical`; if `TRUE`, removes all rows containing infinite values (`Inf` or `-Inf`)
 #' @param invalid.col.rm `logical`; if `TRUE`, searches for any column that is entirely composed by invalid values (according to the other arguments) and removes it before checking the rows
+#' @param ... optional arguments. Accepts `verbose` (`logical`, default is `TRUE`) to enable or disable printing the progress
 #' 
 #' @return A modified [`GEVAInput-class`] object
 #' 
@@ -414,6 +415,7 @@ geva.input.filter <- function(ginput, p.value.cutoff=0.05, by.any=FALSE, na.val=
 {
   # Removes the rows where all p-values are above the cutoff
   dw = inputweights(ginput)
+  verbose = ...arg(verbose, TRUE)
   sel.remove = 1L:nrow(ginput) %in% which.rows.outside.cutoff(1 - dw,
                                                               cutoff=1-p.value.cutoff,
                                                               na.val=na.val,
@@ -486,7 +488,6 @@ geva.input.rename.rows <- function(ginput, attr.column, dupl.rm.method = c("leas
     sel.dupls[vdinds] = gtapply(vsumpvals, fdgroups, function(x) seq_along(x) != which.min(x))
   }
   sel.valid = !sel.dupls & (nchar(attr.column) != 0L)
-  assign("sel.valid", sel.valid, envir=globalenv())
   ginput = ginput[sel.valid,,drop=FALSE]
   featureTable(ginput)[,'renamed_id'] = rownames(ginput)
   rownames(ginput) = attr.column[sel.valid]

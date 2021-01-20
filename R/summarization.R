@@ -117,6 +117,7 @@ weighted.sd <- function(x, w = NULL, idxs = NULL, na.rm = FALSE, center = NULL, 
 #' @param ginput a [`GEVAInput-class`] object
 #' @param summary.method single `character`, method used to calculate the central (summarized) *logFC* values
 #' @param variation.method single `character`, method used to calculate the distribution degree (variation) of the *logFC* values
+#' @param ... additional arguments. Accepts `verbose` (`logical`, default is `TRUE`) to enable or disable printing the current progress
 #' 
 #' @return A [`GEVASummary-class`] object
 #' 
@@ -132,8 +133,8 @@ weighted.sd <- function(x, w = NULL, idxs = NULL, na.rm = FALSE, center = NULL, 
 geva.summarize <- function(ginput, summary.method = options.summary, variation.method = options.variation, ...)
 {
   assert.class(ginput, is='GEVAInput')
-  summary.method = assert.choices(summary.method)
-  variation.method = assert.choices(variation.method)
+  summary.method = match.arg(summary.method)
+  variation.method = match.arg(variation.method)
   if (ncol(ginput) < 2L)
     stop(sprintf("ginput must contain at least two value columns (has %s)", ncol(ginput)))
   if (ncol(ginput) <= 3L && variation.method == 'mad')
@@ -155,7 +156,7 @@ geva.summarize <- function(ginput, summary.method = options.summary, variation.m
 # Gets the function for summarization (central point calculation)
 get.summary.method.character <- function(method = options.summary)
 {
-  method = assert.choices(method)
+  method = match.arg(method)
   fn = switch(method,
               median = matrixStats::weightedMedian,
               mean = matrixStats::weightedMean,
@@ -167,7 +168,7 @@ get.summary.method.character <- function(method = options.summary)
 # Gets the function for variation (deviation amount calculation)
 get.variation.method.character <- function(method = options.variation)
 {
-  method = assert.choices(method)
+  method = match.arg(method)
   fn = switch(method,
               mad = matrixStats::weightedMad,
               sd = weighted.sd,

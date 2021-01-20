@@ -61,7 +61,10 @@ row.wanova <- function(r, factors, w=NULL, modelmat=NULL, ...)
   {
     p1 = 1L:p
     comp = rlm$effects[p1]
-    asgn = rlm$assign[stats:::qr.lm(rlm)$pivot][p1]
+    r = rlm$qr
+    if (is.null(r)) # Copied check from stats:::qr.lm
+      stop("lm object does not have a proper 'qr' component.\n Rank zero or should not have used lm(.., qr=FALSE).")
+    asgn = rlm$assign[r$pivot][p1]
     ss = c(vapply(split(comp^2, asgn), sum, 1), ssr)
     df = c(lengths(split(asgn, asgn)), dfr)
   }
