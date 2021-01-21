@@ -1,8 +1,12 @@
 ---
 title: "Gene Expression Variation Analysis (GEVA)"
-author: "Nunes I.J.G."
-date: "`r Sys.Date()`"
-output: rmarkdown::pdf_document
+author: "Nunes IJG, David MZ, Feltes BC, and Dorn M"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+   pdf_document:
+     toc: true
+     number_sections: true
+
 vignette: >
   %\VignetteIndexEntry{GEVA}
   %\VignetteEngine{knitr::rmarkdown}
@@ -14,19 +18,21 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+Sys.setlocale("LC_TIME","English_United States")
+set.seed(1)
 ```
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+# Introduction
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+`GEVA` is a package for the analysis of differential gene expression in multiple experimental comparisons. It takes into account the fold-changes and p-values from previous differential expression (DE) results that use large-scale data (*e.g.*, microarray and RNA-seq) and evaluates which genes would react in response to the distinct experiments. This evaluation involves an unique pipeline of statistical methods, including weighted summarization, quantile detection, clustering, and ANOVA tests, in order to classify a subset of relevant genes whose differential expression is similar or dependent to certain biological factors.
 
-## Vignette Info
+This guide introduces the basic usage of `geva` package and focuses on its main features to perform the entire analysis from the input to the final classification. However, for more detailed specifications regarding classes, functions, and arguments from `geva`, please check the "Reference Guide" available in our GitHub repository. Alternatively, the local documentation can be accessed by typing `?geva` in the R console.
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+# Data Input
 
-## Styles
+There's already a function that does the quick start.
+
+# Styles
 
 The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
 
@@ -34,7 +40,7 @@ The `html_vignette` template includes a basic CSS theme. To override this theme 
       rmarkdown::html_vignette:
         css: mystyles.css
 
-## Figures
+# Figures
 
 The figure sizes have been customised so that you can easily put two images side-by-side. 
 
