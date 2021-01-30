@@ -37,6 +37,8 @@ setMethod('initialize', 'TypedList',
               .Object@elem.class = elem.class
               return(.Object)
             }
+            assert.class(elem.class, class="character")
+            assert.dim(elem.class, length=1L)
             argnms = call.dots.argnames(...)
             argls = list(...)
             .Object[1:...length()] = argls
@@ -58,6 +60,7 @@ setMethod('initialize', 'TypedList',
           )
 
 # DEFAULT CONSTRUCTOR
+#' @category Constructors
 #' @s4method Creates a TypedList from the elements in `...` derived from the class `elem.class`
 typed.list <- function(..., elem.class=NA_character_) new('TypedList', elem.class=elem.class, ...)
 
@@ -75,6 +78,12 @@ setMethod('elem.class<-', c(typedlist='TypedList', value='character'),
           {
             assert.notempty(value, .posmsg = "a valid class name must be specified")
             Class = value[1]
+            if (is.na(elem.class(typedlist)))
+            {
+              typedlist@elem.class = Class
+              if (length(typedlist) == 0L)
+                return(typedlist)
+            }
             if (elem.class(typedlist) %in% Class && all(sapply(typedlist, is, class2 = Class))) return(typedlist)
             args = as.list(typedlist)
             assert.notempty(value)
@@ -83,6 +92,7 @@ setMethod('elem.class<-', c(typedlist='TypedList', value='character'),
             typedlist
           })
 
+#' @category Properties
 #' @s4method
 setMethod('show', 'TypedList',
           function(object)
@@ -103,19 +113,31 @@ setMethod('[', c('TypedList', 'ANY', 'missing', 'missing'),
             return(do.call('typed.list', args=elems))
           })
 
+#' @s4method Sets a value to this list. The `value` argument must be compatible to the current list type
+setMethod('[<-', c(x='TypedList', i='character', j='missing', value='ANY'),
+          function (x, i, j, ..., value)
+          {
+            if (is.na(elem.class(x)))
+              elem.class(x) = class(value)
+            assert.class(value, is=elem.class(x))
+            x[[i]] = value
+            x
+          })
 
 # S3 Methods
+
+#' @category Conversion and coercion
 
 #' @s3method
 as.list.TypedList <- function(x, ...) x[1:length(x), drop=TRUE]
 
-#' @s3method
+#' @s3method Converts a vector to a `TypedList`
 as.typed.list.vector <- function(x, elem.class=NA_character_) do.call('typed.list', list.merge(as.list(x), list(elem.class=elem.class)))
 
-#' @s3method
+#' @s3method Converts a `list` to a `TypedList` if its elements inherit the same type
 as.typed.list.list <- function(x, elem.class=NA_character_) do.call('typed.list', list.merge(x, list(elem.class=elem.class)))
 
-#' @s3method
+#' @s3method Coerces a `TypedList` to support the inherited class indicated by `elem.class`
 as.typed.list.TypedList <- function(x, elem.class=NA_character_)
 {
   if (is.na(elem.class)) return(x)

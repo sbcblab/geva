@@ -55,6 +55,7 @@ setMethod('initialize', 'GEVACluster',
 )
 
 # SHOW
+#' @category Properties
 #' @s4method
 setMethod('show', 'GEVACluster',
           function(object)
@@ -68,7 +69,8 @@ setMethod('show', 'GEVACluster',
 # PLOT
 
 #' @category Plotting
-#' @s4method
+#' @s4method Draws a SV-plot that highlights the clustered points. Convex hulls are included for visual purposes only and do not avoid enclosing points from other clusters on concave parts.
+#' \cr Can be combined with another `SVTable` or `GEVAGroupSet` given as the `y` argument to include additional graphical elements
 setMethod('plot', c('GEVACluster', 'SVTable'),
           function(x, y, ...)
           {
@@ -78,6 +80,8 @@ setMethod('plot', c('GEVACluster', 'SVTable'),
 # S4 Methods
 
 #' @methodsnote (See also the inherited methods from [`GEVAGroupSet-class`])
+
+#' @category Properties
 
 #' @s4method
 #' @s4accessor
@@ -91,6 +95,6 @@ setMethod('cluster.method', 'GEVACluster', function(object) object@cluster.metho
 #' @s3method Draws convex hulls around the clustered points
 lines.GEVACluster <- function(x, ...)
 {
-  do.call(hull.lines, list.merge(list(x=sv(x), cl=groups(x), col=color.values(x)), list(...)))
+  do.call(hull.lines, list.merge(list(...), list(x=sv(x), cl=groups(x), col=color.values(x))))
   invisible()
 }

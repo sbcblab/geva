@@ -12,6 +12,7 @@
 #' @include c_GEVAInput.R
 #' @include c_SVAttribute.R
 #' @include c_TypedList.R
+#' @include c_GEVAGroupSet.R
 NULL
 
 #' @title GEVA Summary-Variation Table
@@ -53,6 +54,7 @@ setMethod('initialize', 'GEVASummary',
 )
 
 # SHOW
+#' @category Properties
 #' @s4method
 setMethod('show', 'GEVASummary',
           function(object)
@@ -67,7 +69,8 @@ setMethod('show', 'GEVASummary',
           })
 
 # PLOT
-#' @s4method
+#' @category Plotting
+#' @s4method Draws a SV-plot. The horizontal axis is for *summary* (S) and the vertical axis is for *variation* (V)
 setMethod('plot', c('GEVASummary', 'missing'),
           function(x, y, ...)
           {
@@ -80,7 +83,7 @@ setMethod('plot', c('GEVASummary', 'missing'),
 
 # S4 Methods
 
-#' @methodsnote (See also the inherited methods from [`SVTable-class`]
+#' @methodsnote (See also the inherited methods from [`SVTable-class`])
 
 #' @s4method
 #' @s4accessor
@@ -138,14 +141,6 @@ setMethod('infolist<-', c('GEVASummary', 'list'), function(object, value) { obje
 #' @s4method
 setMethod('quantiles', 'GEVASummary', function(object) geva.quantiles(object))
 
-#' @s4method
-setMethod('groupsets', 'GEVASummary', function(object) typed.list(elem.class = 'GEVAGroupSet') )
-#' @s4method
-setMethod('groupsets<-', c('GEVASummary', 'TypedList'), function(object, value)
-{
-  gs2 = promote.class(object, 'GEVAGroupedSummary', groupsetlist=value)
-  gs2
-})
 
 #' @category Properties
 
@@ -158,7 +153,34 @@ setMethod('analysis.params', 'GEVASummary', function(gobject)
 })
 
 
+#' @category Grouping
+
+#' @s4method Gets the list of [`GEVAGroupSet-class`] objects attached to this instance. Only applicable for [`GEVAGroupedSummary-class`] objects
+setMethod('groupsets', 'GEVASummary', function(object) typed.list(elem.class = 'GEVAGroupSet') )
+
+#' @s4method Converts this instance to [`GEVAGroupedSummary`] and sets the list of [`GEVAGroupSet-class`] objects.
+#' Can be used with `$<name>` to specify the object name in the list.
+#' If `value` is a `GEVAGroupSet`, inserts the element and sets the name based on the value call
+setMethod('groupsets<-', c('GEVASummary', 'TypedList'), function(object, value)
+{
+  gs2 = promote.class(object, 'GEVAGroupedSummary', groupsetlist=value)
+  gs2
+})
+
+#' @s4method
+setMethod('groupsets<-', c('GEVASummary', 'GEVAGroupSet'), function(object, value)
+{
+  argnm = deparse(substitute(value))[[1]]
+  ggls = typed.list(elem.class = 'GEVAGroupSet')
+  ggls[argnm] = value
+  gs2 = promote.class(object, 'GEVAGroupedSummary', groupsetlist=ggls)
+  gs2
+})
+
+
 # S3 Methods
+
+#' @category Properties
 
 #' @s3method Gets a `character` for the summarization method name
 get.summary.method.GEVASummary <- function(gevasummary) get.summary.method(sv.method(gevasummary)$S)
@@ -166,10 +188,12 @@ get.summary.method.GEVASummary <- function(gevasummary) get.summary.method(sv.me
 #' @s3method Gets a `character` for the variation calculation method name
 get.variation.method.GEVASummary <- function(gevasummary) get.variation.method(sv.method(gevasummary)$V)
 
-#' @s3method
+#' @category Conversion and coercion
+
+#' @s3method Equivalent to `sv(x)`
 as.matrix.GEVASummary <- function(x, ...) sv(x)
 
-#' @s3method
+#' @s3method Gets the expression that reproduces this `GEVASummary` object, including function parameters used by `geva.summary`. The `ginput` argument is optional but can be specified to replace the internal `GEVAInput`
 as.expression.GEVASummary <- function(x, ginput, ...)
 {
   parls = analysis.params(x)

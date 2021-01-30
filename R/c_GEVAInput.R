@@ -58,6 +58,7 @@ setMethod('initialize', 'GEVAInput',
           )
 
 # SHOW
+#' @category Properties
 #' @s4method
 setMethod('show', 'GEVAInput',
           function(object)
@@ -86,18 +87,20 @@ setMethod('[', c('GEVAInput', 'ANY', 'ANY', 'ANY'),
           })
 
 # PLOT (Not intended to use)
-#' @s4method
+#' @category Plotting
+#' @s4method Summarizes the input using the default parameters, then calls the plot on the returned `GEVASummary` object.
+#' \cr Not intended to regular use and will give a warning if called
 setMethod('plot', c('GEVAInput', 'missing'),
           function(x, y, ...)
           {
             warning("Input summarized using the default parameters")
             gsummary = geva.summarize(x, verbose=FALSE)
-            plot(gsummary)
+            plot(gsummary, y, ...)
           })
 
 # S4 Methods
 
-#' @s4method
+#' @s4method 
 setMethod('inputdata', 'GEVAInput', function(object) object)
 
 #' @s4method
@@ -190,10 +193,13 @@ setMethod('dimnames<-', c('GEVAInput', 'list'),
     x
   })
 
+#' @s4method Returns the number of rows in the `values` slot
+setMethod('length', 'GEVAInput', function(x) nrow(inputvalues(x)))
+
 #' @s4method Gets the input column names (same as `colnames(object)`)
 setMethod('inputnames', 'GEVAInput', function(object) colnames(object@values))
 
-#' @s4method
+#' @s4method Same as `inputnames`. For internal use
 setMethod('names', 'GEVAInput', function(x) colnames(inputvalues(x)))
 
 setMethod('as.indexes', 'matrix', function(x) matrix(1:length(x), ncol=ncol(x), dimnames = dimnames(x)))
@@ -212,11 +218,20 @@ setMethod('analysis.params', 'GEVAInput', function(gobject)
 
 # S3 Methods
 
-#' @s3method
+#' @category Alternative accessors
+
+#' @s3method Returns the unique values from the assigned factors; or `NA` if there are no assigned factors in `x`
 levels.GEVAInput <- function(x) levels(factors(x))
 
-#' @s3method
+#' @category Subsetting
+
+#' @s3method Returns the first parts of the `values` table
 head.GEVAInput <- function(x, n=6L, ...) head(inputvalues(x), n=n, ...)
+
+#' @s3method Returns the last parts of the `values` table
+tail.GEVAInput <- function(x, n=6L, ...) tail(inputvalues(x), n=n, ...)
+
+#' @category Conversion and coercion
 
 #' @s3method
 as.array.GEVAInput <- function(x, ...)

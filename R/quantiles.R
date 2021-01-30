@@ -255,7 +255,7 @@ generate.quantile.colors <- function(svinds)
   clrs
 }
 
-#' Returns a vector with the supported methods of quantiles separation
+# Returns a vector with the supported methods of quantiles separation
 #' @options [geva.quantiles]
 #' @order 2
 #' @seealso [geva.cluster]
@@ -264,7 +264,7 @@ options.quantiles <- c('range.slice', 'proportional', 'density', 'k.max.sd', 'cu
 
 #' @title GEVA Quantiles Detection
 #' 
-#' Calculates the quantiles of a [`SVTable-class`] 
+#' @description Calculates the quantiles of a [`SVTable-class`].
 #' 
 #' @param sv a [`SVTable-class`] object (usually [`GEVASummary-class`])
 #' @param quantile.method `character`, method to detect the initial quantile thresholds. Ignored if `initial.thresholds` is specified with no `NA` elements

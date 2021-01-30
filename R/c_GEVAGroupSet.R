@@ -62,6 +62,8 @@ setMethod('initialize', 'GEVAGroupSet',
           )
 
 # SHOW
+#' @category Properties
+#' @s4method
 setMethod('show', 'GEVAGroupSet',
           function(object)
           {
@@ -72,7 +74,7 @@ setMethod('show', 'GEVAGroupSet',
           })
 
 # PLOT
-
+#' @category Plotting
 #' @s4method
 setMethod('plot', c('GEVAGroupSet', 'missing'),
           function(x, y, ...)
@@ -96,7 +98,8 @@ setMethod('plot', c('GEVAGroupSet', 'SVTable'),
 setMethod('plot', c('SVTable', 'GEVAGroupSet'),
           function(x, y, ...) plot(y, x, ...))
 
-#' @s4method
+#' @s4method Draws a SV-plot that highlights the grouped information.
+#' \cr Can be combined with another `SVTable` or `GEVAGroupSet` given as the `y` argument to include additional graphical elements
 setMethod('plot', c('GEVAGroupSet', 'GEVAGroupSet'),
           function(x, y, ...) 
           {
@@ -123,9 +126,6 @@ setMethod('centroids', 'GEVAGroupSet', function(object) object@centroids)
 setMethod('offsets', 'GEVAGroupSet', function(object) object@offsets)
 
 
-#' @s4method 
-setMethod('names', 'GEVAGroupSet', function(x) names(scores(x)))
-
 #' @s4method
 #' @s4accessor
 #' If `scores` is a group name, returns only the scores from this group
@@ -149,6 +149,15 @@ setMethod('infolist<-', c('GEVAGroupSet', 'list'), function(object, value) { obj
 #' @s4method
 #' @s4accessor ftable
 setMethod('featureTable', 'GEVAGroupSet', function(object) object@ftable)
+
+
+#' @category Dimension accessors
+
+#' @s4method Gets the assigned names by the classification and scores
+setMethod('names', 'GEVAGroupSet', function(x) names(scores(x)))
+
+#' @s4method Returns the number of rows in the `sv` slot
+setMethod('length', 'GEVAGroupSet', function(x) length(scores(x)))
 
 
 #' @category Sub-slot accessors
@@ -175,12 +184,10 @@ setMethod('sv.data', 'GEVAGroupSet',
             mcentoffs
           })
 
-#' @s4method
-setMethod('cluster.method', 'GEVAGroupSet', function(object) NA_character_ )
 
-#' @s4method
+#' @s4method Returns a `data.frame` of predicted classifications, if supported by this object
 setMethod('classification.table', 'GEVAGroupSet', function(object) infolist(object)$classification.table  )
-#' @s4method
+#' @s4method Stores the classification `data.frame` on this object
 setMethod('classification.table<-', c('GEVAGroupSet', 'data.frame'),
           function(object, value)
           {
@@ -190,20 +197,21 @@ setMethod('classification.table<-', c('GEVAGroupSet', 'data.frame'),
 
 #' @category Properties
 
+#' @s4method Returns the option used as the `cluster.method` argument when calling `geva.cluster`
+setMethod('cluster.method', 'GEVAGroupSet', function(object) NA_character_ )
+
 #' @s4method Returns a `list` of analysis parameters passed to [`geva.cluster`] to obtain this object
 setMethod('analysis.params', 'GEVAGroupSet', function(gobject)
   list.merge(list(cluster.method=cluster.method(gobject)), infolist(gobject, 'analysis.params')))
   
 # S3 Methods
 
-#' @s3method
+#' @category Alternative accessors
+
+#' @s3method Returns the unique group names included in the group set.
+#' \cr Equivalent to `levels(groups(x))`
 levels.GEVAGroupSet <- function(x) levels(groups(x))
 
-#' @s3method
-as.data.frame.GEVAGroupSet <- function(x, row.names=names(x), ...)
-{
-  data.frame(groups=groups(x), scores=scores(x), row.names = row.names)
-}
 
 #' @category Plotting
 
@@ -226,7 +234,10 @@ color.values.GEVAGroupSet <- function(x, point.col=NULL, ...)
   {
     clrs = color.values.factor(x=groups(x), ...)
   } else {
-    clrs = color.adjust(clrs[groups(x)])
+    if (length(clrs) != length(groups(x)) && length(clrs) == length(levels(x)))
+      clrs = color.adjust(clrs[groups(x)])
+    else
+      clrs = color.adjust(clrs)
   }
   clrs
 }
@@ -237,7 +248,15 @@ points.GEVAGroupSet <- function(x, ...)
   call.plot(sv(x), ..., defargs = list(col=color.values(x, ...)), plotfn = points.default)
 }
 
-#' @s3method
+#' @category Conversion and coercion
+
+#' @s3method Returns a `data.frame` with the `groups` and `scores` slots as columns
+as.data.frame.GEVAGroupSet <- function(x, row.names=names(x), ...)
+{
+  data.frame(groups=groups(x), scores=scores(x), row.names = row.names)
+}
+
+#' @s3method Gets the expression that reproduces this `GEVAGroupSet` object, including function parameters used by `geva.cluster`. The `sv` argument is optional but can be specified to replace the source `SVTable`
 as.expression.GEVAGroupSet <- function(x, sv, ...)
 {
   parls = analysis.params(x)
@@ -251,7 +270,7 @@ as.expression.GEVAGroupSet <- function(x, sv, ...)
   expr
 }
 
-#' @s3method
+#' @s3method Retrieves a `SVTable` based on the contents indicated by `which`. The accepted arguments are: `sv` for the source data; `offsets` for the `offsets` slots; and `centroids` for the `centroids` slot
 as.SVTable.GEVAGroupSet <- function(x, which=c('sv', 'offsets', 'centroids'), ...)
 {
   which = match.arg(which)

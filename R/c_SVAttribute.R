@@ -65,7 +65,8 @@ setMethod('initialize', 'SVNumAttribute', function(.Object, S, V, ...) callNextM
 setMethod('initialize', 'SVIntAttribute', function(.Object, S, V, ...) callNextMethod(.Object, S, V, ...))
 
 # SHOW
-#' @export
+#' @category Properties
+#' @s4method
 setMethod('show', 'SVAttribute',
           function(object)
           {
@@ -73,7 +74,7 @@ setMethod('show', 'SVAttribute',
           })
 
 # INDEXERS
-#' @export
+#' @s4method Indexer to access the vector values. Only accepts `'S'` or `'V'` as `i` arguments
 setMethod('[', c('SVAttribute', 'ANY', 'ANY', 'ANY'),
           function(x, i, j, ... , drop = TRUE)
           {
@@ -86,51 +87,58 @@ setMethod('[', c('SVAttribute', 'ANY', 'ANY', 'ANY'),
             NA_character_
           })
 
-# S4 Methods
-
-#' @export
-setMethod('dim', 'SVAttribute', function(x) NULL)
-
-#' @export
-setMethod('names', 'SVAttribute', function(x) c('S', 'V') )
-
-#' @export
+#' @s4method Queries the vector contents (equivalent to the indexer). Only accepts `$S` and `$V`
 setMethod('$', 'SVAttribute', function(x, name) x[name] )
 
-#' @export
+# S4 Methods
+
+#' @category Dimension accessors
+
+#' @s4method For internal use, always returns `NULL`
+setMethod('dim', 'SVAttribute', function(x) NULL)
+
+#' @s4method Returns the slot names (always `c('S', 'V')`)
+setMethod('names', 'SVAttribute', function(x) c('S', 'V') )
+
+#' @category Alternative accessors
+
+#' @s4method Returns the contents as a named vector
 setMethod('sv', 'SVAttribute', function(object) setNames(c(object@S, object@V), c('S', 'V')))
+
+#' @category Constructors
+
+#' @s4method
+setMethod('svattr', c(S='character', V='character'), function(S, V) new('SVChrAttribute', S=S, V=V))
+
+#' @s4method
+setMethod('svattr', c(S='numeric', V='numeric'), function(S, V) new('SVNumAttribute', S=as.numeric(S), V=as.numeric(V)))
 
 #' @param S the *summary* value
 #' @param V the *variation* value
-#' @export
-#' @rdname SVAttribute-class
-setMethod('svattr', c(S='character', V='character'), function(S, V) new('SVChrAttribute', S=S, V=V))
-
-#' @export
-#' @rdname SVAttribute-class
-setMethod('svattr', c(S='numeric', V='numeric'), function(S, V) new('SVNumAttribute', S=as.numeric(S), V=as.numeric(V)))
-
-#' @export
-#' @rdname SVAttribute-class
+#' @s4method Creates a new `SVAttribute`
 setMethod('svattr', c(S='integer', V='integer'), function(S, V) new('SVIntAttribute', S=S, V=V))
 
-#' @export
+#' @s4method For internal use. Returns the equivalent object
 setMethod('sv.data', 'SVAttribute', function(object) object)
 
 # S3 Methods
 
-#' @s3method
+#' @category Alternative accessors
+
+#' @s3method Returns the contents from `S` slot
 #' @s4accessor S
 summary.SVAttribute <- function(object, ...) object@S
 
-#' @s3method
+#' @s3method Returns the contents from `S` slot
 #' @s4accessor V
 variation.SVAttribute <- function(object, ...) object@V
 
-#' @export
+#' @category Conversion and coercion
+
+#' @s3method
 as.character.SVAttribute <- function(x, ...) c(summary(x), variation(x))
 
-#' @export
+#' @s3method
 as.vector.SVAttribute <- function(x, ...) sv(x)
 
 

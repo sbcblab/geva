@@ -17,15 +17,18 @@
 \alias{infolist,GEVASummary,missing-method}
 \alias{infolist<-,GEVASummary,list-method}
 \alias{quantiles,GEVASummary-method}
+\alias{analysis.params,GEVASummary-method}
 \alias{groupsets,GEVASummary-method}
 \alias{groupsets<-,GEVASummary,TypedList-method}
-\alias{analysis.params,GEVASummary-method}
+\alias{groupsets<-,GEVASummary,GEVAGroupSet-method}
 \alias{get.summary.method.GEVASummary}
 \alias{get.variation.method.GEVASummary}
 \alias{as.matrix.GEVASummary}
 \alias{as.expression.GEVASummary}
 \title{GEVA Summary-Variation Table}
 \usage{
+
+
 
 
 
@@ -87,25 +90,37 @@ This class inherits from \code{SVTable}.
 }}
 
 \section{Methods}{
-(See also the inherited methods from \code{\linkS4class{SVTable}}\cr 
+(See also the inherited methods from \code{\linkS4class{SVTable}})\cr 
 
+\sspace\cr\strong{Conversion and coercion}
+\describe{
+\item{\code{as.expression(x, ginput, ...)}}{Gets the expression that reproduces this \code{GEVASummary} object, including function parameters used by \code{geva.summary}. The \code{ginput} argument is optional but can be specified to replace the internal \code{GEVAInput}}
+\item{\code{as.matrix(x, ...)}}{Equivalent to \code{sv(x)}}
+}
+\sspace\cr\strong{Grouping}
+\describe{
+\item{\code{groupsets(object) <- value}}{Converts this instance to \code{\link{GEVAGroupedSummary}} and sets the list of \code{\linkS4class{GEVAGroupSet}} objects.
+Can be used with \verb{$<name>} to specify the object name in the list.
+If \code{value} is a \code{GEVAGroupSet}, inserts the element and sets the name based on the value call}
+\item{\code{groupsets(object)}}{Gets the list of \code{\linkS4class{GEVAGroupSet}} objects attached to this instance. Only applicable for \code{\linkS4class{GEVAGroupedSummary}} objects}
+}
+\sspace\cr\strong{Plotting}
+\describe{
+\item{\code{plot(x, y, ...)}}{Draws a SV-plot. The horizontal axis is for \emph{summary} (S) and the vertical axis is for \emph{variation} (V)}
+}
 \sspace\cr\strong{Properties}
 \describe{
 \item{\code{analysis.params(gobject)}}{Returns a \code{list} of analysis parameters passed to \code{\link{geva.summarize}} to obtain this object}
 \item{\code{get.summary.method(gevasummary)}}{Gets a \code{character} for the summarization method name}
 \item{\code{get.variation.method(gevasummary)}}{Gets a \code{character} for the variation calculation method name}
 }
-\sspace\cr\strong{Slot accessors}
-\describe{
-\item{\code{infolist(object, field, ...)}}{Gets the \code{list} from the \code{info} slot.
-\cr If \code{recursive} is \code{TRUE}, appends the contents from the \code{info} slot in the internal \code{\linkS4class{GEVAInput}}}
-\item{\code{inputdata(object)}}{Gets the \code{GEVAInput} from the \code{inputdata} slot}
-}
 \sspace\cr\strong{Sub-slot accessors}
 \describe{
-\item{\code{factors(object)}}{Gets the \code{factor} defined in the \code{factors} slot in the internal \code{\linkS4class{GEVAInput}}}
 \item{\code{factors(object) <- value}}{Sets the value to the \code{factor} slot in the internal \code{\linkS4class{GEVAInput}}}
+\item{\code{factors(object)}}{Gets the \code{factor} defined in the \code{factors} slot in the internal \code{\linkS4class{GEVAInput}}}
 \item{\code{featureTable(object)}}{Gets the \code{data.frame} from the \code{ftable} slot in the internal \code{\linkS4class{GEVAInput}}}
+\item{\code{infolist(object, field = NULL, ...)}}{Gets the \code{list} from the \code{info} slot.
+\cr If \code{recursive} is \code{TRUE}, appends the contents from the \code{info} slot in the internal \code{\linkS4class{GEVAInput}}}
 \item{\code{inputvalues(object)}}{Gets the \code{matrix} from the \code{values} slot in the internal \code{\linkS4class{GEVAInput}}}
 \item{\code{inputweights(object, normalized)}}{Gets the \code{matrix} from the \code{weights} slot in the internal \code{\linkS4class{GEVAInput}}}
 }

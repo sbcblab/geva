@@ -10,18 +10,45 @@
 \alias{SVNumAttribute-class}
 \alias{SVIntAttribute-class}
 \alias{SVChrAttribute-class}
+\alias{show,SVAttribute-method}
+\alias{[,SVAttribute,ANY,ANY,ANY-method}
+\alias{$,SVAttribute-method}
+\alias{dim,SVAttribute-method}
+\alias{names,SVAttribute-method}
+\alias{sv,SVAttribute-method}
 \alias{svattr,character,character-method}
 \alias{svattr,numeric,numeric-method}
 \alias{svattr,integer,integer-method}
+\alias{sv.data,SVAttribute-method}
 \alias{summary.SVAttribute}
 \alias{variation.SVAttribute}
+\alias{as.character.SVAttribute}
+\alias{as.vector.SVAttribute}
 \title{Summary-Variation Attribute Field}
 \usage{
-\S4method{svattr}{character,character}(S, V)
 
-\S4method{svattr}{numeric,numeric}(S, V)
 
-\S4method{svattr}{integer,integer}(S, V)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -48,10 +75,31 @@ The slots \code{S} and \code{V} must be of the same class (either \code{characte
 }
 \section{Methods}{
 
-\sspace\cr\strong{Slot accessors}
+\sspace\cr\strong{Alternative accessors}
 \describe{
-\item{\code{summary(object, ...)}}{Gets the \code{value} from the \code{S} slot}
-\item{\code{variation(object, ...)}}{Gets the \code{value} from the \code{V} slot}
+\item{\code{summary(object, ...)}}{Returns the contents from \code{S} slot}
+\item{\code{sv(object)}}{Returns the contents as a named vector}
+\item{\code{variation(object, ...)}}{Returns the contents from \code{S} slot}
+}
+\sspace\cr\strong{Constructors}
+\describe{
+\item{\code{sv.data(object)}}{For internal use. Returns the equivalent object}
+\item{\code{svattr(S, V)}}{Creates a new \code{SVAttribute}}
+}
+\sspace\cr\strong{Conversion and coercion}
+\describe{
+\item{\code{as.character(x, ...)}}{Converts this object to \code{character}}
+\item{\code{as.vector(x, ...)}}{Converts this object to \code{vector}}
+}
+\sspace\cr\strong{Dimension accessors}
+\describe{
+\item{\code{dim(x)}}{For internal use, always returns \code{NULL}}
+\item{\code{names(x)}}{Returns the slot names (always \code{c('S', 'V')})}
+}
+\sspace\cr\strong{Properties}
+\describe{
+\item{\code{x$name <- value}}{Queries the vector contents (equivalent to the indexer). Only accepts \verb{$S} and \verb{$V}}
+\item{\code{x[i, j, ..., drop=TRUE]}}{Indexer to access the vector values. Only accepts \code{'S'} or \code{'V'} as \code{i} arguments}
 }
 }
 

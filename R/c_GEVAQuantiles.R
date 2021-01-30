@@ -76,6 +76,7 @@ setMethod('initialize', 'GEVAQuantiles',
           )
 
 # SHOW
+#' @category Properties
 #' @s4method
 setMethod('show', 'GEVAQuantiles',
           function(object)
@@ -87,7 +88,9 @@ setMethod('show', 'GEVAQuantiles',
           })
 
 # PLOT
-#' @s4method
+#' @category Plotting
+#' @s4method Draws a SV-plot that highlights the points from each quantile. Dashed lines are included as the quantile delimiters.
+#' \cr Can be combined with another `SVTable` or `GEVAGroupSet` given as the `y` argument to include additional graphical elements
 setMethod('plot', c('GEVAQuantiles', 'SVTable'),
           function(x, y, ...)
           {
@@ -116,8 +119,6 @@ setMethod('qindexes', 'GEVAQuantiles', function(object) object@qindexes)
 #' @s4accessor
 setMethod('qareasizes', 'GEVAQuantiles', function(object) object@qareasizes)
 
-
-
 #' @s4method
 #' @s4accessor
 setMethod('qcount', 'GEVAQuantiles', function(object) object@qcount)
@@ -127,11 +128,14 @@ setMethod('qcount', 'GEVAQuantiles', function(object) object@qcount)
 setMethod('sv.scores', 'GEVAQuantiles', function(object) object@svscores)
 
 #' @s4method
-setMethod('cluster.method', 'GEVAQuantiles', function(object) 'quantiles')
-
-#' @s4method
 #' @s4accessor qmethod
 setMethod('quantiles.method', 'GEVAQuantiles', function(object) object@qmethod)
+
+#' @category Properties
+
+#' @s4method Returns the option used as the `cluster.method` argument when calling `geva.cluster`.
+#' \cr Instances of this object always return `'quantiles'`
+setMethod('cluster.method', 'GEVAQuantiles', function(object) 'quantiles')
 
 #' @category Sub-slot accessors
 
@@ -159,6 +163,8 @@ setMethod('dim', 'GEVAQuantiles', function(x) dim(sv.scores(x)))
 
 # S3 Methods
 
+#' @category Plotting
+
 #' @s3method Draws the quantile delimiter lines
 lines.GEVAQuantiles <- function(x, ...)
 {
@@ -173,6 +179,8 @@ lines.GEVAQuantiles <- function(x, ...)
   }
   invisible(FALSE)
 }
+
+#' @category Conversion and coercion
 
 #' @s3method
 as.expression.GEVAQuantiles <- function(x, sv, ...)

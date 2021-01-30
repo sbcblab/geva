@@ -4,9 +4,9 @@
 \name{GEVAResults-class}
 \alias{GEVAResults-class}
 \alias{show,GEVAResults-method}
-\alias{plot,GEVAResults,missing-method}
 \alias{[,GEVAResults,ANY,ANY,ANY-method}
 \alias{$,GEVAResults-method}
+\alias{plot,GEVAResults,missing-method}
 \alias{quantiles,GEVAResults-method}
 \alias{results.table,GEVAResults-method}
 \alias{sv.data,GEVAResults-method}
@@ -20,6 +20,7 @@
 \alias{dim,GEVAResults-method}
 \alias{dimnames,GEVAResults-method}
 \alias{names,GEVAResults-method}
+\alias{length,GEVAResults-method}
 \alias{analysis.params,GEVAResults-method}
 \alias{levels.GEVAResults}
 \alias{head.GEVAResults}
@@ -27,6 +28,8 @@
 \alias{as.expression.GEVAResults}
 \title{GEVA Results Table}
 \usage{
+
+
 
 
 
@@ -92,28 +95,29 @@ The \code{GEVAResults} class contains the final results from GEVA analyses. It r
 
 \section{Methods}{
 
+\sspace\cr\strong{Conversion and coercion}
+\describe{
+\item{\code{as.expression(x, gsummary, gquants, ...)}}{Gets the expression that reproduces this \code{GEVAResults} object, including function parameters used by \code{geva.finalize}. The \code{gsummary} and \code{gquants} arguments are optional but can be specified to replace the internal \code{GEVASummary} and \code{GEVAQuantiles}, respectively}
+}
 \sspace\cr\strong{Dimension accessors}
 \describe{
-\item{\code{dim(x)}}{Gets the dimensions from the \code{results.table} slot}
-\item{\code{dimnames(x)}}{Gets a \code{list} with the row and column names from the \code{results.table} slot. \cr Individual dimension names can also be accessed through \code{rownames} and \code{colnames}}
+\item{\code{dim(x)}}{Returns the dimensions from the \code{resultstable} slot}
+\item{\code{dimnames(x)}}{Returns a \code{list} with the row and column names from the \code{results.table} slot. \cr Individual dimension names can also be accessed through \code{rownames} and \code{colnames}}
+\item{\code{length(x)}}{Returns the number of rows in the \code{resultstable} slot}
+\item{\code{names(x)}}{Returns the column names from the \code{resultstable} slot}
 }
 \sspace\cr\strong{Plotting}
 \describe{
+\item{\code{plot(x, y, ...)}}{Draws a SV-plot that highlights the relevant points from adjusted quantiles}
 \item{\code{points(x, which, ..., classif)}}{Draws the results points.
 \cr If \code{which} (\code{character} vector) is given, plots only the matching genes/probes.
 \cr If \code{classif} (\code{character} vector) is given, plots only points with the matching classification}
 }
 \sspace\cr\strong{Properties}
 \describe{
+\item{\code{x$name <- value}}{Extracts a column from the \code{resultstable} slot}
+\item{\code{x[i, j, ..., drop=TRUE]}}{Extracts the contents from the \code{resultstable} slot}
 \item{\code{analysis.params(gobject)}}{Returns a \code{list} of analysis parameters passed to \code{\link{geva.finalize}} or \code{\link{geva.quick}} to obtain this object}
-}
-\sspace\cr\strong{Slot accessors}
-\describe{
-\item{\code{infolist(object, field, ...)}}{Gets the \code{list} from the \code{info} slot}
-\item{\code{infolist(object, field, ...)}}{Gets the \code{list} from the \code{info} slot}
-\item{\code{quantiles(object)}}{Gets the \code{GEVAQuantiles} from the \code{quantdata} slot}
-\item{\code{results.table(gres)}}{Gets the \code{data.frame} from the \code{resultstable} slot}
-\item{\code{sv.data(object)}}{Gets the \code{GEVASummary} from the \code{svdata} slot}
 }
 \sspace\cr\strong{Sub-slot accessors}
 \describe{

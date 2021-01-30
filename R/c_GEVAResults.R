@@ -59,6 +59,7 @@ setMethod('initialize', 'GEVAResults',
 
 
 # SHOW
+#' @category Properties
 #' @s4method
 setMethod('show', 'GEVAResults',
           function(object)
@@ -80,25 +81,26 @@ setMethod('show', 'GEVAResults',
             }
           })
 
-# PLOT
-#' @s4method
-setMethod('plot', c('GEVAResults', 'missing'), function(x, y, ...) plot(quantiles(x), ...))
-
 # INDEXERS
-#' @s4method
+#' @s4method Extracts the contents from the `resultstable` slot
 setMethod('[', c('GEVAResults', 'ANY', 'ANY', 'ANY'),
           function(x, i, j, ... , drop = TRUE)
           {
             mv = results.table(x)[i,j,drop=drop]
             mv
           })
-#' @s4method
+#' @s4method Extracts a column from the `resultstable` slot
 setMethod('$', 'GEVAResults',
           function(x, name)
           {
             if (name %in% colnames(x)) return(results.table(x)[[name]])
             NULL
           })
+
+# PLOT
+#' @category Plotting
+#' @s4method Draws a SV-plot that highlights the relevant points from adjusted quantiles
+setMethod('plot', c('GEVAResults', 'missing'), function(x, y, ...) plot(quantiles(x), ...))
 
 # S4 Methods
 
@@ -140,12 +142,18 @@ setMethod('featureTable', 'GEVAResults', function(object) featureTable(inputdata
 
 #' @category Dimension accessors
 
-#' @s4method Gets the dimensions from the `results.table` slot
+#' @s4method Returns the dimensions from the `resultstable` slot
 setMethod('dim', 'GEVAResults', function(x) dim(results.table(x)))
-#' @s4method Gets a \code{list} with the row and column names from the `results.table` slot. \cr Individual dimension names can also be accessed through \code{rownames} and \code{colnames}
+
+#' @s4method Returns a \code{list} with the row and column names from the `results.table` slot. \cr Individual dimension names can also be accessed through \code{rownames} and \code{colnames}
 setMethod('dimnames', 'GEVAResults', function(x) dimnames(results.table(x)))
-#' @s4method
+
+#' @s4method Returns the column names from the `resultstable` slot
 setMethod('names', 'GEVAResults', function(x) colnames(results.table(x)))
+
+#' @s4method Returns the number of rows in the `resultstable` slot
+setMethod('length', 'GEVAResults', function(x) nrow(results.table(x)))
+
 
 #' @category Properties
 
@@ -195,7 +203,9 @@ points.GEVAResults <- function(x, which, ..., classif)
   points.default(dt, ...)
 }
 
-#' @s3method
+#' @category Conversion and coercion
+
+#' @s3method Gets the expression that reproduces this `GEVAResults` object, including function parameters used by `geva.finalize`. The `gsummary` and `gquants` arguments are optional but can be specified to replace the internal `GEVASummary` and `GEVAQuantiles`, respectively
 as.expression.GEVAResults <- function(x, gsummary, gquants, ...)
 {
   parls = list()
@@ -207,10 +217,6 @@ as.expression.GEVAResults <- function(x, gsummary, gquants, ...)
     parse(text=sprintf("quantiles(%s)", deparse(substitute(x))))
   else
     substitute(gquants)
-  
-  
-  
-  
   parls = list.merge(parls, infolist(x, 'analysis.params'))
   expr = function2expression(geva.finalize,
                              args.list = parls,

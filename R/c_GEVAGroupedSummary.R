@@ -54,6 +54,7 @@ setMethod('initialize', 'GEVAGroupedSummary',
           })
 
 # SHOW
+#' @category Properties
 #' @s4method
 setMethod('show', 'GEVAGroupedSummary', function(object)
 {
@@ -65,7 +66,9 @@ setMethod('show', 'GEVAGroupedSummary', function(object)
 })
 
 # PLOT
-#' @s4method
+#' @category Plotting
+#' @s4method Draws a SV-plot. The horizontal axis is for *summary* (S) and the vertical axis is for *variation* (V).
+#' \cr In addition, highlights the included group sets
 setMethod('plot', c('GEVAGroupedSummary', 'missing'),
           function(x, y, ..., include.groupsets = TRUE)
           {
@@ -90,9 +93,21 @@ setMethod('plot', c('GEVAGroupedSummary', 'missing'),
 
 # S4 METHODS
 
+#' @methodsnote (See also the inherited methods from [`GEVASummary-class`])
+
 #' @s4method
 #' @s4accessor groupsetlist
 setMethod('groupsets', 'GEVAGroupedSummary', function(object) object@groupsetlist)
+
+#' @s4method
+setMethod('groupsets<-', c('GEVAGroupedSummary', 'GEVAGroupSet'), function(object, value)
+{
+  argnm = deparse(substitute(value))[[1]]
+  ggs = groupsets(object)
+  ggs[[argnm]] = value
+  object@groupsetlist = ggs
+  object
+})
 
 #' @category Sub-slot accessors
 
@@ -121,6 +136,9 @@ setMethod('analysis.params', 'GEVAGroupedSummary', function(gobject)
 })
 
 # S3 METHODS
+
+#' @category Conversion and coercion
+
 #' @s3method
 as.matrix.GEVAGroupedSummary <- function(x, ...) sv(x)
 

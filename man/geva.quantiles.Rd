@@ -4,9 +4,7 @@
 \name{geva.quantiles}
 \alias{geva.quantiles}
 \alias{options.quantiles}
-\title{GEVA Quantiles Detection
-
-Calculates the quantiles of a \code{\linkS4class{SVTable}}}
+\title{GEVA Quantiles Detection}
 \format{
 
 }
@@ -46,11 +44,7 @@ options.quantiles
 }}
 }
 \description{
-GEVA Quantiles Detection
-
-Calculates the quantiles of a \code{\linkS4class{SVTable}}
-
-Returns a vector with the supported methods of quantiles separation
+Calculates the quantiles of a \code{\linkS4class{SVTable}}.
 }
 \details{
 The \code{quantile.method} defines how the initial quantile (usually the one at the bottom center) is calculated. Each method has a specific way to estimate the first spatial delimiter, as described below:

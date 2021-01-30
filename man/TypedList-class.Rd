@@ -8,12 +8,15 @@
 \alias{elem.class<-,TypedList,character-method}
 \alias{show,TypedList-method}
 \alias{[,TypedList,ANY,missing,missing-method}
+\alias{[<-,TypedList,character,missing-method}
 \alias{as.list.TypedList}
 \alias{as.typed.list.vector}
 \alias{as.typed.list.list}
 \alias{as.typed.list.TypedList}
 \title{Type-strict List (TypedList-class)}
 \usage{
+
+
 
 
 
@@ -43,13 +46,20 @@ List containing elements of the same class or inheritance.
 
 \section{Methods}{
 
+\sspace\cr\strong{Constructors}
 \describe{
 \item{\code{typed.list(..., elem.class = NA_character_)}}{Creates a TypedList from the elements in \code{...} derived from the class \code{elem.class}}
 }
-\sspace\cr\strong{Slot accessors}
+\sspace\cr\strong{Conversion and coercion}
 \describe{
-\item{\code{elem.class(typedlist)}}{Gets the \code{character} from the \code{elem.class} slot}
-\item{\code{elem.class(typedlist) <- value}}{Sets a value to the \code{elem.class} slot}
+\item{\code{as.list(x, ...)}}{Converts this object to \code{list}}
+\item{\code{as.typed.list.list(x, elem.class = NA_character_)}}{Converts a \code{list} to a \code{TypedList} if its elements inherit the same type}
+\item{\code{as.typed.list(x, elem.class = NA_character_)}}{Coerces a \code{TypedList} to support the inherited class indicated by \code{elem.class}}
+\item{\code{as.typed.list.vector(x, elem.class = NA_character_)}}{Converts a vector to a \code{TypedList}}
+}
+\sspace\cr\strong{Properties}
+\describe{
+\item{\code{x[i, j, ...] <- value}}{Sets a value to this list. The \code{value} argument must be compatible to the current list type}
 }
 }
 

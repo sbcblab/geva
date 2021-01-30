@@ -64,7 +64,7 @@ roxy_tag_parse.roxy_tag_declareS4class <- local({
 })
 
 # Enables roxygen2's @s4method tag
-roxy_tag_parse.roxy_tag_s4method <- function(x)
+roxy_tag_parse.roxy_tag_s4method <- function(x, mtype="s4")
 {
   self = environment(read.doc.tag)$self
   clname = self$last_declared_s4class
@@ -76,6 +76,7 @@ roxy_tag_parse.roxy_tag_s4method <- function(x)
     "@export"
   )
   formatfn_usage = self$roxy$function_usage
+  rdfn = self$roxy$build_rd
   if (!is.function(formatfn_usage)) return(NULL)
   fndecl = read.doc.tag(x)
   if (length(fndecl) == 0) return(NULL)
@@ -83,10 +84,13 @@ roxy_tag_parse.roxy_tag_s4method <- function(x)
   if (fncallname %in% c('<-', '='))
   {
     fname = as.character(fndecl[[2]])
+    fname2 = fname
     if (isS3method(fname))
-      fname = trimws(as.character(fndecl[[2]]), 'right', sprintf(".%s", clname))
+      fname = trimws(as.character(fndecl[[2]]), 'right', sprintf("\\.%s", clname))
     fnusage = formatfn_usage(fname, formals(as.character(fndecl[[2]])))
     fndecl = as.call(list(as.symbol("setMethod"), f = fname, signature = clname))
+    fnbasename = fname
+    fname = fname2
   }
   else if (fncallname %in% 'setMethod')
   {
@@ -94,19 +98,53 @@ roxy_tag_parse.roxy_tag_s4method <- function(x)
     if (is.call(fndecl$signature))
       fndecl$signature = eval(fndecl$signature)
     fname = as.character(fndecl$f)
-    fnusage = formatfn_usage(fname, formals(getMethod(fndecl$f, fndecl$signature)))
+    fnusage = switch(fname,
+                     `[` = sprintf("x[i, j, ..., drop=%s]", formals(getMethod(fndecl$f, fndecl$signature))$drop),
+                     `[<-` = "x[i, j, ...] <- value",
+                     `$` = "x$name <- value",
+                     `$<-` = "x$name <- value",
+                     formatfn_usage(fname, formals(getMethod(fndecl$f, fndecl$signature)))
+                     )
+    if (class(fnusage) == "character")
+      fnusage = rdfn(fnusage)
+    fname = paste0(fname, paste0(fndecl$signature, collapse=','))
+    fnbasename = fname
   }
   self$last_declared_s4method = fndecl
-  desc = ""
-  if (is.character(x$raw) && length(x$raw) != 0L)
+  desc = (if (is.character(x$raw)) trimws(c(x$raw, ""))[[1]] else "")
+  if (nchar(desc) == 0L)
   {
-    desc =  trimws(x$raw)
-    if (any(nchar(desc) != 0L))
+    if (mtype %in% "s3")
     {
-      desc = gsub("\\", "\\\\", desc, fixed=TRUE, useBytes=TRUE)
-      desc = gsub("%", "\\%", desc, fixed=TRUE, useBytes=TRUE)
-      code = c(sprintf("@s4methodDescription %s %s", fname, paste0(desc, collapse=" \\\\cr ")), code)
+      desc = if (startsWith(fnbasename, "as."))
+      {
+        if (endsWith(fname, sprintf(".%s", clname)))
+          sprintf("Converts this object to `%s`", trimws(fnbasename, "left", "^as\\."))
+        else if (startsWith(fname, sprintf("as.%s.", clname)))
+          sprintf("Converts a `%s` to a `%s`", trimws(fname, "left", sprintf("^as\\.%s\\.", clname)), clname)
+        else
+          sprintf("Converts to `%s`", trimws(fnbasename, "left", "^as\\."))
+      }
+      else
+        sprintf("Generic `%s` implementation for `%s`", fnbasename, clname)
     }
+    else if (mtype %in% "s4")
+    {
+      desc = switch (fnbasename,
+        show = "Prints the overview description about the contents in `object`",
+        plot = "Plots the object's contents",
+        `[` = "Extracts the elements from the primary table",
+        `$` = "Extracts an element from the primary list",
+        ""
+      )
+    }
+  }
+    
+  if (nchar(desc) != 0L)
+  {
+    desc = gsub("\\", "\\\\", desc, fixed=TRUE, useBytes=TRUE)
+    desc = gsub("%", "\\%", desc, fixed=TRUE, useBytes=TRUE)
+    code = c(sprintf("@%smethodDescription %s %s", mtype, fname, paste0(desc, collapse=" \\\\cr ")), code)
   }
   self$method_descriptors[[fname]] = list(
     usage = fnusage,
@@ -118,7 +156,12 @@ roxy_tag_parse.roxy_tag_s4method <- function(x)
   self$roxy$tag_code(x)
 }
 
-roxy_tag_parse.roxy_tag_s3method <- roxy_tag_parse.roxy_tag_s4method
+# Same as @s4method, but for s3 methods
+roxy_tag_parse.roxy_tag_s3method <- function(x)
+{
+  x = roxy_tag_parse.roxy_tag_s4method(x, mtype="s3")
+  x
+}
 
 
 # Enables roxygen2's @s4methodDescription tag (for internal use, do not apply this tag in the script)
@@ -137,6 +180,20 @@ roxy_tag_parse.roxy_tag_s4methodDescription <- function(x)
   x$method_usage = metinfo$usage
   x = self$roxy$tag_markdown(x)
   x$cat = metinfo$category
+  x$method_name = fname
+  x
+}
+
+# Internal use. Same as s4methodDescription, but for S3 methods
+roxy_tag_parse.roxy_tag_s3methodDescription <- function(x)
+{
+  self = environment(read.doc.tag)$self
+  x = roxy_tag_parse.roxy_tag_s4methodDescription(x)
+  if (!is.null(x))
+  {
+    if(nchar(x$cat) == 0L)
+      x$cat = "S3 Methods"
+  }
   x
 }
 
@@ -150,6 +207,8 @@ roxy_tag_rd.roxy_tag_s4methodDescription <- function(tag, env, base_path)
   x$cat = c(tag$cat, "")[[1]]
   x
 }
+
+roxy_tag_rd.roxy_tag_s3methodDescription <- roxy_tag_rd.roxy_tag_s4methodDescription
 
 # Enables roxygen2's @methodsnote tag
 roxy_tag_parse.roxy_tag_methodsnote <- function(x)

@@ -6,20 +6,22 @@
 \alias{SVTable}
 \alias{svtable}
 \alias{show,SVTable-method}
-\alias{plot,SVTable,missing-method}
 \alias{[,SVTable,ANY,ANY,ANY-method}
+\alias{$,SVTable-method}
+\alias{plot,SVTable,missing-method}
 \alias{sv,SVTable-method}
 \alias{dim,SVTable-method}
 \alias{dimnames,SVTable-method}
+\alias{length,SVTable-method}
 \alias{names,SVTable-method}
-\alias{$,SVTable-method}
 \alias{sv.data,SVTable-method}
-\alias{as.matrix.SVTable}
-\alias{as.data.frame.SVTable}
 \alias{summary.SVTable}
 \alias{variation.SVTable}
 \alias{head.SVTable}
+\alias{tail.SVTable}
 \alias{is.na.SVTable}
+\alias{as.matrix.SVTable}
+\alias{as.data.frame.SVTable}
 \alias{as.SVTable.matrix}
 \alias{as.SVTable.data.frame}
 \alias{as.SVTable.SVTable}
@@ -28,6 +30,10 @@
 \alias{format.SVTable}
 \title{Summary-Variation Table}
 \usage{
+
+
+
+
 
 
 
@@ -84,26 +90,53 @@ This class is inherited by \code{\linkS4class{GEVASummary}}.
 }}
 
 \note{
-The matrix from \code{sv} slot can \code{numeric}, \code{character}, or any other supported type by \code{matrix}. The same slot from \code{\linkS4class{GEVASummary}}, however, is always a numeric \code{matrix}.
+The matrix from \code{sv} slot can be \code{numeric}, \code{character}, or any other supported type by \code{matrix}. The same slot from \code{\linkS4class{GEVASummary}}, however, is always a numeric \code{matrix}.
 }
 \section{Methods}{
 
+\sspace\cr\strong{Alternative accessors}
+\describe{
+\item{\code{summary(object, ...)}}{Returns the \code{S} column}
+\item{\code{sv.data(object)}}{Equivalent to returning this object itself}
+\item{\code{variation(object, ...)}}{Returns the \code{V} column}
+}
 \sspace\cr\strong{Constructor}
 \describe{
 \item{\code{svtable(S, V, row.names = NULL)}}{Creates a SVTable from the vectors \code{S} and \code{V}}
 }
+\sspace\cr\strong{Conversion and coercion}
+\describe{
+\item{\code{as.data.frame(x, ...)}}{Converts this object to \code{data.frame}}
+\item{\code{as.matrix(x, ...)}}{Converts this object to \code{matrix}}
+\item{\code{as.SVTable.data.frame(x, row.names = rownames(x), ...)}}{Converts a \code{data.frame} to a \code{SVTable}}
+\item{\code{as.SVTable.matrix(x, row.names = rownames(x), ...)}}{Converts a \code{matrix} to a \code{SVTable}}
+\item{\code{as.SVTable(x, ...)}}{Returns the same object}
+}
 \sspace\cr\strong{Dimension accessors}
 \describe{
-\item{\code{dim(x)}}{Gets the dimensions from the \code{sv} slot}
 \item{\code{dimnames(x)}}{Gets a \code{list} with the row and column names from the \code{sv} slot. \cr Individual dimension names can also be accessed through \code{rownames} and \code{colnames}}
+\item{\code{dim(x)}}{Gets the dimensions from the \code{sv} slot}
+\item{\code{length(x)}}{Returns the number of rows in the \code{sv} slot}
+\item{\code{names(x)}}{Always returns \code{c('S', 'V')}}
+}
+\sspace\cr\strong{Formatting and evaluation}
+\describe{
+\item{\code{format(x, ...)}}{Generic \code{format} implementation for \code{SVTable}}
+\item{\code{with(data, expr, ...)}}{Generic \code{with} implementation for \code{SVTable}}
 }
 \sspace\cr\strong{Plotting}
 \describe{
-\item{\code{points(x, which, ..., classif)}}{Draws the SV points in the plot}
+\item{\code{plot(x, y, ...)}}{Draws a SV-plot. The horizontal axis is for \emph{summary} (S) and the vertical axis is for \emph{variation} (V)}
+\item{\code{points(x, ...)}}{Draws the SV points in the plot}
 }
-\sspace\cr\strong{Slot accessors}
+\sspace\cr\strong{Subsetting}
 \describe{
-\item{\code{sv(object)}}{Gets the \code{matrix} from the \code{sv} slot}
+\item{\code{head(x, n = 6L, ...)}}{Returns the first parts of the matrix contents}
+\item{\code{tail(x, n = 6L, ...)}}{Returns the last parts of the matrix contents}
+}
+\sspace\cr\strong{Validation}
+\describe{
+\item{\code{is.na(x)}}{Generic \code{is.na} implementation for \code{SVTable}}
 }
 }
 

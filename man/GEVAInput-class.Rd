@@ -23,14 +23,20 @@
 \alias{dim,GEVAInput-method}
 \alias{dimnames,GEVAInput-method}
 \alias{dimnames<-,GEVAInput,list-method}
+\alias{length,GEVAInput-method}
 \alias{inputnames,GEVAInput-method}
 \alias{names,GEVAInput-method}
 \alias{analysis.params,GEVAInput-method}
 \alias{levels.GEVAInput}
 \alias{head.GEVAInput}
+\alias{tail.GEVAInput}
 \alias{as.array.GEVAInput}
 \title{GEVA Input Data}
 \usage{
+
+
+
+
 
 
 
@@ -99,30 +105,36 @@ It stores numeric matrices of \emph{logFC} values from differential expression c
 
 \section{Methods}{
 
+\sspace\cr\strong{Alternative accessors}
+\describe{
+\item{\code{levels(x)}}{Returns the unique values from the assigned factors; or \code{NA} if there are no assigned factors in \code{x}}
+}
+\sspace\cr\strong{Conversion and coercion}
+\describe{
+\item{\code{as.array(x, ...)}}{Converts this object to \code{array}}
+}
 \sspace\cr\strong{Dimension accessors}
 \describe{
 \item{\code{dim(x)}}{Gets the dimensions defined for both matrices in \code{values} and \code{weights} slots}
-\item{\code{dimnames(x)}}{Gets a \code{list} with the row and column names. \cr Individual dimension names can also be accessed through \code{rownames} and \code{colnames}}
 \item{\code{dimnames(x) <- value}}{Sets the \code{list} with the row and column names. \cr Individual dimension names can also be set using \code{rownames<-} and \code{colnames<-}}
+\item{\code{dimnames(x)}}{Gets a \code{list} with the row and column names. \cr Individual dimension names can also be accessed through \code{rownames} and \code{colnames}}
+\item{\code{inputnames(object)}}{Gets the input column names (same as \code{colnames(object)})}
+\item{\code{length(x)}}{Returns the number of rows in the \code{values} slot}
+\item{\code{names(x)}}{Same as \code{inputnames}. For internal use}
+}
+\sspace\cr\strong{Plotting}
+\describe{
+\item{\code{plot(x, y, ...)}}{Summarizes the input using the default parameters, then calls the plot on the returned \code{GEVASummary} object.
+\cr Not intended to regular use and will give a warning if called}
 }
 \sspace\cr\strong{Properties}
 \describe{
 \item{\code{analysis.params(gobject)}}{Returns a \code{list} of analysis parameters passed to \code{\link{geva.merge.input}} or \code{\link{geva.read.tables}} to obtain this object}
 }
-\sspace\cr\strong{Slot accessors}
+\sspace\cr\strong{Subsetting}
 \describe{
-\item{\code{factors(object)}}{Gets the \code{factor} from the \code{factors} slot}
-\item{\code{factors(object) <- value}}{Sets a value to the \code{factors} slot}
-\item{\code{featureTable(object)}}{Gets the \code{data.frame} from the \code{ftable} slot}
-\item{\code{featureTable(object) <- value}}{Sets a value to the \code{ftable} slot}
-\item{\code{infolist(object, field = NULL, ...)}}{Gets the \code{list} from the \code{info} slot. \cr If \code{field} is a \code{character}, returns the element with the matching name (\code{infolist(object)$<field name>})}
-\item{\code{infolist(object) <- value}}{Sets a value to the \code{info} slot}
-\item{\code{inputvalues(object)}}{Gets the \code{matrix} from the \code{values} slot}
-\item{\code{inputweights(object, normalized = FALSE)}}{Gets the \code{matrix} from the \code{weights} slot. \cr If \code{normalized} is \code{TRUE}, returns the weights matrix in the normalized form}
-}
-\sspace\cr\strong{Sub-slot accessors}
-\describe{
-\item{\code{inputnames(object)}}{Gets the input column names (same as \code{colnames(object)})}
+\item{\code{head(x, n = 6L, ...)}}{Returns the first parts of the \code{values} table}
+\item{\code{tail(x, n = 6L, ...)}}{Returns the last parts of the \code{values} table}
 }
 }
 

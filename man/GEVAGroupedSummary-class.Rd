@@ -6,6 +6,7 @@
 \alias{show,GEVAGroupedSummary-method}
 \alias{plot,GEVAGroupedSummary,missing-method}
 \alias{groupsets,GEVAGroupedSummary-method}
+\alias{groupsets<-,GEVAGroupedSummary,GEVAGroupSet-method}
 \alias{quantiles,GEVAGroupedSummary-method}
 \alias{cluster.method,GEVAGroupedSummary-method}
 \alias{analysis.params,GEVAGroupedSummary-method}
@@ -15,6 +16,8 @@
 \alias{points.GEVAGroupedSummary}
 \title{GEVA Grouped Summary-Variation Table}
 \usage{
+
+
 
 
 
@@ -57,21 +60,27 @@ The \code{GEVAGroupedSummary} class inherits the \code{\linkS4class{GEVASummary}
 }}
 
 \section{Methods}{
+(See also the inherited methods from \code{\linkS4class{GEVASummary}})\cr 
 
+\sspace\cr\strong{Conversion and coercion}
 \describe{
-\item{\code{cluster.method(object)}}{Gets a \code{character} vector listing the \code{cluster.method} from each group set}
+\item{\code{as.expression(x, ginput, ...)}}{Converts this object to \code{expression}}
+\item{\code{as.matrix(x, ...)}}{Converts this object to \code{matrix}}
 }
-\sspace\cr\strong{Dimension accessors}
+\sspace\cr\strong{Plotting}
 \describe{
 \item{\code{lines(x, ...)}}{Draws delimiters within quantiles and convex hulls around the clustered points}
+\item{\code{plot(x, y, ...)}}{Draws a SV-plot. The horizontal axis is for \emph{summary} (S) and the vertical axis is for \emph{variation} (V).
+\cr In addition, highlights the included group sets}
+\item{\code{points(x, ...)}}{Generic \code{points} implementation for \code{GEVAGroupedSummary}}
 }
 \sspace\cr\strong{Properties}
 \describe{
 \item{\code{analysis.params(gobject)}}{Returns a \code{list} of analysis parameters passed to \code{\link{geva.cluster}} to obtain this object}
 }
-\sspace\cr\strong{Slot accessors}
+\sspace\cr\strong{Sub-slot accessors}
 \describe{
-\item{\code{groupsets(object)}}{Gets the \code{TypedList} from the \code{groupsetlist} slot}
+\item{\code{cluster.method(object)}}{Gets a \code{character} vector listing the \code{cluster.method} from each group set}
 \item{\code{quantiles(object)}}{Gets the \code{\linkS4class{GEVAQuantiles}}, or \code{NULL} if not present}
 }
 }

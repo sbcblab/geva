@@ -58,9 +58,6 @@ This class inherits from \code{\linkS4class{GEVAQuantiles}}.
 \section{Methods}{
 (See also the inherited methods from \code{\linkS4class{GEVAQuantiles}} and \code{\linkS4class{GEVAGroupSet}})\cr 
 
-\sspace\cr\strong{Slot accessors}
-\describe{
-\item{\code{group.rels(object)}}{Gets the \code{TypedList} from the \code{grouprels} slot}
-}
+
 }
 

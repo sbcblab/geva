@@ -10,8 +10,8 @@
 \alias{qareasizes,GEVAQuantiles-method}
 \alias{qcount,GEVAQuantiles-method}
 \alias{sv.scores,GEVAQuantiles-method}
-\alias{cluster.method,GEVAQuantiles-method}
 \alias{quantiles.method,GEVAQuantiles-method}
+\alias{cluster.method,GEVAQuantiles-method}
 \alias{quantiles,GEVAQuantiles-method}
 \alias{dim,GEVAQuantiles-method}
 \alias{lines.GEVAQuantiles}
@@ -87,18 +87,30 @@ This class inherits from \code{\linkS4class{GEVAGroupSet}} and is inherited by \
 \section{Methods}{
 (See also the inherited methods from \code{\linkS4class{GEVAGroupSet}})\cr 
 
-\sspace\cr\strong{Dimension accessors}
+\sspace\cr\strong{Conversion and coercion}
+\describe{
+\item{\code{as.expression(x, sv, ...)}}{Converts this object to \code{expression}}
+\item{\code{as.SVTable(
+  x,
+  which = c("sv", "offsets", "centroids", "qindexes"),
+  ...,
+  row.names = names(x)
+)}}{Converts this object to \code{SVTable}}
+}
+\sspace\cr\strong{Plotting}
 \describe{
 \item{\code{lines(x, ...)}}{Draws the quantile delimiter lines}
+\item{\code{plot(x, y, ...)}}{Draws a SV-plot that highlights the points from each quantile. Dashed lines are included as the quantile delimiters.
+\cr Can be combined with another \code{SVTable} or \code{GEVAGroupSet} given as the \code{y} argument to include additional graphical elements}
 }
-\sspace\cr\strong{Slot accessors}
+\sspace\cr\strong{Properties}
 \describe{
-\item{\code{qareasizes(object)}}{Gets the \code{SVTable} from the \code{qareasizes} slot}
-\item{\code{qcount(object)}}{Gets the \code{SVIntAttribute} from the \code{qcount} slot}
-\item{\code{qindexes(object)}}{Gets the \code{SVTable} from the \code{qindexes} slot}
+\item{\code{cluster.method(object)}}{Returns the option used as the \code{cluster.method} argument when calling \code{geva.cluster}.
+\cr Instances of this object always return \code{'quantiles'}}
+}
+\sspace\cr\strong{Sub-slot accessors}
+\describe{
 \item{\code{quantiles(object)}}{Gets the unique quantile names}
-\item{\code{quantiles.method(object)}}{Gets the \code{character} from the \code{qmethod} slot}
-\item{\code{sv.scores(object)}}{Gets the \code{SVTable} from the \code{svscores} slot}
 }
 }
 

@@ -69,6 +69,7 @@ setMethod('initialize', 'GEVAQuantilesAdjusted',
           })
 
 # SHOW
+#' @category Properties
 #' @s4method
 setMethod('show', 'GEVAQuantilesAdjusted',
           function(object)

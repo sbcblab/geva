@@ -31,7 +31,9 @@ calc.hclust.tree <- function(sv, resolution, hc.method=options.hc.method, hc.met
   hc.metric = match.arg(hc.metric)
   assert.operator(resolution, `>` = 0, `<=` = 1)
   svmatrix.norm = normalize.scale.numeric(as.matrix(sv))
-  hc = hclust.vector(X = svmatrix.norm, method = hc.method, metric = hc.metric, p = mink.p)
+  hc = hclust.vector(X = svmatrix.norm,
+                     method = hc.method, metric = hc.metric,
+                     p = (if (hc.metric == "minkowski") mink.p else NULL))
   horder = order(hc$height)
   # Finding the threshold based on resolution
   logres = -log10(hc$height)
@@ -113,7 +115,7 @@ geva.hcluster <- function(sv, resolution=0.3, hc.method=options.hc.method, hc.me
   if (!is.null(mink.p))
     an.pars$mink.p = mink.p
   vprint("Calculating hierarchical clustering...")
-  hcx = calc.hclust.tree(svmatrix, resolution, ...)
+  hcx = calc.hclust.tree(sv=svmatrix, resolution=resolution, hc.method = hc.method, hc.metric = hc.metric, ...)
   tcut = hcx$threshold
   hcl = cutree(tree=hcx, h=tcut)
   vprint("Found %d clusters", length(unique(hcl)))

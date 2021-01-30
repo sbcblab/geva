@@ -49,13 +49,11 @@ This class inherits from \code{\linkS4class{GEVAGroupSet}}.
 \section{Methods}{
 (See also the inherited methods from \code{\linkS4class{GEVAGroupSet}})\cr 
 
-\sspace\cr\strong{Dimension accessors}
+\sspace\cr\strong{Plotting}
 \describe{
 \item{\code{lines(x, ...)}}{Draws convex hulls around the clustered points}
-}
-\sspace\cr\strong{Slot accessors}
-\describe{
-\item{\code{cluster.method(object)}}{Gets the \code{character} from the \code{cluster.method} slot}
+\item{\code{plot(x, y, ...)}}{Draws a SV-plot that highlights the clustered points. Convex hulls are included for visual purposes only and do not avoid enclosing points from other clusters on concave parts.
+\cr Can be combined with another \code{SVTable} or \code{GEVAGroupSet} given as the \code{y} argument to include additional graphical elements}
 }
 }
 
