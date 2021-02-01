@@ -4,8 +4,8 @@
 
 # Installation
 
-This package can be installed from GitHub using the `devtools` package with the following command:
+This package can be installed from GitHub using the `BiocManager` package with the following command:
 
-    devtools::install_github("sbcblab/geva")
+    BiocManager::install("geva")
 
 For the complete guide, see the *vignettes* directory.

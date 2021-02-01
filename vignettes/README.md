@@ -42,11 +42,11 @@ This package is available on GitHub and can be installed through the
 following command:
 
 ``` r
-devtools::install_github("sbcblab/geva")
+BiocManager::install("geva")
 ```
 
-Note that this command requires the *devtools* package (installed via
-`install.packages('devtools')`). After downloading and installing the
+Note that this command requires the *BiocManager* package (installed via
+`install.packages('BiocManager')`). After downloading and installing the
 sources, use the following command to load `geva` from the local package
 library:
 
