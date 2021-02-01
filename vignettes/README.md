@@ -1,6 +1,6 @@
 Gene Expression Variation Analysis (GEVA)
 ================
-Itamar José Guimarães Nunes, Murilo Zanini David,
+Itamar José Guimarães Nunes, Murilo Zanini David, Bruno César Feltes, and Marcio Dorn
 
 
 
