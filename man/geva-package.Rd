@@ -4,10 +4,28 @@
 \name{geva-package}
 \alias{geva}
 \alias{geva-package}
-\title{geva: Gene Expression Variation Analysis}
+\title{geva: Gene Expression Variation Analysis (GEVA)}
 \description{
 Statistic methods to evaluate variation between multiple biological conditions.
 
 Statistic methods to evaluate variation between multiple biological conditions.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/sbcblab/geva}
+}
+
+}
+\author{
+\strong{Maintainer}: Itamar José Guimarães Nunes \email{nunesijg@gmail.com} (\href{https://orcid.org/0000-0002-6246-4658}{ORCID})
+
+Other contributors:
+\itemize{
+  \item Murilo Zanini David \email{zanini.murilo@gmail.com} [contributor]
+  \item Bruno César Feltes \email{bcfeltes@gmail.com} (\href{https://orcid.org/0000-0002-2825-8295}{ORCID}) [contributor]
+  \item Marcio Dorn \email{mdorn@inf.ufrgs.br} (\href{https://orcid.org/0000-0001-8534-3480}{ORCID}) [contributor]
+}
+
 }
 \keyword{internal}
