@@ -22,7 +22,7 @@ mrapply <- function(FUN, ...)
   if (nargs == 0L) stop("at least one two-dimensional object must be used as argument")
   fargnms = formalArgs(FUN)
   hasdots = '...' %in% fargnms
-  fargs = as.list(formals(FUN)[!sapply(formals(FUN), function(e) is.name(e) || is.call(e) )])
+  fargs = as.list(formals(FUN)[!vapply(formals(FUN), function(e) is.name(e) || is.call(e), FALSE)])
   largs = list(...)
   argnms = call.dots.argnames(...)
   if (is.null(argnms)) argnms = rep('', nargs)
@@ -32,7 +32,7 @@ mrapply <- function(FUN, ...)
   j = 1L
   lcalls = list()
   fenv = new.env(parent=environment(FUN))
-  for (i in 1:nargs)
+  for (i in seq_len(nargs))
   {
     arg = largs[[i]]
     argnm = argnms[i]
@@ -67,7 +67,7 @@ mrapply <- function(FUN, ...)
     }
   }
   if (is.null(vdim)) stop("none of the provided arguments in a two-dimensional object")
-  minds = matrix(1:prod(vdim), nrow=vdim[1], ncol=vdim[2])
+  minds = matrix(seq_len(prod(vdim)), nrow=vdim[1], ncol=vdim[2])
   fenv$.fn = FUN
   fn = eval(parse(text=sprintf("function(.inds) .fn(%s)", paste(names(lcalls), lcalls, sep = '=', collapse = ', ' ) )), envir = fenv)
   vres = apply(minds, 1, fn)

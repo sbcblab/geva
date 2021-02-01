@@ -89,6 +89,9 @@
 
 
 }
+\value{
+A \code{\linkS4class{GEVAGroupSet}} object
+}
 \description{
 The \code{GEVAGroupSet} class represents the classification of summarized values from a \code{\linkS4class{SVTable}}, where each gene/probe has one assigned group among \code{g} defined groups. This is an abstract class. Inherits the \code{\linkS4class{GEVACluster}} and \code{\linkS4class{GEVAQuantiles}} classes.
 }

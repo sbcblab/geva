@@ -29,6 +29,12 @@ NULL
 #'
 #' @aliases SVTable
 #'
+#' @examples
+#' ## Creates a SV-table where:
+#' # - S has elements from 1 to 10; and
+#' # - V has elements from 10 to 1
+#' svtab <- svtable(seq.int(1, 10), seq.int(10, 1))
+#'
 #' @declareS4class
 setClass('SVTable',
          slots = c(
@@ -63,7 +69,7 @@ svtable <- function(S, V, row.names=NULL)
   assert.dim(S, length=length(V))
   if (is.null(row.names))
   {
-    row.names = if (is.named(S)) names(S) else if (is.named(V)) row.names = names(V) else as.character(1:length(S))
+    row.names = if (is.named(S)) names(S) else if (is.named(V)) row.names = names(V) else as.character(seq_along(S))
   }
   sv = as.matrix(data.frame(S=S, V=V, row.names=row.names))
   new('SVTable', sv=sv)

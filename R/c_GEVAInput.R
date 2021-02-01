@@ -200,7 +200,7 @@ setMethod('inputnames', 'GEVAInput', function(object) colnames(object@values))
 #' @s4method Same as `inputnames`. For internal use
 setMethod('names', 'GEVAInput', function(x) colnames(inputvalues(x)))
 
-setMethod('as.indexes', 'matrix', function(x) matrix(1:length(x), ncol=ncol(x), dimnames = dimnames(x)))
+setMethod('as.indexes', 'matrix', function(x) matrix(seq_along(x), ncol=ncol(x), dimnames = dimnames(x)))
 setMethod('as.indexes', 'GEVAInput', function(x) as.indexes(inputvalues(x)))
 
 #' @category Properties

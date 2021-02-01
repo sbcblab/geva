@@ -35,6 +35,9 @@
 
 
 }
+\value{
+A \code{\linkS4class{TypedList}} object
+}
 \description{
 List containing elements of the same class or inheritance.
 }
@@ -47,6 +50,16 @@ List containing elements of the same class or inheritance.
 \item{\code{elem.class}}{\code{character} representing the class related to the elements}
 }}
 
+\examples{
+## Creates a TypeList that stores list-derived objects
+tpls = typed.list(A=list(1L:5L),
+                  B=data.frame(v1=LETTERS[1L:10L]),
+                  elem.class = 'list')
+
+# Note: The 'elem.class' above is optional, since the
+# class is automatically detected from the first argument
+
+}
 \section{Methods}{
 
 \sspace\cr\strong{Constructors}

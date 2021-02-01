@@ -43,11 +43,11 @@ call.dots.which.frame <- function(...)
 {
   nfr = sys.nframe()
   if (nfr == 0L) return(0L)
-  wfr = min(which(sapply(lapply(sys.calls(), as.character), `%in%`, x='...' )))
+  wfr = min(which(vapply(lapply(sys.calls(), as.character), `%in%`, FALSE, x='...' )))
   if (wfr != 1L)
   {
     syspars = sys.parents()
-    if (wfr %in% 1:length(syspars))
+    if (wfr %in% seq_along(syspars))
       wfr = syspars[wfr]
   }
   wfr
@@ -93,7 +93,7 @@ call.dots.asis <- function(..., .prevfns=0L)
   if (is.null(argnms)) argnms = rep('', ...length())
   unmds = nchar(argnms) == 0L
   argnms[unmds] = sprintf("..%d", 1L:...length())[unmds]
-  argnms = argnms[sapply(lcalls, function(cl) is.call(cl) && length(cl) == 2L && cl[[1]] == 'I')]
+  argnms = argnms[vapply(lcalls, function(cl) is.call(cl) && length(cl) == 2L && cl[[1]] == 'I', FALSE)]
   if (length(argnms) == 0) return(NULL)
   argnms
 }
@@ -110,7 +110,7 @@ call.dots.named.list <- function(..., .trimquotes=TRUE, .replacefn=NULL)
   if (any(selempts))
   {
     pls = call.dots.args(...) # match.call(expand.dots = FALSE)[['...']] #eval.parent(substitute(match.call(expand.dots = FALSE)[['...']]))
-    rnms = sapply(pls[selempts], deparse)
+    rnms = vapply(pls[selempts], function(pe) paste0(deparse(pe), collapse=''), '')
     if (is.function(.replacefn)) # Used to select the element name when not present. The pattern is function(element, name)
     {
       rfn = .replacefn
@@ -118,7 +118,7 @@ call.dots.named.list <- function(..., .trimquotes=TRUE, .replacefn=NULL)
       if (fnargs == 1L) rfn = function(e, name) .replacefn(e)
       else if (fnargs == 0L) rfn = function(e, name) .replacefn()
       indempts = which(selempts)
-      for (i in 1:length(indempts)) rnms[i] = rfn(argls[[indempts[i]]], rnms[i])
+      for (i in seq_along(indempts)) rnms[i] = rfn(argls[[indempts[i]]], rnms[i])
     }
     if (.trimquotes) rnms = trimws(rnms, whitespace = '[\\s\'\"]')
     
@@ -138,12 +138,12 @@ call.dots.namesorargs <- function(..., .trimquotes=TRUE)
   argnms = names(pargs)
   if (is.null(argnms))
   {
-    selunamed = rep(T, nargs)
+    selunamed = rep(TRUE, nargs)
     argnms = rep('', nargs)
   } else selunamed = argnms %in% ''
   if (any(selunamed))
   {
-    rexprs = sapply(pargs[selunamed], deparse)
+    rexprs = vapply(pargs[selunamed], function(pe) paste0(deparse(pe), collapse=''), '')
     if (.trimquotes) rexprs = trimws(rexprs, whitespace = '[\\s\'\"]')
     argnms[selunamed] = rexprs
   }
@@ -169,7 +169,7 @@ call.arg.characters <- function(callarg)
         }
       }
       else retls[[sprintf('%d', length(retls))]] = e
-      T
+      TRUE
     }
     recdecall(argsub)
     #argsub = rapply(as.list(argsub), function(e) if (is.call(e)) as.list(e)[-1] else NULL, how='replace')
@@ -186,7 +186,7 @@ call.arg.characters <- function(callarg)
   dotexpr = substitute(call.dots.args(...))
   argls = eval.parent(dotexpr)
   nodef = missing(default)
-  ret = if (argnm %in% names(argls)) argls[[argnm]] else if (!nodef) default else stop(sprintf("object '%s' not found", argnm), call. = F)
+  ret = if (argnm %in% names(argls)) argls[[argnm]] else if (!nodef) default else stop(sprintf("object '%s' not found", argnm), call. = FALSE)
   ret
 }
 

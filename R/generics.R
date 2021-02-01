@@ -27,6 +27,21 @@ NULL
 #' @param group Character to filter the returned groups. Omit it to return all groups
 #' @param gres A [`GEVAResults-class`] objec
 #' @param value The value to be assigned
+#' 
+#' @return See the specific usages for each method.
+#' 
+#' @examples
+#' # Returing analysis parameters from an object
+#' gsummary <- geva.summarize(geva.ideal.example(),
+#'                            summary.method="mean",
+#'                            variation.method="sd")
+#' anpars <- analysis.params(gsummary)
+#' print(anpars)
+#' # $summary.method
+#' # [1] "mean"
+#' # $variation.method
+#' # [1] "sd"
+#' 
 NULL
 
 # === S4 ===

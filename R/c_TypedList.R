@@ -21,6 +21,15 @@ NULL
 #' @slot .Data `list` of internal contents. Elements must match or inherit a common class
 #' \cr (Inherited from `list`)
 #' @slot elem.class `character` representing the class related to the elements
+#' 
+#' @examples
+#' ## Creates a TypeList that stores list-derived objects
+#' tpls = typed.list(A=list(1L:5L),
+#'                   B=data.frame(v1=LETTERS[1L:10L]),
+#'                   elem.class = 'list')
+#' 
+#' # Note: The 'elem.class' above is optional, since the
+#' # class is automatically detected from the first argument
 #'
 #' @declareS4class
 setClass('TypedList',
@@ -42,13 +51,14 @@ setMethod('initialize', 'TypedList',
             assert.dim(elem.class, length=1L)
             argnms = call.dots.argnames(...)
             argls = list(...)
-            .Object[1:...length()] = argls
+            .Object[seq_len(...length())] = argls
             names(.Object) = argnms
             if (is.na(elem.class))
             {
               elem.class = class(...elt(1))[[1]]
             }
-            cmatches = sapply(argls, is, class2 = elem.class)
+            cmatches = vapply(argls, is, FALSE, class2 = elem.class) |
+              vapply(vapply(argls, function(arg) class(arg)[[1]] , ''), extends, FALSE, class2=elem.class)
             if (any(!cmatches))
             {
               fmism = which(!cmatches)[1]
@@ -85,7 +95,7 @@ setMethod('elem.class<-', c(typedlist='TypedList', value='character'),
               if (length(typedlist) == 0L)
                 return(typedlist)
             }
-            if (elem.class(typedlist) %in% Class && all(sapply(typedlist, is, class2 = Class))) return(typedlist)
+            if (elem.class(typedlist) %in% Class && all(vapply(typedlist, is, FALSE, class2 = Class))) return(typedlist)
             args = as.list(typedlist)
             assert.notempty(value)
             args$elem.class = Class
@@ -101,7 +111,7 @@ setMethod('show', 'TypedList',
             title = attr(object, 'title')
             if (is.null(title)) title = sprintf('TypedList<%s>', elem.class(object))
             catline(title)
-            show(object[1:length(object), drop=TRUE])
+            show(object[seq_along(object), drop=TRUE])
             invisible(object)
           })
 
@@ -130,7 +140,7 @@ setMethod('[<-', c(x='TypedList', i='character', j='missing', value='ANY'),
 #' @category Conversion and coercion
 
 #' @s3method
-as.list.TypedList <- function(x, ...) x[1:length(x), drop=TRUE]
+as.list.TypedList <- function(x, ...) x[seq_along(x), drop=TRUE]
 
 #' @s3method Converts a vector to a `TypedList`
 as.typed.list.vector <- function(x, elem.class=NA_character_) do.call('typed.list', list.merge(as.list(x), list(elem.class=elem.class)))

@@ -59,7 +59,7 @@ row.wanova <- function(r, factors, w=NULL, modelmat=NULL, ...)
   p = rlm$rank
   if (p > 0L)
   {
-    p1 = 1L:p
+    p1 = seq_len(p)
     comp = rlm$effects[p1]
     r = rlm$qr
     if (is.null(r)) # Copied check from stats:::qr.lm
@@ -89,7 +89,7 @@ row.factor.sindex.silhouette <- function(vsinds, factors)
   flist = tapply(vsinds, factors, list)
   fcounts = tapply(vsinds, factors, length)
   chfacts = as.character(factors)
-  for (i in 1L:n)
+  for (i in seq_len(n))
   {
     f = levels(factors)[factors[i]]
     nf = fcounts[f]
@@ -157,17 +157,17 @@ factoring.dep.fisher <- function(gobject, factors=NULL, idxs=NULL, ...)
   if (is.null(factors)) factors = factors(gobject)
   factors = as.factor(factors)
   nr = nrow(gobject)
-  if (is.null(idxs)) idxs = 1L:nr
+  if (is.null(idxs)) idxs = seq_len(nr)
   else if (is.logical(idxs)) idxs = which(idxs)
   assert.dim(factors, length=ncol(inputdata(gobject)))
   selcols = !is.na(factors)
   factors = factors[selcols]
-  mv = inputvalues(gobject)[idxs,selcols,drop=F]
+  mv = inputvalues(gobject)[idxs,selcols,drop=FALSE]
   mv = clamp(mv, ...)
-  mw = inputweights(gobject)[idxs,selcols,drop=F]
+  mw = inputweights(gobject)[idxs,selcols,drop=FALSE]
   vpvals = rep(NA_real_, nr)
   modmat = row.model.matrix(factors)
-  vpvals[idxs] = sapply(idxs, function(i) row.wanova(mv[i,], factors, mw[i,], modmat))
+  vpvals[idxs] = vapply(idxs, function(i) row.wanova(mv[i,], factors, mw[i,], modmat), NA_real_)
   vpvals
 }
 
@@ -182,23 +182,23 @@ factoring.spec.fisher <- function(gobject, factors=NULL, idxs=NULL, ...)
   ngroups = length(ugroup)
   #if (!check.factors.are.specific(factors, warn=FALSE, msg=FALSE)) stop("'factors' must contain at least 2 levels for factor-specific analysis")
   nr = nrow(gobject)
-  if (is.null(idxs)) idxs = 1L:nr
+  if (is.null(idxs)) idxs = seq_len(nr)
   else if (is.logical(idxs)) idxs = which(idxs)
   assert.dim(factors, length=ncol(inputdata(gobject)))
   selcols = !is.na(factors)
   factors = factors[selcols]
-  mv = inputvalues(gobject)[idxs,selcols,drop=F]
-  mw = inputweights(gobject)[idxs,selcols,drop=F]
+  mv = inputvalues(gobject)[idxs,selcols,drop=FALSE]
+  mw = inputweights(gobject)[idxs,selcols,drop=FALSE]
   mpvals = matrix(NA_real_, nrow=nr, ncol=ngroups, dimnames = list(rownames(mv), ugroup))
   # Use case: 3 or more levels are required to use fisher
   if (ngroups < 3L)
     return(mpvals)
   mv = clamp(mv, ...)
-  for (gi in 1L:ngroups)
+  for (gi in seq_len(ngroups))
   {
     gsel = factors == ugroup[gi]
     modelmat = row.model.matrix(gsel)
-    vpvals = sapply(idxs, function(i) row.wanova(mv[i,], factors, mw[i,], modelmat))
+    vpvals = vapply(idxs, function(i) row.wanova(mv[i,], factors, mw[i,], modelmat), NA_real_)
     mpvals[idxs,gi] = vpvals
   }
   mpvals
@@ -220,9 +220,9 @@ factoring.spec.levene <- function(gobject, factors=NULL, idxs=NULL, summary.meth
   assert.dim(factors, length=ncol(inputdata(gobject)))
   selcols = !is.na(factors)
   factors = factors[selcols]
-  mv = inputvalues(gobject)[idxs,selcols,drop=F]
+  mv = inputvalues(gobject)[idxs,selcols,drop=FALSE]
   mv = clamp(mv, ...)
-  mw = inputweights(gobject)[idxs,selcols,drop=F]
+  mw = inputweights(gobject)[idxs,selcols,drop=FALSE]
   
   if (is.na(summary.method))
   {
@@ -238,16 +238,16 @@ factoring.spec.levene <- function(gobject, factors=NULL, idxs=NULL, summary.meth
   meds = matrix(NA_real_, nrow=nrow(mv), ncol=2L, dimnames=list(rownames(mv)[idxs], c('1', '2')))
   mvars = matrix(NA_real_, nrow=nrow(mv), ncol=2L, dimnames=list(rownames(mv)[idxs], c('1', '2')))
   prevent.zeroweights <- function(w) if(sum(w) == 0) rep(1, length(w)) else w 
-  for (gi in 1L:ngroups)
+  for (gi in seq_len(ngroups))
   {
     gsel = factors == ugroup[gi]
     mw.partial <- mw
-    mw.partial[, gsel] = t(apply(mw.partial[, gsel,drop=F], 1, prevent.zeroweights))
-    mw.partial[, !gsel] = t(apply(mw.partial[, !gsel,drop=F], 1, prevent.zeroweights))
-    meds[,1L] = rows.weighted.summary(mv[,gsel,drop=F], mw.partial[,gsel,drop=F], summary.method)
-    meds[,2L] = rows.weighted.summary(mv[,!gsel,drop=F], mw.partial[,!gsel,drop=F], summary.method)
-    mvars[,1L] = rows.weighted.variation(mv[,gsel,drop=F], mw.partial[,gsel,drop=F], centers = meds[,1L], variation.method)
-    mvars[,2L] = rows.weighted.variation(mv[,!gsel,drop=F], mw.partial[,!gsel,drop=F], centers = meds[,2L], variation.method)
+    mw.partial[, gsel] = t(apply(mw.partial[, gsel,drop=FALSE], 1, prevent.zeroweights))
+    mw.partial[, !gsel] = t(apply(mw.partial[, !gsel,drop=FALSE], 1, prevent.zeroweights))
+    meds[,1L] = rows.weighted.summary(mv[,gsel,drop=FALSE], mw.partial[,gsel,drop=FALSE], summary.method)
+    meds[,2L] = rows.weighted.summary(mv[,!gsel,drop=FALSE], mw.partial[,!gsel,drop=FALSE], summary.method)
+    mvars[,1L] = rows.weighted.variation(mv[,gsel,drop=FALSE], mw.partial[,gsel,drop=FALSE], centers = meds[,1L], variation.method)
+    mvars[,2L] = rows.weighted.variation(mv[,!gsel,drop=FALSE], mw.partial[,!gsel,drop=FALSE], centers = meds[,2L], variation.method)
     sel.invars = mvars[,1L] > mvars[,2L]
     mresp = abs(mv - meds[,ifelse(gsel, 1L, 2L)])
     modelmat = row.model.matrix(gsel)

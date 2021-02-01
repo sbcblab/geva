@@ -17,14 +17,14 @@ NULL
 first.default <- function(x, fn, ..., default=NULL)
 {
   if (missing(fn)) stop("must specify 'fn' as a function with one parameter or a formula")
-  if (length(x) == 0) return(eval.parent(default))
+  if (length(x) == 0L) return(eval.parent(default))
   if (is.function(fn)) insert.function.optargs(fn, ...)
   else if (is(fn, 'formula')) fn = formula2function(fn, ...)
   for (elem in x)
   {
     sresp = fn(elem)
     if (!(is.logical(sresp) || is.null(sresp))) stop("test function must return a logical value")
-    if (any(sresp, na.rm = T)) return(elem)
+    if (any(sresp, na.rm = TRUE)) return(elem)
   }
   eval.parent(default, n = 2L)
 }
@@ -45,14 +45,14 @@ where.default <- function(x, fn, ...)
   if (length(x) == 0) return(x[NULL])
   if (is.function(fn)) insert.function.optargs(fn, ...)
   else if (is(fn, 'formula')) fn = formula2function(fn, ...)
-  vsel = rep(F, length(x))
+  vsel = rep(FALSE, length(x))
   i = 0L
   for (elem in x)
   {
     i = i + 1L
     sresp = fn(elem)
     if (!(is.logical(sresp) || is.null(sresp))) stop("test function must return a logical value")
-    vsel[i] = any(sresp, na.rm = T)
+    vsel[i] = any(sresp, na.rm = TRUE)
   }
   x[vsel]
 }
@@ -73,7 +73,7 @@ distinct.default <- function(x, fn, ..., incomparables=FALSE)
   if (is.function(fn)) insert.function.optargs(fn, ...)
   else if (is(fn, 'formula')) fn = formula2function(fn, ...)
   else stop("'fn' parameter must be a formula or a function with one parameter")
-  vresp = as.vector(sapply(x, fn))
+  vresp = vapply(x, fn, x[[1L]])
   lresp = x[!duplicated(vresp)]
   lresp
 }

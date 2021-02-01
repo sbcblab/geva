@@ -59,6 +59,9 @@
 
 \item{V}{the \emph{variation} value}
 }
+\value{
+A \code{\linkS4class{SVAttribute}} object
+}
 \description{
 This S4 class stores two character slots representing attribute fields for summary and variation. The \code{SVAttribute} class is abstract and must be instantiated as \code{SVChrAttribute} (for \code{character}), \code{SVNumAttribute} (for \code{numeric}), or \code{SVIntAttribute} (for \code{integer}).
 }

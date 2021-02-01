@@ -11,6 +11,9 @@
 
 
 }
+\value{
+A \code{\linkS4class{GEVAQuantilesAdjusted}} object
+}
 \description{
 The \code{GEVAQuantilesAdjusted} class represents the results of a quantile detection analysis with adjusted assignments based on relationships with other \code{GEVAGroupSet} objects. For each probe/gene, there is a assigned quantile among the \emph{g} defined quantiles.
 

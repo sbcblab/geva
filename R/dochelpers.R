@@ -51,6 +51,7 @@ roxy_tag_parse.roxy_tag_declareS4class <- local({
     self$last_declared_s4class = clname
     rdname = sprintf("%s-class", clname)
     code = c(
+      sprintf('@return A [`%s`] object', rdname),
       sprintf('@name %s', rdname),
       sprintf('@rdname %s', rdname),
       "@export"
@@ -105,7 +106,7 @@ roxy_tag_parse.roxy_tag_s4method <- function(x, mtype="s4")
                      `$<-` = "x$name <- value",
                      formatfn_usage(fname, formals(getMethod(fndecl$f, fndecl$signature)))
                      )
-    if (class(fnusage) == "character")
+    if (identical(fnusage, "character"))
       fnusage = rdfn(fnusage)
     fname = paste0(fname, paste0(fndecl$signature, collapse=','))
     fnbasename = fname

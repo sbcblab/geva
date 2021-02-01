@@ -122,7 +122,7 @@ setMethod('quantiles', 'GEVAGroupedSummary',
           })
 
 #' @s4method Gets a `character` vector listing the `cluster.method` from each group set
-setMethod('cluster.method', 'GEVAGroupedSummary', function(object) sapply(cluster.method, groupsets(object)))
+setMethod('cluster.method', 'GEVAGroupedSummary', function(object) vapply(groupsets(object), cluster.method, ''))
 
 #' @category Properties
 

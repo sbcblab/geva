@@ -53,6 +53,9 @@
 
 
 }
+\value{
+A \code{\linkS4class{GEVAQuantiles}} object
+}
 \description{
 The \code{GEVAQuantiles} class represents the results of a quantile detection analysis. For each probe/gene, there is a assigned quantile among the \emph{g} defined quantiles.
 

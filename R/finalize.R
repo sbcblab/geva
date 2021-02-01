@@ -34,6 +34,7 @@ NULL
 #' \cr
 #' In another example to illustrate the constraint of factors, given two sets of values: A = (-1.00, -1,10, 0.00, 0.20, 1.00, 1.15), and B = (0.00, 0.12, 1.11, 1.00, 1.95, 2.00), with the centroids located in C = (-0.90, 0.00, 0.90), and the factors F = (Cond1, Cond1, Cond2, Cond2, Cond3, Cond3). If \code{constraint.factors} is \code{FALSE}, both A and B are considered as significantly separated factors, whereas if \code{TRUE}, only A will present a significant separation, since in B the values 1.11, 1.00, 1.95, and 2.00 are converted to 0.90. In qualitative terms, if \code{constraint.factors} is \code{TRUE}, all values above 0.90 are considered the same over-expressed values, ensuring that they will fit in the same degree of differential expression. Hence, in this example using the constrained values, B would not represent a significant separation between the factors Cond1, Cond2, and Cond3.
 #' 
+#' 
 #' @note
 #' To perform factor analysis, the following observations must be considered:
 #' \itemize{
@@ -165,6 +166,8 @@ results.table.from.classif <- function(gq, cltable, p.value=0.05)
 #' 
 #' @param gobject A `GEVAInput`, or any object that returns a `GEVAInput` upon calling `inputdata(gobject)` (*e.g.*, [`GEVASummary-class`] or [`GEVAResults-class`]).
 #' @param ... Optional arguments passed to [`geva.summarize()`], [`geva.quantiles()`], [`geva.cluster()`], and [`geva.finalize()`]
+#' 
+#' @return A [`GEVAResults-class`] object
 #' 
 #' @details
 #' This function performs the summarization, quantile detecetion, and clustering of an input data, then merges the results together and, if applicable, performs a factor analysis. If the \code{gobject} is not a \code{GEVAInput}, it must provide a valid \code{GEVAInput} object when called by \code{inputdata(gobject)}. Moreover, all parameters used in previous analysis will be taken into account. For instance, if \code{gobject} is a \code{GEVASummary} obtained by using \code{variation.method='mad'}, the internal call to \code{geva.summarize} in this function will use \code{variation.method='mad'} as well, unless if another parameter for \code{variation.method} is specified in the \code{...} arguments.

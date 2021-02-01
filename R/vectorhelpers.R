@@ -19,13 +19,13 @@ indexes.headtail <- function(length, n=6L, start=1L, ...)
   {
     halflimit = n / 2
     lowerlimit = as.integer(ceiling(halflimit))
-    lowerinds = 1:lowerlimit
+    lowerinds = seq_len(lowerlimit)
     upperlimit = as.integer(floor(halflimit))
     if (upperlimit == 0L) return(lowerinds)
-    upperinds = (length - upperlimit + 1):length
+    upperinds = seq.int((length - upperlimit + 1), length)
     inds = c(lowerinds, upperinds)
   } else {
-    inds = 1:length
+    inds = seq_len(length)
   }
   inds = inds + (start - 1)
   inds
@@ -86,9 +86,9 @@ list.flatten <- function(x, overwrite.dups=TRUE, ignore.class=character(0), recu
   assert.class(x, typeof='list')
   nms = names(x)
   hasnms = !is.null(nms)
-  sel.lists = sapply(x, is.list)
+  sel.lists = vapply(x, is.list, FALSE)
   if (!any(sel.lists)) return(x)
-  sel.ignored = sapply(x, function(it) any(sapply(ignore.class, is, object=it)))
+  sel.ignored = vapply(x, function(it) any(vapply(ignore.class, is, FALSE, object=it)), FALSE)
   if (all(sel.ignored)) return(x)
   resls = list()
   lsit.inds = which(sel.lists & !sel.ignored)
@@ -134,9 +134,9 @@ gtapply <- function(X, INDEX, FUN, ...)
 {
   len = length(X)
   if (len == 0L) return(X)
-  vinds = unlist(tapply(1L:len, INDEX, function(i) i, simplify = F), use.names = F)
+  vinds = unlist(tapply(1L:len, INDEX, function(i) i, simplify = FALSE), use.names = FALSE)
   vorder = order(vinds)
-  vres = unlist(tapply(X, INDEX, FUN, ..., simplify = F), use.names=F)
+  vres = unlist(tapply(X, INDEX, FUN, ..., simplify = FALSE), use.names=FALSE)
   vres = vres[vorder]
   vres
 }
@@ -180,15 +180,15 @@ k.neighbors <- function(x, k)
   if (is.integer(x) && is.null(names(x)))
     names(x) = as.character(x)
   if (k <= 0) return(matrix(numeric(0), nrow=n, ncol=0, dimnames = list(names(x), NULL)))
-  koffsets = as.integer(ceiling(1:k / 2) * ifelse(1:k %% 2 == 1, 1, -1))
+  koffsets = as.integer(ceiling(seq_len(k) / 2) * ifelse(seq_len(k) %% 2 == 1, 1, -1))
   mneigh = matrix(NA_real_, nrow=n, ncol=k, dimnames = list(names(x), as.character(koffsets)))
   ind.order = order(x)
   vx = x[ind.order]
   kh.ceil = ceiling(k / 2)
   kh.floor = floor(k / 2)
-  for (ki in 1L:k)
+  for (ki in seq_len(k))
   {
-    ind.offs = 1:n + koffsets[ki]
+    ind.offs = seq_len(n) + koffsets[ki]
     ind.offs = ind.offs +
       ifelse(ind.offs <= 0, k + 1L, 0)
     ind.offs = ind.offs +

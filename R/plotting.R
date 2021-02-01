@@ -143,11 +143,11 @@ hull.lines <- function(x, cl, col = NULL, hull_lwd = 1, hull_lty = 1, alpha = 0.
   for (lvl in lvls)
   {
     sel.cl = cl %in% lvl
-    d = x[sel.cl, , drop=F]
+    d = x[sel.cl, , drop=FALSE]
     ch = chull(d)
     ch = c(ch, ch[1])
     borderv = if (border.visible) border[sel.cl] else NA
-    polygon(d[ch,,drop=F ], col = col_poly[sel.cl], lwd = hull_lwd, lty = hull_lty, border = borderv)
+    polygon(d[ch,,drop=FALSE ], col = col_poly[sel.cl], lwd = hull_lwd, lty = hull_lty, border = borderv)
   }
   invisible()
 }
@@ -170,7 +170,7 @@ hull.plot <- function (x, cl, col = NULL, ...)
   assert.dim(cl, length=nrow(x))
   if (is.null(col))
     col = generate.colors.byfactor(cl)
-  call.plot(x[, 1:2], col = col, ...)
+  call.plot(x[, c(1L, 2L)], col = col, ...)
   hull.lines(x, cl, col, ...)
   invisible()
 }

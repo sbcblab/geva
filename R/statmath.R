@@ -109,7 +109,7 @@ which.outliers <- function(x, eps=1.1)
     x = x[!sel.invalids]
     n = length(x)
   }
-  mat = matrix(c(1:n, x), ncol=2)
+  mat = matrix(c(seq_len(n), x), ncol=2)
   dbres = dbscan::dbscan(mat, eps=eps, minPts = 2)
   vcl = dbres$cluster
   vug = unique(vcl)

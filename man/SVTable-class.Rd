@@ -78,6 +78,9 @@
 
 
 }
+\value{
+A \code{\linkS4class{SVTable}} object
+}
 \description{
 The \code{SVTable} class stores a \code{matrix} composed by two columns: \code{S} (for \emph{summary}) and \code{V} (for \emph{variation}).
 
@@ -91,6 +94,13 @@ This class is inherited by \code{\linkS4class{GEVASummary}}.
 
 \note{
 The matrix from \code{sv} slot can be \code{numeric}, \code{character}, or any other supported type by \code{matrix}. The same slot from \code{\linkS4class{GEVASummary}}, however, is always a numeric \code{matrix}.
+}
+\examples{
+## Creates a SV-table where:
+# - S has elements from 1 to 10; and
+# - V has elements from 10 to 1
+svtab <- svtable(seq.int(1, 10), seq.int(10, 1))
+
 }
 \section{Methods}{
 

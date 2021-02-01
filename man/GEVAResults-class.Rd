@@ -77,6 +77,9 @@
 
 
 }
+\value{
+A \code{\linkS4class{GEVAResults}} object
+}
 \description{
 The \code{GEVAResults} class contains the final results from GEVA analyses. It represents the results of multiple statistical approaches from summary/variation data, clustering, quantile detection, and factor analysis (if applicable).
 }

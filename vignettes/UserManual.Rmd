@@ -134,7 +134,7 @@ The code above will produce a `GEVAInput` object, which stores all the relevant 
 ## Alternative 4 -- Ideal input data (for tests only)
 
 Be it due the abscence of experimental data or merely for didatical reasons, there may be some situations where the features in this package have to be immediately accessed and tested without needing to provide any real data, since two or more DE analyses must be performed before using GEVA. In this sense, the `geva.ideal.example` function can be used to generate a random input that simulates real processed inputs by GEVA. The function is called as follows:
-```{r  geva-ideal-example, eval=FALSE}
+```{r  geva-ideal-example, eval=TRUE}
 # Generates a random GEVAInput with 10000 probes
 # and 6 columns
 ginput <- geva.ideal.example()
@@ -152,7 +152,7 @@ First off, one may want to eliminate primary sources of errors from the numeric 
 
 In this sense, the `geva.input.correct` function will remove all missing (`NA`), not-a-number (`NaN`), and infinite (`Inf` or `-Inf`) values from `GEVAInput` upon calling the following command:
 
-```{r geva-input-correct, eval=FALSE}
+```{r geva-input-correct, eval=TRUE}
 # Removes the rows containing missing and infinite values
 ginput <- geva.input.correct(ginput)
 ```
@@ -194,7 +194,7 @@ By concluding the input step, a `GEVAInput` object that stores *logFC* values an
 
 The `geva.summarize` function takes a `GEVAInput` object and performs the summarization, as demonstrated below:
 
-```{r geva-summarize-1, eval=FALSE}
+```{r geva-summarize-1, eval=TRUE}
 # Summarizes ginput to find the SV points
 gsummary <- geva.summarize(ginput)
 ```
@@ -212,13 +212,6 @@ In addition, all the summarization methods specified in `summary.method` and `va
 
 As a result, `geva.summarize` returns a `GEVASummary` object storing the table of `S` and `V` values. From this point, all objects defined by intermediate steps can be plotted as a *SV-plot*, a type of scatter plot where each point (called *SV-point*) represents a gene's central *logFC* value (*S*) and *logFC* variation (*V*). For instance, a plot can be produced by calling the `plot` function on a `GEVASummary` object:
 
-```{r include=FALSE}
-if (!exists("ginput"))
-  ginput <- geva.ideal.example()
-if (!exists("gsummary"))
-  gsummary <- geva.summarize(ginput)
-```
-
 ```{r plot-geva-summary, fig.cap="SV-plot produced from a `GEVASummary` object using the `geva.summarize` function with default parameters."}
 plot(gsummary)
 ```
@@ -227,17 +220,12 @@ plot(gsummary)
 
 After obtaining the `GEVASummary` object, the next step will be calculating the quantiles for every SV-point. That can be done by calling the `geva.quantiles` function as shown below:
 
-```{r geva-quantiles-1, eval=FALSE}
+```{r geva-quantiles-1, eval=TRUE}
 # Calculates the quantiles from a GEVASummary object
 gquants <- geva.quantiles(gsummary)
 ```
 
 The code above produces a `GEVAQuantiles` object which stores the relevant partitions where the SV-points belong to. These partitions can be viewed by calling `plot` on the produced object:
-
-```{r include=FALSE}
-if (!exists("gquants"))
-  gquants <- geva.quantiles(gsummary)
-```
 
 ```{r plot-geva-quantiles-1, fig.cap="SV-plot produced from a `GEVAQuantiles` object using the `geva.quantiles` function with default parameters."}
 plot(gquants)
@@ -298,7 +286,7 @@ plot(gcluster)
 
 Apart from its usage as a wrapper, the `geva.cluster` function can also concatenate the summarized and grouped data into a single object by setting `grouped.return=TRUE` in the arguments. With this setup, the function will return a `GEVAGroupedSummary` object, which is a `GEVASummary` that includes the list of group sets (`GEVACluster` or `GEVAQuantile` objects). The code below illustrates this specific use case:
 
-```{r geva-cluster-grouped-1, eval=FALSE}
+```{r geva-cluster-grouped-1, eval=TRUE}
 # Applies cluster analysis with default parameters and
 # returns a GEVAGroupedSummary
 ggroupedsummary <- geva.cluster(gsummary,
@@ -307,7 +295,7 @@ ggroupedsummary <- geva.cluster(gsummary,
 
 Alternatively, multiple group sets (clusters and quantiles) can be combined directly to the summarized data by appending each of them with `groupsets<-`, which also converts the `GEVASummary` to a `GEVAGroupedSummary` object. For example, assuming that `gquants` and `gcluster` are output values from the previous quantiles (`geva.quantiles`) and clustering (`geva.cluster`) steps, respectively, the code would be:
 
-```{r geva-cluster-grouped-2, eval=FALSE}
+```{r plot-geva-cluster-grouped, eval=TRUE, fig.cap="SV-plot produced from a `GEVAGroupedSummary` object after appending the `GEVAQuantiles` and `GEVACluster` objects from previous steps."}
 # Makes a safe copy of the summary data
 ggroupedsummary <- gsummary
 # Appends the quantiles data
@@ -316,16 +304,6 @@ groupsets(ggroupedsummary) <- gquants
 groupsets(ggroupedsummary) <- gcluster
 
 # Draws a SV plot with grouped highlights (optional)
-plot(ggroupedsummary)
-```
-
-```{r plot-geva-cluster-grouped, echo=FALSE, fig.cap="SV-plot produced from a `GEVAGroupedSummary` object after appending the `GEVAQuantiles` and `GEVACluster` objects from previous steps."}
-if (!exists("ggroupedsummary"))
-{
-  ggroupedsummary <- gsummary
-  groupsets(ggroupedsummary) <- gquants
-  groupsets(ggroupedsummary) <- gcluster
-}
 plot(ggroupedsummary)
 ```
 
@@ -344,7 +322,7 @@ In this final analysis step, the `geva.finalize` function takes a `GEVASummary` 
 
 If factors were not included, no additional steps are required. The function call is done by passing the `GEVASummary`, `GEVAQuantiles` and `GEVACluster` from previous steps:
 
-```{r geva-finalize-1, eval=FALSE}
+```{r geva-finalize-1, eval=TRUE}
 # Calculates the final classifications based on the
 # intermediate results from previous steps
 gresults <- geva.finalize(gsummary, gquants, gcluster)
@@ -352,7 +330,7 @@ gresults <- geva.finalize(gsummary, gquants, gcluster)
 
 Or, if a `GEVAGroupedSummary` object is provided:
 
-```{r geva-finalize-grouped-1, eval=FALSE}
+```{r geva-finalize-grouped-1, eval=TRUE}
 # Calculates the final classifications based on the
 # intermediate results from previous steps
 gresults <- geva.finalize(ggroupedsummary)
@@ -364,26 +342,31 @@ Note that, without factors, the only relevant classification is `"similar"` (*i.
 
 Factors can be accessed and assigned to a `GEVAInput` object using `factors` and `factors<-`, respectively, and both accessors are valid for `GEVASummary` as well. The factors being set must be a `factor` or `character` vector whose length is equivalent to the number of columns, and it must contain at least two values per level to be considered since the factor analysis is based on ANOVA.
 
-For instance, considering a `GEVASummary` object that stores a `GEVAInput` with 6 columns (experimental results), if one wants to separate these columns into 3 factors ('g1', 'g2', and 'g3'), the following code could be applied:
+For instance, considering a `GEVASummary` object that stores a `GEVAInput` with 9 columns (experimental results), if one wants to separate these columns into 3 factors ('g1', 'g2', and 'g3'), the following code could be applied:
 
-```{r factors-assign, eval=FALSE}
-# Assigning factors to an example input with 6 columns
+```{r factors-assign, eval=TRUE}
+# Assigning factors to an example input with 9 columns
 
 # Example with GEVAInput
-factors(ginput) <- c('g1', 'g1', 'g2', 'g2', 'g3', 'g3')
+factors(ginput) <- c('g1', 'g1', 'g1',
+                     'g2', 'g2', 'g2',
+                     'g3', 'g3', 'g3')
 
 # Example with GEVAInput (using factor class)
-factors(ginput) <- factor(c('g1', 'g1', 'g2',
-                            'g2', 'g3', 'g3'))
+factors(ginput) <- factor(c('g1', 'g1', 'g1',
+                            'g2', 'g2', 'g2',
+                            'g3', 'g3', 'g3'))
 
 # Example with GEVASummary
-factors(gsummary) <- c('g1', 'g1', 'g2', 'g2', 'g3', 'g3')
+factors(gsummary) <- c('g1', 'g1', 'g1',
+                       'g2', 'g2', 'g2',
+                       'g3', 'g3', 'g3')
 
 ```
 
 By including factors in the current analysis, some optional arguments related to the factor analysis become available in `geva.finalize`. The `p.value`, for instance, determines the significance cutoff employed in ANOVA tests (by default, this value is `0.05` for $\alpha < 0.05$). In this case, the function call becomes:
 
-```{r geva-finalize-2, eval=FALSE}
+```{r geva-finalize-2, eval=TRUE}
 # Calculates the final classifications based on the
 # intermediate results from previous steps
 gresults <- geva.finalize(gsummary, gquants, gcluster,
@@ -392,7 +375,7 @@ gresults <- geva.finalize(gsummary, gquants, gcluster,
 
 Or, if a `GEVAGroupedSummary` object is provided:
 
-```{r geva-finalize-grouped-2, eval=FALSE}
+```{r geva-finalize-grouped-2, eval=TRUE}
 # Calculates the final classifications based on the
 # intermediate results from previous steps
 gresults <- geva.finalize(ggroupedsummary, p.value=0.05)

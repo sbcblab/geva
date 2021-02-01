@@ -32,7 +32,7 @@ assert.callres <- function(obj, posscalls, prevframes=2, pastefn=base::deparse, 
                    pastefn(callres)))
     }
   }
-  invisible(T)
+  invisible(TRUE)
 }
 
 # Asserts that 'arr' has the correct dimensions specified by (<function name> = <expected result>) in '...'
@@ -46,7 +46,7 @@ assert.dim <- function(arr, ...)
     length = "Invalid length in '%s': expected %s, got %s"
   )
   assert.callres(arr, posscalls, ...)
-  invisible(T)
+  invisible(TRUE)
 }
 
 # Asserts that 'arr' has the same character sequence as the result of a call applied to it
@@ -60,7 +60,7 @@ assert.names.equal <- function(arr, ...)
     levels = "Mismatching levels in '%s': expected [%s], got [%s]"
   )
   assert.callres(arr, posscalls, pastefn = fmt.limit, ...)
-  invisible(T)
+  invisible(TRUE)
 }
 
 # Asserts that the length of a list or array is not zero. This function accepts multiple arguments
@@ -70,13 +70,13 @@ assert.notempty <- function(..., .posmsg = "'%s' must contain at least one eleme
   if (arglen != 0)
   {
     argnms = call.dots.argnames(...)
-    for (i in 1:arglen)
+    for (i in seq_len(arglen))
     {
       objname = argnms[i]
       if (length(...elt(i)) == 0) stop(sprintf(.posmsg, objname))
     }
   }
-  invisible(T)
+  invisible(TRUE)
 }
 
 # Asserts that all elements in a collection (needle) are included in another collection (arr)
@@ -86,7 +86,7 @@ assert.included <- function(needle, arr, elemnames = "elements")
   nmarr = call.objname(arr, 1)
   misselems = !(needle %in% arr)
   if (any(misselems)) stop(sprintf("Some %s in '%s' are missing in '%s': [%s]", elemnames, nmneedle, nmarr, fmt.limit(needle[misselems])))
-  invisible(T)
+  invisible(TRUE)
 }
 
 # Asserts that the object belongs, inherits or is related to an class
@@ -102,7 +102,7 @@ assert.class <- function(object, ...)
   )
   callfns = list(
     class = function(obj, cl) any(class(obj) %in% cl, na.rm = TRUE),
-    is = function(obj, cl) any(sapply(cl, is, object=obj)),
+    is = function(obj, cl) any(vapply(cl, is, FALSE, object=obj)),
     typeof = function(obj, cl) typeof(obj) %in% cl
   )
   for (fnm in intersect(names(argls), names(posscalls)))
@@ -115,7 +115,7 @@ assert.class <- function(object, ...)
       stop(sprintf(posscalls[[fnm]], objname, strconjunct(reqclass, conj = " or ")))
     }
   }
-  invisible(T)
+  invisible(TRUE)
 }
 
 # Asserts that the argument of a funtion
@@ -131,7 +131,7 @@ assert.choices <- function(arg, accept.multiple=FALSE, accept.null=FALSE, accept
     {
       margs = !(arg %in% choices)
       if (any(margs)) stop(sprintf("invalid arguments in '%s': (%s).\nValid choices are: %s", argnm, strjoin(arg[margs], ', '), strjoin(choices, ', ')) )
-    } else if (!all(arg %in% choices)) stop(sprintf("Invalid argument (%s) in '%s'.\nValid choices are: %s", arg, argnm, strjoin(choices, ', ')), call. = F)
+    } else if (!all(arg %in% choices)) stop(sprintf("Invalid argument (%s) in '%s'.\nValid choices are: %s", arg, argnm, strjoin(choices, ', ')), call. = FALSE)
   } else return(arg)
   if (!accept.multiple) arg = arg[1]
   arg
@@ -158,8 +158,8 @@ assert.operator <- function(arg, ..., .argname = NA)
     mism = !(do.call(fnm, list(arg, reqop)))
     if (any(mism))
     {
-      stop(sprintf(pretxt + ' must be ' + posscalls[[fnm]], objname, reqop), call. = F)
+      stop(sprintf(pretxt + ' must be ' + posscalls[[fnm]], objname, reqop), call. = FALSE)
     }
   }
-  invisible(T)
+  invisible(TRUE)
 }

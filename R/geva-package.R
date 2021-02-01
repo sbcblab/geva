@@ -16,6 +16,7 @@
 #' @importFrom utils head tail .S3methods isS3method read.delim
 #' @importFrom stats cutree lm.fit lm.wfit median model.matrix na.exclude na.omit rnorm runif setNames
 #' 
+#' 
 #' @importFrom matrixStats rowAnys weightedMean weightedMedian weightedSd weightedVar weightedMad
 #' @importFrom fastcluster hclust.vector
 NULL

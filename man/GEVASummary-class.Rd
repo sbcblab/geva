@@ -71,6 +71,9 @@
 
 
 }
+\value{
+A \code{\linkS4class{GEVASummary}} object
+}
 \description{
 The \code{GEVASummary} class represents the calculation results for summary and variation from a \code{\linkS4class{GEVAInput}}.
 

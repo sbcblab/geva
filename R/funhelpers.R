@@ -86,7 +86,7 @@ function2expression <- function(fn, ..., args.list=NULL)
   argorder = order(match(argnms, fargnms, nomatch = length(vargs) + 1L))
   argnms = argnms[argorder]
   vargs = vargs[argorder]
-  argnms = sapply(argnms, function(nm) if(nchar(nm) == 0L) "" else sprintf("%s = ", nm))
+  argnms = vapply(argnms, function(nm) if(nchar(nm) == 0L) "" else sprintf("%s = ", nm), "")
   fncall = parse(text=sprintf("%s(%s)", fname, paste0(paste0(argnms, vargs), collapse=", ") ))
   fncall
 }

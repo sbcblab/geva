@@ -11,6 +11,9 @@ geva.quick(gobject, ...)
 
 \item{...}{Optional arguments passed to \code{\link[=geva.summarize]{geva.summarize()}}, \code{\link[=geva.quantiles]{geva.quantiles()}}, \code{\link[=geva.cluster]{geva.cluster()}}, and \code{\link[=geva.finalize]{geva.finalize()}}}
 }
+\value{
+A \code{\linkS4class{GEVAResults}} object
+}
 \description{
 Given a \code{\linkS4class{GEVAInput}} object, applies the \code{\link[=geva.summarize]{geva.summarize()}}, \code{\link{geva.quantiles}}, \code{\link{geva.cluster}}, and \code{\link{geva.finalize}} in a single call. Optional arguments are passed to the internal calls of these functions.
 }

@@ -17,6 +17,9 @@
 
 
 }
+\value{
+A \code{\linkS4class{GEVACluster}} object
+}
 \description{
 The \code{GEVACluster} class represents the classification results from a cluster analysis. For each probe/gene, there is a assigned cluster among the \emph{g} defined clusters.
 

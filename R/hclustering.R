@@ -37,7 +37,7 @@ calc.hclust.tree <- function(sv, resolution, hc.method=options.hc.method, hc.met
   horder = order(hc$height)
   # Finding the threshold based on resolution
   logres = -log10(hc$height)
-  sel.outliers = 1:length(logres) %in% which.outliers(logres)
+  sel.outliers = seq_along(logres) %in% which.outliers(logres)
   hrange = range(logres[!sel.outliers])
   hsize = diff(hrange)
   logcutpos = hsize * resolution^2 + hrange[1] # Resolution is squared to have a more comprehensible scale

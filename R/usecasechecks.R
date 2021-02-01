@@ -20,21 +20,21 @@ check.suitable.factors <- function(fs, warn=TRUE, msg=TRUE)
   {
     if (warn) warning("'factors' has only one level. All analyses using factors will be ignored")
     if (msg) catline("Factoring analysis ignored (two or more levels required)")
-    return(invisible(F))
+    return(invisible(FALSE))
   }
-  invisible(T)
+  invisible(TRUE)
 }
 
 # ---------------------
 # TypedList
 check.typed.list.class <- function(tlist, elemclass)
 {
-  if (!(extends(elem.class(tlist), elemclass) && all(sapply(tlist, inherits, elemclass))))
+  if (!(extends(elem.class(tlist), elemclass) && all(vapply(tlist, inherits, FALSE, what=elemclass))))
   {
     lsnm = call.objname(tlist, 1L)
     stop("elements in '%s' must be %s", lsnm, elemclass)
   }
-  invisible(T)
+  invisible(TRUE)
 }
 
 # ---------------------
@@ -42,7 +42,7 @@ check.typed.list.class <- function(tlist, elemclass)
 check.quantiles.count <- function(qs, qv)
 {
   if (qs < 3L || qv < 2L) stop("number of quantiles must be >= 3 for summary and >= 2 for variation")
-  invisible(T)
+  invisible(TRUE)
 }
 
 # ---------------------

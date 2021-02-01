@@ -160,7 +160,7 @@ append.groupsets <- function(gsummary, ...)
   tls = groupsets(gsummary)
   args = list(...)
   argnms = call.dots.namesorargs(...)
-  for (i in 1:...length())
+  for (i in seq_len(...length()))
   {
     argnm = argnms[i]
     ggset = ...elt(i)

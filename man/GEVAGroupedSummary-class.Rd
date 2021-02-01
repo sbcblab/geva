@@ -38,6 +38,9 @@
 
 
 }
+\value{
+A \code{\linkS4class{GEVAGroupedSummary}} object
+}
 \description{
 The \code{GEVAGroupedSummary} class inherits the \code{\linkS4class{GEVASummary}} class and includes group analysis data (\emph{e.g.}, clustering and quantile detection).
 }

@@ -130,7 +130,7 @@ calc.quantile.centroids <- function(x, nq, qmethod, init.threshold=NA_real_)
 {
   nq = as.integer(nq)
   if (nq == 0L) return(numeric(0))
-  has.negative = any(x < 0, na.rm = T)
+  has.negative = any(x < 0, na.rm = TRUE)
   qinds = calc.quantile.indexes(nq, has.negative)
   qthres = calc.quantile.thresholds(x, nq, qmethod, init.threshold, has.negative)
   if (nq == 1L)
@@ -152,7 +152,7 @@ calc.quantile.nearest.vector <- function(x, qcents, qsizes=NULL)
 {
   qnms = factor(names(qcents), levels=names(qcents))
   if (is.null(qsizes)) qsizes = attr(qcents, 'sizes')
-  mdists = t(sapply(x, function(xi) abs((xi - qcents) / qsizes)))
+  mdists = t(vapply(x, function(xi) abs((xi - qcents) / qsizes), numeric(length(qcents))))
   vmindists = apply(mdists, 1, which.min)
   qnearests = qnms[vmindists]
   qoffs = x - qcents[vmindists]
@@ -378,9 +378,9 @@ geva.quantiles <- function(sv, quantile.method = options.quantiles,
   vsm.inds = attr(vsm.cents, 'indexes')
   vvr.inds = attr(vvr.cents, 'indexes')
   
-  mqinds = sapply(vsm.inds, function(si) sapply(vvr.inds, function(vi) qindex2label(si, vi)))
+  mqinds = vapply(vsm.inds, function(si) vapply(vvr.inds, function(vi) qindex2label(si, vi), ''), character(nq.v))
   vlabels = as.vector(mqinds)
-  svinds = svtable(S = as.vector(sapply(vsm.inds, rep, times=length(vvr.inds))),
+  svinds = svtable(S = as.vector(vapply(vsm.inds, rep, integer(nq.v), times=length(vvr.inds))),
                    V = rep(vvr.inds, length(vsm.inds)),
                    row.names = vlabels)
   

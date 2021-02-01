@@ -83,6 +83,9 @@
 
 
 }
+\value{
+A \code{\linkS4class{GEVAInput}} object
+}
 \description{
 The \code{GEVAInput} class contains the initial data for \code{GEVA} usage.
 It stores numeric matrices of \emph{logFC} values from differential expression comparison results. Options for calculations and summarizing are also included.

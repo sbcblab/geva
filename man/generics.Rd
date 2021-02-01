@@ -139,6 +139,22 @@ as.SVTable(x, ...)
 
 \item{gres}{A \code{\linkS4class{GEVAResults}} objec}
 }
+\value{
+See the specific usages for each method.
+}
 \description{
 Exhaustive list of generic methods exported from GEVA. Use \code{findMethods} to retrieve the specific usages.
+}
+\examples{
+# Returing analysis parameters from an object
+gsummary <- geva.summarize(geva.ideal.example(),
+                           summary.method="mean",
+                           variation.method="sd")
+anpars <- analysis.params(gsummary)
+print(anpars)
+# $summary.method
+# [1] "mean"
+# $variation.method
+# [1] "sd"
+
 }

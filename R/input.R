@@ -168,7 +168,7 @@ geva.merge.input <- function(..., col.values="logFC", col.pvals="adj.P.Val", col
       read.args = arg$read.args
       vprint("Reading '%s' ...", basename(fnm))
       basenm = sub('(.*)\\..*$', '\\1', basename(fnm))
-      rdargs = list.merge(read.args, list(file = fnm, row.names=1, check.names = F))
+      rdargs = list.merge(read.args, list(file = fnm, row.names=1, check.names = FALSE))
       arg = do.call(read.delim, rdargs)
       argcall = basename(fnm)
     }
@@ -184,7 +184,7 @@ geva.merge.input <- function(..., col.values="logFC", col.pvals="adj.P.Val", col
     }
     if (is.data.frame(arg))
     {
-      sel.vals = if (use.regex) {rowAnys(sapply(col.values, grepl, x=colnames(arg), perl=TRUE))} else {colnames(arg) %in% col.values}
+      sel.vals = if (use.regex) {rowAnys(vapply(col.values, grepl, logical(nrow(arg)), x=colnames(arg), perl=TRUE))} else {colnames(arg) %in% col.values}
       if (!any(sel.vals))
       {
         warning(sprintf("No column %s '%s' was found in %s",
@@ -192,7 +192,7 @@ geva.merge.input <- function(..., col.values="logFC", col.pvals="adj.P.Val", col
                         strconjunct(col.values, strvec = "', '", conj="' or '"), argcall))
         next
       }
-      sel.ws = if (use.regex) {rowAnys(sapply(col.pvals, grepl, x=colnames(arg), perl=TRUE))} else {colnames(arg) %in% col.pvals}
+      sel.ws = if (use.regex) {rowAnys(vapply(col.pvals, grepl, logical(nrow(arg)), x=colnames(arg), perl=TRUE))} else {colnames(arg) %in% col.pvals}
       if (!any(sel.ws))
       {
         warning(sprintf("No column %s '%s' was found in %s. Using %s as replacement for weights",
@@ -204,11 +204,11 @@ geva.merge.input <- function(..., col.values="logFC", col.pvals="adj.P.Val", col
         sel.vals = seq(1L, length.out = length(sel.vals)) %in% which(sel.vals)[1]
         sel.ws = seq(1L, length.out = length(sel.ws)) %in% which(sel.ws)[1]
       }
-      sel.attrs = if (use.regex) {rowAnys(sapply(col.other, grepl, x=colnames(arg), perl=TRUE))} else {colnames(arg) %in% col.other}
+      sel.attrs = if (use.regex) {rowAnys(vapply(col.other, grepl, logical(nrow(arg)), x=colnames(arg), perl=TRUE))} else {colnames(arg) %in% col.other}
       if (!is.null(da))
         sel.attrs[colnames(arg) %in% colnames(da)] = FALSE
       arg.values = arg[, sel.vals, drop=FALSE]
-      if (!(is.numeric(arg.values) || all(sapply(seq.int(ncol(arg.values)), is.numeric))))
+      if (!(is.numeric(arg.values) || all(vapply(arg.values, is.numeric, FALSE))))
       {
         warning(sprintf("Input '%s' is not numeric. Argument ignored", argcall))
         next
@@ -305,7 +305,7 @@ geva.read.tables <- function(filenames=NULL, dirname=".", col.values="logFC", co
   if (is.null(p.value.cutoff) || is.na(p.value.cutoff[1]))
     p.value.cutoff = 1
   assert.operator(p.value.cutoff, `>=` = 0, `<=` = 1)
-  if (length(filenames) == 0L || dir.exists(filenames[1]) ) filenames = list.files(dirname, full.names = T, all.files = F, recursive = F, include.dirs = F, pattern = files.pattern)
+  if (length(filenames) == 0L || dir.exists(filenames[1]) ) filenames = list.files(dirname, full.names = TRUE, all.files = FALSE, recursive = FALSE, include.dirs = FALSE, pattern = files.pattern)
   assert.notempty(filenames)
   verbose = ...arg(verbose, TRUE)
   fcount = length(filenames)

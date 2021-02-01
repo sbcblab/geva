@@ -33,7 +33,7 @@ initialize.class.args <- function(...)
     if (!(nm %in% argnms))
     {
       elem = slot(obj, nm)
-      attr(elem, 'unitialized') = T
+      attr(elem, 'unitialized') = TRUE
       argls[[nm]] = elem
     }
   }
@@ -44,8 +44,8 @@ initialize.class.args <- function(...)
 is.unitialized <- function(elem)
 {
   unitattr = attr(elem, 'unitialized')
-  if (is.null(unitattr)) return(F)
-  return(unitattr == T)
+  if (is.null(unitattr)) return(FALSE)
+  return(unitattr == TRUE)
 }
 
 # Gets the elem parameter if the argument was initialized, or else the default parameter
