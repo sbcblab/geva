@@ -28,7 +28,14 @@ header-includes:
   - \let\@fnsymbol\@arabic
   - \makeatother
 indent: true
-knit: (function(inputFile, encoding, output_dir) { rmarkdown::render(inputFile, output_format="md_document", params=list(variant="gfm"), encoding = encoding, output_file ='README.md') })
+knit: (function(inputFile, encoding, output_dir)
+      {
+        rmarkdown::render(inputFile,
+                          output_format="github_document",
+                          params=list(number_sections=TRUE),
+                          encoding = encoding,
+                          output_file ='README.md')
+      })
 vignette: >
   %\VignetteIndexEntry{GEVA}
   %\VignetteEngine{knitr::rmarkdown}
