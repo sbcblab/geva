@@ -18,8 +18,9 @@ NULL
 #'
 #' @description List containing elements of the same class or inheritance.
 #'
-#'
-#' @slot elem.class \code{character} representing the class related to the elements
+#' @slot .Data `list` of internal contents. Elements must match or inherit a common class
+#' \cr (Inherited from `list`)
+#' @slot elem.class `character` representing the class related to the elements
 #'
 #' @declareS4class
 setClass('TypedList',

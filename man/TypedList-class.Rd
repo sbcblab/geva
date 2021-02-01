@@ -41,6 +41,9 @@ List containing elements of the same class or inheritance.
 \section{Slots}{
 
 \describe{
+\item{\code{.Data}}{\code{list} of internal contents. Elements must match or inherit a common class
+\cr (Inherited from \code{list})}
+
 \item{\code{elem.class}}{\code{character} representing the class related to the elements}
 }}
 

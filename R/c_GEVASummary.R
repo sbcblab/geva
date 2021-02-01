@@ -17,12 +17,12 @@ NULL
 
 #' @title GEVA Summary-Variation Table
 #'
-#' @description The \code{GEVASummary} class represents the calculation results for summary and variation from a \code{GEVAInput}.
+#' @description The `GEVASummary` class represents the calculation results for summary and variation from a [`GEVAInput-class`].
 #' 
-#' This class inherits from \code{SVTable}.
+#' This class inherits from [`SVTable`].
 #'
-#' @slot sv \code{numeric matrix} composed by two columns: \code{S} (summary) and \code{V} (variation)
-#' \cr (Inherited from \code{\linkS4class{SVTable}})
+#' @slot sv `numeric matrix` composed by two columns: `S` (summary) and `V` (variation)
+#' \cr (Inherited from [`SVTable-class`])
 #' @slot inputdata GEVAInput-class with the data input
 #' @slot sv.method Names of the statistical methods used to summarize data
 #' @slot info list with additional information
@@ -158,7 +158,7 @@ setMethod('analysis.params', 'GEVASummary', function(gobject)
 #' @s4method Gets the list of [`GEVAGroupSet-class`] objects attached to this instance. Only applicable for [`GEVAGroupedSummary-class`] objects
 setMethod('groupsets', 'GEVASummary', function(object) typed.list(elem.class = 'GEVAGroupSet') )
 
-#' @s4method Converts this instance to [`GEVAGroupedSummary`] and sets the list of [`GEVAGroupSet-class`] objects.
+#' @s4method Converts this instance to [`GEVAGroupedSummary-class`] and sets the list of [`GEVAGroupSet-class`] objects.
 #' Can be used with `$<name>` to specify the object name in the list.
 #' If `value` is a `GEVAGroupSet`, inserts the element and sets the name based on the value call
 setMethod('groupsets<-', c('GEVASummary', 'TypedList'), function(object, value)
@@ -183,10 +183,10 @@ setMethod('groupsets<-', c('GEVASummary', 'GEVAGroupSet'), function(object, valu
 #' @category Properties
 
 #' @s3method Gets a `character` for the summarization method name
-get.summary.method.GEVASummary <- function(gevasummary) get.summary.method(sv.method(gevasummary)$S)
+get.summary.method.GEVASummary <- function(x) get.summary.method(sv.method(x)$S)
 
 #' @s3method Gets a `character` for the variation calculation method name
-get.variation.method.GEVASummary <- function(gevasummary) get.variation.method(sv.method(gevasummary)$V)
+get.variation.method.GEVASummary <- function(x) get.variation.method(sv.method(x)$V)
 
 #' @category Conversion and coercion
 

@@ -108,7 +108,7 @@ geva.dcluster <- function(sv, resolution=0.3, dcluster.method=options.dcluster.m
     dbscan = dbscan::dbscan(svmatrix.norm, eps, minPts = minpts),
     optics = {
       opt.res = dbscan::optics(svmatrix.norm, eps, minPts = minpts)
-      extractDBSCAN(opt.res, eps)
+      dbscan::extractDBSCAN(opt.res, eps)
     },
   )
   class(clust.res) = c(sprintf("%s.geva", class(clust.res)[1]), class(clust.res))

@@ -5,13 +5,15 @@ author:
   - Bruno César Feltes\footnotemark[1], and Marcio Dorn\footnotemark[1]
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
- pdf_document:
-   template: NULL
-   latex_engine: xelatex
-   toc: true
-   number_sections: true
-   citation_package: biblatex
-   fig_caption: true
+  md_document:
+    variant: gfm
+  pdf_document:
+    citation_package: biblatex
+    fig_caption: yes
+    latex_engine: xelatex
+    number_sections: yes
+    template: null
+    toc: yes
 fontsize: 12pt
 bibliography: references.bib
 biblio-style: numeric-comp
@@ -28,6 +30,7 @@ header-includes:
   - \let\@fnsymbol\@arabic
   - \makeatother
 indent: true
+knit: (function(inputFile, encoding, output_dir) { rmarkdown::render(inputFile, encoding = encoding, output_file ='README.md') })
 vignette: >
   %\VignetteIndexEntry{GEVA}
   %\VignetteEngine{knitr::rmarkdown}
@@ -35,6 +38,10 @@ vignette: >
 ---
 
 \renewbibmacro{in:}{\ifentrytype{article}{}{\printtext{\bibstring{in}\intitlepunct}}}
+
+```{r load-packages, include=FALSE}
+devtools::load_all(getwd())
+```
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
@@ -65,9 +72,9 @@ Before proceeding to the current methodology, it is assumed that the user alread
 This package is available on GitHub and can be installed through the following command:
 
 ```{r eval=FALSE}
-install_github("nunesijg/geva")
+devtools::install_github("nunesijg/geva")
 ```
-After downloading and installing the sources, use the following command to load `geva` from the local package library:
+Note that this command requires the *devtools* package (installed via `install.packages('devtools')`). After downloading and installing the sources, use the following command to load `geva` from the local package library:
 ```{r eval=FALSE}
 library(geva)
 ```

@@ -38,6 +38,7 @@ NULL
 #' @slot qindexes \code{integer \linkS4class{SVTable}} (\emph{g} lines) representing the position index to each quantile, in terms of summary and variation
 #' @slot qcount integer attributes (\code{\linkS4class{SVIntAttribute}}) with the defined number of quantiles for the S and V axes
 #' @slot qcutoff numeric attributes (\code{\linkS4class{SVNumAttribute}}) with the initial quantile cutoff in S and V, starting from the point zero
+#' @slot qmethod \code{character}, method used to calculate the initial quantiles (see [`geva.quantiles()`])
 #'
 #' @declareS4class
 setClass('GEVAQuantiles',
@@ -142,6 +143,7 @@ setMethod('cluster.method', 'GEVAQuantiles', function(object) 'quantiles')
 #' @s4method Gets the unique quantile names
 setMethod('quantiles', 'GEVAQuantiles', function(object) levels(object))
 
+#' @s4method Gets a `data.frame` with the qualitative contrasts of classification relevance
 setMethod('classification.table', 'GEVAQuantiles',
           function(object)
           {
@@ -149,6 +151,8 @@ setMethod('classification.table', 'GEVAQuantiles',
             if (is.null(ctable)) return(get.quantiles.default.classification(object))
             ctable
           })
+
+#' @s4method Sets the `data.frame` with the qualitative contrasts of classification relevance
 setMethod('classification.table<-', c('GEVAQuantiles', 'data.frame'),
           function(object, value)
           {

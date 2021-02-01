@@ -16,9 +16,7 @@
 \alias{infolist,GEVAInput,character-method}
 \alias{infolist<-,GEVAInput,list-method}
 \alias{factors,GEVAInput-method}
-\alias{factors}
 \alias{factors<-,GEVAInput,factor-method}
-\alias{factors<-}
 \alias{factors<-,GEVAInput,character-method}
 \alias{dim,GEVAInput-method}
 \alias{dimnames,GEVAInput-method}

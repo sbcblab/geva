@@ -36,7 +36,7 @@ insert.function.optargs <- function(fn, ..., .selector=NULL)
   if (is.null(.selector)) .selector = 1L:...length()
   if (is.character(.selector)) .selector = .selector %in% argnms
   if (is.logical(.selector)) .selector = which(.selector)
-  if (!is.integer(.selector)) .selector = as.integer(selector)
+  if (!is.integer(.selector)) .selector = as.integer(.selector)
   .selector = .selector[.selector >= 1 & .selector <= ...length()]
   if (length(.selector) == 0) return(fn)
   fenv = environment(fn)

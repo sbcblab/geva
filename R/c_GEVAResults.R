@@ -134,6 +134,7 @@ setMethod('inputdata', 'GEVAResults', function(object) inputdata(object@svdata))
 setMethod('inputvalues', 'GEVAResults', function(object) inputvalues(object@svdata))
 #' @s4method Returns the weights `matrix` from the internal [`GEVAInput-class`]
 setMethod('inputweights', c('GEVAResults', 'logical'), function(object, normalized) inputweights(object@svdata, normalized))
+#' @s4method
 setMethod('inputweights', c('GEVAResults', 'missing'), function(object, normalized=FALSE) inputweights(object@svdata))
 
 #' @s4method Returns the features `data.frame` from the internal [`GEVAInput-class`]

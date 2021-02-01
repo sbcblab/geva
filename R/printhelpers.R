@@ -63,7 +63,7 @@ is.verbose <- function(prevfns=0L)
       return(any(sys.frame(i)$verbose, na.rm = TRUE))
   }
   defvars = ls(envir = parent.frame(prevfns))
-  return(!('verbose' %in% defvars) || all(eval.parent(verbose, prevfns) == TRUE) == TRUE)
+  return(!('verbose' %in% defvars) || all(eval.parent(quote(verbose), prevfns) == TRUE) == TRUE)
 }
 
 

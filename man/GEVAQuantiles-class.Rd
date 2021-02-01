@@ -13,12 +13,18 @@
 \alias{quantiles.method,GEVAQuantiles-method}
 \alias{cluster.method,GEVAQuantiles-method}
 \alias{quantiles,GEVAQuantiles-method}
+\alias{classification.table,GEVAQuantiles-method}
+\alias{classification.table<-,GEVAQuantiles,data.frame-method}
 \alias{dim,GEVAQuantiles-method}
 \alias{lines.GEVAQuantiles}
 \alias{as.expression.GEVAQuantiles}
 \alias{as.SVTable.GEVAQuantiles}
 \title{GEVA Quantiles Grouping Results}
 \usage{
+
+
+
+
 
 
 
@@ -82,6 +88,8 @@ This class inherits from \code{\linkS4class{GEVAGroupSet}} and is inherited by \
 \item{\code{qcount}}{integer attributes (\code{\linkS4class{SVIntAttribute}}) with the defined number of quantiles for the S and V axes}
 
 \item{\code{qcutoff}}{numeric attributes (\code{\linkS4class{SVNumAttribute}}) with the initial quantile cutoff in S and V, starting from the point zero}
+
+\item{\code{qmethod}}{\code{character}, method used to calculate the initial quantiles (see \code{\link[=geva.quantiles]{geva.quantiles()}})}
 }}
 
 \section{Methods}{
@@ -110,6 +118,8 @@ This class inherits from \code{\linkS4class{GEVAGroupSet}} and is inherited by \
 }
 \sspace\cr\strong{Sub-slot accessors}
 \describe{
+\item{\code{classification.table(object) <- value}}{Sets the \code{data.frame} with the qualitative contrasts of classification relevance}
+\item{\code{classification.table(object)}}{Gets a \code{data.frame} with the qualitative contrasts of classification relevance}
 \item{\code{quantiles(object)}}{Gets the unique quantile names}
 }
 }

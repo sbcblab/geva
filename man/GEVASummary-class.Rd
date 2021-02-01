@@ -72,14 +72,14 @@
 
 }
 \description{
-The \code{GEVASummary} class represents the calculation results for summary and variation from a \code{GEVAInput}.
+The \code{GEVASummary} class represents the calculation results for summary and variation from a \code{\linkS4class{GEVAInput}}.
 
-This class inherits from \code{SVTable}.
+This class inherits from \code{\link{SVTable}}.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{sv}}{\code{numeric matrix} composed by two columns: \code{S} (summary) and \code{V} (variation)
+\item{\code{sv}}{\verb{numeric matrix} composed by two columns: \code{S} (summary) and \code{V} (variation)
 \cr (Inherited from \code{\linkS4class{SVTable}})}
 
 \item{\code{inputdata}}{GEVAInput-class with the data input}
@@ -99,7 +99,7 @@ This class inherits from \code{SVTable}.
 }
 \sspace\cr\strong{Grouping}
 \describe{
-\item{\code{groupsets(object) <- value}}{Converts this instance to \code{\link{GEVAGroupedSummary}} and sets the list of \code{\linkS4class{GEVAGroupSet}} objects.
+\item{\code{groupsets(object) <- value}}{Converts this instance to \code{\linkS4class{GEVAGroupedSummary}} and sets the list of \code{\linkS4class{GEVAGroupSet}} objects.
 Can be used with \verb{$<name>} to specify the object name in the list.
 If \code{value} is a \code{GEVAGroupSet}, inserts the element and sets the name based on the value call}
 \item{\code{groupsets(object)}}{Gets the list of \code{\linkS4class{GEVAGroupSet}} objects attached to this instance. Only applicable for \code{\linkS4class{GEVAGroupedSummary}} objects}
@@ -111,8 +111,8 @@ If \code{value} is a \code{GEVAGroupSet}, inserts the element and sets the name 
 \sspace\cr\strong{Properties}
 \describe{
 \item{\code{analysis.params(gobject)}}{Returns a \code{list} of analysis parameters passed to \code{\link{geva.summarize}} to obtain this object}
-\item{\code{get.summary.method(gevasummary)}}{Gets a \code{character} for the summarization method name}
-\item{\code{get.variation.method(gevasummary)}}{Gets a \code{character} for the variation calculation method name}
+\item{\code{get.summary.method(x)}}{Gets a \code{character} for the summarization method name}
+\item{\code{get.variation.method(x)}}{Gets a \code{character} for the variation calculation method name}
 }
 \sspace\cr\strong{Sub-slot accessors}
 \describe{

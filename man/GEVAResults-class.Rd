@@ -16,6 +16,7 @@
 \alias{inputdata,GEVAResults-method}
 \alias{inputvalues,GEVAResults-method}
 \alias{inputweights,GEVAResults,logical-method}
+\alias{inputweights,GEVAResults,missing-method}
 \alias{featureTable,GEVAResults-method}
 \alias{dim,GEVAResults-method}
 \alias{dimnames,GEVAResults-method}
@@ -28,6 +29,8 @@
 \alias{as.expression.GEVAResults}
 \title{GEVA Results Table}
 \usage{
+
+
 
 
 

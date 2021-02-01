@@ -124,7 +124,7 @@ plotargs.sv.proportional <- function(x)
 
 
 # Creates the convex polygons for grouped points
-hull.lines <- function(x, cl, col = NULL, hull_lwd = 1, hull_lty = 1, alpha = 0.2, border.visible=TRUE, ...)
+hull.lines <- function(x, cl, col = NULL, hull_lwd = 1, hull_lty = 1, alpha = 0.2, border.visible=TRUE, na.color="#666666", ...)
 {
   if (!is.factor(cl))
   {
