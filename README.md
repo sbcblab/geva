@@ -6,6 +6,6 @@
 
 This package can be installed from GitHub using the `devtools` package with the following command:
 
-    devtools::install_github("nunesijg/geva")
+    devtools::install_github("sbcblab/geva")
 
 For the complete guide, see the *vignettes* directory.

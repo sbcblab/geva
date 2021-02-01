@@ -42,7 +42,7 @@ This package is available on GitHub and can be installed through the
 following command:
 
 ``` r
-devtools::install_github("nunesijg/geva")
+devtools::install_github("sbcblab/geva")
 ```
 
 Note that this command requires the *devtools* package (installed via
