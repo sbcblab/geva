@@ -20,3 +20,10 @@
 #' @importFrom matrixStats rowAnys weightedMean weightedMedian weightedSd weightedVar weightedMad
 #' @importFrom fastcluster hclust.vector
 NULL
+
+.onLoad <- function(libname, pkgname){
+  if(isNamespaceLoaded('roxygen2'))
+  {
+    Sys.setenv(`_R_S3_METHOD_REGISTRATION_NOTE_OVERWRITES_`=FALSE)
+  }
+}

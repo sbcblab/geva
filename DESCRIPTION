@@ -1,8 +1,15 @@
 Package: geva
 Type: Package
 Title: Gene Expression Variation Analysis (GEVA)
-Description: Statistic methods to evaluate variation between multiple biological conditions.
-Version: 0.99.0
+Description: Statistic methods to evaluate variations of differential expression (DE)
+  between multiple biological conditions.
+  It takes into account the fold-changes and p-values from previous differential expression (DE)
+  results that use large-scale data (*e.g.*, microarray and RNA-seq) and evaluates which genes
+  would react in response to the distinct experiments.
+  This evaluation involves an unique pipeline of statistical methods, including weighted summarization,
+  quantile detection, cluster analysis, and ANOVA tests, in order to classify a subset of relevant genes
+  whose DE is similar or dependent to certain biological factors.
+Version: 0.99.1
 Authors@R: 
     c(person(given = "Itamar José",
              family = "Guimarães Nunes",
@@ -29,7 +36,7 @@ biocViews: Classification, DifferentialExpression, GeneExpression, Microarray,
     MultipleComparison, RNASeq, SystemsBiology, Transcriptomics
 License: LGPL (>=3)
 Encoding: UTF-8
-Depends: R (>= 3.6.0)
+Depends: R (>= 4.0)
 Imports: grDevices, graphics, methods, stats, utils, dbscan, fastcluster, matrixStats
 Suggests: devtools, knitr, rmarkdown, roxygen2, limma, topGO
 Roxygen: list(markdown = TRUE)

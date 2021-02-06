@@ -10,6 +10,8 @@
 # ########################
 # Copyright (C) 2020 Nunes IJG et al
 
+#' @evalNamespace sprintf("if(isNamespaceLoaded('roxygen2'))\n{%s\n}", paste0(collapse='', sprintf("\n    %s", c( "importFrom(roxygen2,roxy_tag_parse)", "importFrom(roxygen2,roxy_tag_rd)", sprintf('S3method(%1$s)', vapply(strsplit(ls(pattern = '^(?:roxy_tag_(?:parse|rd)\\.)|(?:^(?:merge|format)\\.rd)'), '.', fixed = TRUE), paste0, '', collapse = ','))))))
+NULL
 
 # Reads the source code lines to help documentation processing
 read.doc.tag <- local({

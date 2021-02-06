@@ -45,7 +45,8 @@ vignette: >
 \renewbibmacro{in:}{\ifentrytype{article}{}{\printtext{\bibstring{in}\intitlepunct}}}
 
 ```{r load-packages, include=FALSE}
-devtools::load_all(getwd())
+if (!("package:geva" %in% search()))
+  devtools::load_all(getwd())
 ```
 
 ```{r setup, include = FALSE}
