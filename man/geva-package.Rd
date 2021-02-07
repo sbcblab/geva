@@ -6,7 +6,14 @@
 \alias{geva-package}
 \title{geva: Gene Expression Variation Analysis (GEVA)}
 \description{
-Statistic methods to evaluate variation between multiple biological conditions.
+Statistic methods to evaluate variations of differential expression (DE)
+  between multiple biological conditions.
+  It takes into account the fold-changes and p-values from previous differential expression (DE)
+  results that use large-scale data (*e.g.*, microarray and RNA-seq) and evaluates which genes
+  would react in response to the distinct experiments.
+  This evaluation involves an unique pipeline of statistical methods, including weighted summarization,
+  quantile detection, cluster analysis, and ANOVA tests, in order to classify a subset of relevant genes
+  whose DE is similar or dependent to certain biological factors.
 
 Statistic methods to evaluate variation between multiple biological conditions.
 }

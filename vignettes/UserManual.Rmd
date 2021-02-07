@@ -28,14 +28,14 @@ header-includes:
   - \let\@fnsymbol\@arabic
   - \makeatother
 indent: true
-knit: (function(inputFile, encoding, output_dir)
-      {
-        rmarkdown::render(inputFile,
-                          output_format="github_document",
-                          params=list(number_sections=TRUE),
-                          encoding = encoding,
-                          output_file ='README.md')
-      })
+# knit: (function(inputFile, encoding, output_dir)
+#       {
+#         rmarkdown::render(inputFile,
+#                           output_format="github_document",
+#                           params=list(number_sections=TRUE),
+#                           encoding = encoding,
+#                           output_file ='README.md')
+#       })
 vignette: >
   %\VignetteIndexEntry{GEVA}
   %\VignetteEngine{knitr::rmarkdown}
@@ -46,7 +46,11 @@ vignette: >
 
 ```{r load-packages, include=FALSE}
 if (!("package:geva" %in% search()))
+{
+  if (!exists('lev'))
+    lev = 0
   devtools::load_all(getwd())
+}
 ```
 
 ```{r setup, include = FALSE}

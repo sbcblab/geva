@@ -390,7 +390,7 @@ geva.quantiles <- function(sv, quantile.method = options.quantiles,
   qsizes = svtable(attr(vsm.cents, 'sizes')[dfinds$S], attr(vvr.cents, 'sizes')[dfinds$V], vlabels)
   qcount = svattr(nq.s, nq.v)
   qcutoff = svattr(as.numeric(thrs), as.numeric(thrv))
-  qgroups = factor(mqinds[matrix(c(vvr.qs, vsm.qs), ncol=2)], levels = vlabels)
+  qgroups = factor(mqinds[matrix(c(as.integer(vvr.qs), as.integer(vsm.qs)), ncol=2)], levels = vlabels)
   
   # Score calculated by direct multiplication
   qscores = apply(svscores, 1, comb.score.fn)
