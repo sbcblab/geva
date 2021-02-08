@@ -9,7 +9,7 @@ Description: Statistic methods to evaluate variations of differential expression
   This evaluation involves an unique pipeline of statistical methods, including weighted summarization,
   quantile detection, cluster analysis, and ANOVA tests, in order to classify a subset of relevant genes
   whose DE is similar or dependent to certain biological factors.
-Version: 0.99.2
+Version: 0.99.3
 Authors@R: 
     c(person(given = "Itamar José",
              family = "Guimarães Nunes",

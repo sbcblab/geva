@@ -9,3 +9,5 @@
 *.log
 *.pdf
 build/*
+doc
+Meta
