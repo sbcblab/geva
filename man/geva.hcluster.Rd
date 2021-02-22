@@ -6,11 +6,7 @@
 \alias{options.hc.metric}
 \alias{options.hc.method}
 \title{GEVA Hierarchical Clustering}
-\format{
 
-
-
-}
 \usage{
 geva.hcluster(
   sv,

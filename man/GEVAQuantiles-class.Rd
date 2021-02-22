@@ -20,39 +20,7 @@
 \alias{as.expression.GEVAQuantiles}
 \alias{as.SVTable.GEVAQuantiles}
 \title{GEVA Quantiles Grouping Results}
-\usage{
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
 \value{
 A \code{\linkS4class{GEVAQuantiles}} object
 }

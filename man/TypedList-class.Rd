@@ -14,27 +14,7 @@
 \alias{as.typed.list.list}
 \alias{as.typed.list.TypedList}
 \title{Type-strict List (TypedList-class)}
-\usage{
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
 \value{
 A \code{\linkS4class{TypedList}} object
 }

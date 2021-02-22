@@ -25,35 +25,7 @@
 \alias{as.character.SVAttribute}
 \alias{as.vector.SVAttribute}
 \title{Summary-Variation Attribute Field}
-\usage{
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
 \arguments{
 \item{S}{the \emph{summary} value}
 

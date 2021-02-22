@@ -102,8 +102,6 @@ geva.dcluster <- function(sv, resolution=0.3, dcluster.method=options.dcluster.m
     knnd = calc.dclust.knnd(svmatrix.norm)
     eps = calc.eps.from.resolution(svmatrix.norm, resolution, knnd=knnd)
   }
-  #else
-    #svmatrix.norm = svmatrix
   clust.res = switch (dcluster.method,
     dbscan = dbscan::dbscan(svmatrix.norm, eps, minPts = minpts),
     optics = {

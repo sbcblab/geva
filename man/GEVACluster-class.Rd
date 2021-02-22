@@ -8,15 +8,7 @@
 \alias{cluster.method,GEVACluster-method}
 \alias{lines.GEVACluster}
 \title{GEVA Clustering Results}
-\usage{
 
-
-
-
-
-
-
-}
 \value{
 A \code{\linkS4class{GEVACluster}} object
 }

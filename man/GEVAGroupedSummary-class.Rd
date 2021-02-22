@@ -15,29 +15,7 @@
 \alias{lines.GEVAGroupedSummary}
 \alias{points.GEVAGroupedSummary}
 \title{GEVA Grouped Summary-Variation Table}
-\usage{
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
 \value{
 A \code{\linkS4class{GEVAGroupedSummary}} object
 }

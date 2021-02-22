@@ -145,8 +145,6 @@ factoring.silhouette.partial.quantiles <- function(gobject, gquants=NULL, factor
   msinds = t(apply(mv, 1, calc.quantile.nearest.sindex,
                    gquants=gquants, qsthresholds=qsthresholds, qsindexes=qsindexes))
   vsimil = apply(msinds, 1, row.factor.sindex.similarity.score, factors=factors)
-  #penalty = 0.5
-  #vsimil = (1 - penalty) + penalty * vsimil
   vsimil
 }
 
@@ -180,7 +178,6 @@ factoring.spec.fisher <- function(gobject, factors=NULL, idxs=NULL, ...)
   factors = as.factor(factors)
   ugroup = levels(factors)
   ngroups = length(ugroup)
-  #if (!check.factors.are.specific(factors, warn=FALSE, msg=FALSE)) stop("'factors' must contain at least 2 levels for factor-specific analysis")
   nr = nrow(gobject)
   if (is.null(idxs)) idxs = seq_len(nr)
   else if (is.logical(idxs)) idxs = which(idxs)

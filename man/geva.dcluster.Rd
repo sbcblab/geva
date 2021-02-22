@@ -5,9 +5,7 @@
 \alias{geva.dcluster}
 \alias{options.dcluster.method}
 \title{GEVA Density Clustering}
-\format{
 
-}
 \usage{
 geva.dcluster(
   sv,

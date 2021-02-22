@@ -8,4 +8,4 @@ This package can be installed from GitHub using the `BiocManager` package with t
 
     BiocManager::install("geva")
 
-For the complete guide, see the *vignettes* directory.
+For the complete guide, see the [inst/doc](inst/doc) directory.

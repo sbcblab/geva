@@ -5,9 +5,7 @@
 \alias{geva.quantiles}
 \alias{options.quantiles}
 \title{GEVA Quantiles Detection}
-\format{
 
-}
 \usage{
 geva.quantiles(
   sv,

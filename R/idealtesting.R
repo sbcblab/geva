@@ -56,10 +56,10 @@ geva.ideal.example <- function(probecount=10000, nfactors=3, colsperfactor=3)
   smpcntrng = as.integer(ceiling(c(probecount / 1000, probecount / 20)))
   for(ci in seq_len(nfactors))
   {
-    vlfcbase = rnorm(probecount, 0, 1) #runif(probecount, -0.5, 0.5)
+    vlfcbase = rnorm(probecount, 0, 1)
     zi = sample(vi, probecount, replace = TRUE, prob = wi) * runif(1, 6, 12)
     vpvalbase = runif(probecount, 0, 1)^8
-    vlfcchange = rnorm(probecount, 0, 1) * zi  #(runif(probecount, 0, 1)^500 + (-1 * runif(probecount, 0, 1)^500))
+    vlfcchange = rnorm(probecount, 0, 1) * zi
     smpinds = sample(seq.int(probecount), sample(smpcntrng[1]:smpcntrng[2], 1), replace = FALSE)
     condname = sprintf("Cond_%d", ci)
     for (ri in seq_len(colsperfactor))

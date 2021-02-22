@@ -5,9 +5,7 @@
 \alias{geva.finalize}
 \alias{options.factoring.p.adjust}
 \title{Concatenating GEVA calculations into the final results}
-\format{
 
-}
 \usage{
 geva.finalize(
   gsummary,

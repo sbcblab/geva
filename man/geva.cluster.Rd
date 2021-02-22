@@ -7,13 +7,7 @@
 \alias{options.cl.score.method}
 \alias{options.distance}
 \title{GEVA Cluster Analysis}
-\format{
 
-
-
-
-
-}
 \usage{
 geva.cluster(
   sv,

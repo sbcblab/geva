@@ -51,13 +51,6 @@ call.dots.which.frame <- function(...)
       wfr = syspars[wfr]
   }
   wfr
-  #for (i in 1L:nfr)
-  #{
-  #  callargs = as.character(sys.call(i - 1L))
-  #  if (!('...' %in% callargs))
-  #    return(i-1L)
-  #}
-  #0L
 }
 
 # Gets a character vector with the argument names used in dots. This does not evaluate the arguments
@@ -80,8 +73,6 @@ call.dots.args <- function(..., .prevfns=0L)
     argls[-(1L:(which(grepl("...", formalArgs(sys.function(nframe)), fixed = TRUE))[1L] - 1L))]
   }
   argls
-  #match.call(expand.dots = FALSE, envir = sys.frame(.prevfns))$`...`
-  #eval.parent(quote(match.call(expand.dots = FALSE)$`...`), n = .prevfns + 1L)
 }
 
 # Gets only those arguments expressed as an 'as-is' call (e.g. I(expression))
@@ -172,7 +163,6 @@ call.arg.characters <- function(callarg)
       TRUE
     }
     recdecall(argsub)
-    #argsub = rapply(as.list(argsub), function(e) if (is.call(e)) as.list(e)[-1] else NULL, how='replace')
     argsub = unlist(as.list(retls))
   }
   argsub = unique(as.character(argsub))
@@ -201,7 +191,6 @@ call.arg.characters <- function(callarg)
     pargls[[names(argls)[newi]]] = argls[[newi]]
   }
   pargls
-  #as.list(pargls)
 }
 
 # Uses the second argument if the first is null

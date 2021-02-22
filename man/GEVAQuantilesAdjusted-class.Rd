@@ -6,11 +6,7 @@
 \alias{show,GEVAQuantilesAdjusted-method}
 \alias{group.rels,GEVAQuantilesAdjusted-method}
 \title{GEVA Adjusted Quantiles Results}
-\usage{
 
-
-
-}
 \value{
 A \code{\linkS4class{GEVAQuantilesAdjusted}} object
 }

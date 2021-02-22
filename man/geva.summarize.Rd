@@ -6,11 +6,7 @@
 \alias{options.summary}
 \alias{options.variation}
 \title{Summarizes the GEVAInput}
-\format{
 
-
-
-}
 \usage{
 geva.summarize(
   ginput,
