@@ -95,7 +95,7 @@ setMethod('plot', c('GEVAInput', 'missing'),
           {
             warning("Input summarized using the default parameters")
             gsummary = geva.summarize(x, verbose=FALSE)
-            plot(gsummary, y, ...)
+            plot(gsummary, ...)
           })
 
 # S4 Methods
