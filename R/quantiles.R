@@ -391,9 +391,8 @@ geva.quantiles <- function(sv, quantile.method = options.quantiles,
   qcount = svattr(nq.s, nq.v)
   qcutoff = svattr(as.numeric(thrs), as.numeric(thrv))
   qgroups = factor(mqinds[matrix(c(as.integer(vvr.qs), as.integer(vsm.qs)), ncol=2)], levels = vlabels)
-  
   # Score calculated by direct multiplication
-  qscores = apply(svscores, 1, comb.score.fn)
+  qscores = apply(sv(svscores), 1, comb.score.fn)
   qoffsets = svtable(attr(vsm.qs, 'offsets'), attr(vvr.qs, 'offsets'), rownames(sv))
   lthres = list(S=attr(vsm.cents, 'thresholds'), V=attr(vvr.cents, 'thresholds'))
   
