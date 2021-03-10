@@ -100,21 +100,11 @@ call.dots.named.list <- function(..., .trimquotes=TRUE, .replacefn=NULL)
   selempts = nchar(argnms) == 0L
   if (any(selempts))
   {
-    pls = call.dots.args(...) # match.call(expand.dots = FALSE)[['...']] #eval.parent(substitute(match.call(expand.dots = FALSE)[['...']]))
-    rnms = vapply(pls[selempts], function(pe) paste0(deparse(pe), collapse=''), '')
-    if (is.function(.replacefn)) # Used to select the element name when not present. The pattern is function(element, name)
-    {
-      rfn = .replacefn
-      fnargs = length(formals(.replacefn))
-      if (fnargs == 1L) rfn = function(e, name) .replacefn(e)
-      else if (fnargs == 0L) rfn = function(e, name) .replacefn()
-      indempts = which(selempts)
-      for (i in seq_along(indempts)) rnms[i] = rfn(argls[[indempts[i]]], rnms[i])
-    }
-    if (.trimquotes) rnms = trimws(rnms, whitespace = '[\\s\'\"]')
-    
+    lscalls = as.character(as.list(substitute(list(...)))[-1L])
+    rnms = clean_calls(as.character(lscalls)[selempts],
+                       sep = '_')
     argnms[selempts] = rnms
-    argls = setNames(argls, argnms)
+    names(argls) = argnms
   }
   argls
 }
@@ -123,21 +113,14 @@ call.dots.named.list <- function(..., .trimquotes=TRUE, .replacefn=NULL)
 call.dots.namesorargs <- function(..., .trimquotes=TRUE)
 {
   if (...length() == 0L) return(character(0))
-  pargs = call.dots.args(...)
-  nargs = length(pargs)
-  if (nargs == 0L) return(character(0))
-  argnms = names(pargs)
+  lscalls = as.list(substitute(list(...)))[-1L]
+  argnms = names(lscalls)
   if (is.null(argnms))
-  {
-    selunamed = rep(TRUE, nargs)
-    argnms = rep('', nargs)
-  } else selunamed = argnms %in% ''
-  if (any(selunamed))
-  {
-    rexprs = vapply(pargs[selunamed], function(pe) paste0(deparse(pe), collapse=''), '')
-    if (.trimquotes) rexprs = trimws(rexprs, whitespace = '[\\s\'\"]')
-    argnms[selunamed] = rexprs
-  }
+    argnms = character(length(argnms))
+  sel.empties = nchar(argnms) == 0L
+  if (any(sel.empties, na.rm = TRUE))
+    argnms[sel.empties] = clean_calls(as.character(lscalls)[sel.empties],
+                                      sep = '_')
   argnms
 }
 

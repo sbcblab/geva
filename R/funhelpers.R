@@ -78,7 +78,7 @@ function2expression <- function(fn, ..., args.list=NULL)
   fargnms = names(forms)
   forms = lapply(forms, deparse)
   args.list = lapply(lapply(args.list, function(a) if (is.expression(a) || is.call(a)) as.character(a) else deparse(a)), as.character)
-  dotsls = lapply(call.dots.args(...), deparse)
+  dotsls = lapply(as.list(substitute(list(...)))[-1L], deparse)
   vargs = unlist(list.merge(dotsls, args.list, forms))
   vargs = vargs[nchar(vargs) != 0L]
   if (length(vargs) == 0L) return(parse(text=sprintf("%s()", fname)))
