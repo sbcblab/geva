@@ -11,6 +11,7 @@
 #' @include c_GEVAInput.R
 #' @include statmath.R
 #' @include callhelpers.R
+#' @include stringhelpers.R
 NULL
 
 # Processes any compatible data as input to GEVA, including data.frames, lists and 
@@ -161,6 +162,7 @@ geva.merge.input <- function(..., col.values="logFC", col.pvals="adj.P.Val", col
     arg.values = NULL
     arg.weights = NULL
     arg.attrs = NULL
+    sel.attrs = FALSE
     vfacts = character(0)
     if (is(arg, 'geva.promise.read.path'))
     {
@@ -276,8 +278,8 @@ geva.merge.input <- function(..., col.values="logFC", col.pvals="adj.P.Val", col
     colnms = setdiff(make.unique(c(colnames(df), colnames(arg.values)), sep = '_'), colnames(df))
     df[, colnms] = arg.values
     dw[, colnms] = arg.weights
-    if (!is.null(arg.attrs))
-      da[,colnms] = arg.attrs
+    if (!is.null(arg.attrs) && any(sel.attrs))
+      da[,colnames(arg.attrs)] = arg.attrs
     
   }
   facts = as.factor(unlist(lsfacts))
@@ -310,13 +312,16 @@ geva.read.tables <- function(filenames=NULL, dirname=".", col.values="logFC", co
   verbose = ...arg(verbose, TRUE)
   fcount = length(filenames)
   if (fcount <= 1L) stop("GEVA requires at least two tables of comparison results")
-  lsinput = lapply(setNames(filenames, basename(filenames)), function(fnm)
+  lsinput = lapply(setNames(filenames, basename_noext(filenames)), function(fnm)
   {
     fls = list(path=fnm, read.args=read.args)
     class(fls) = 'geva.promise.read.path'
     fls
   })
-  ginput = geva.merge.input(lsinput, ..., col.values=col.values, col.pvals=col.pvals, col.other=col.other)
+  lsinput$col.values = col.values
+  lsinput$col.pvals = col.pvals
+  lsinput$col.other = col.other
+  ginput = do.call(geva.merge.input, lsinput)
   vprint("Read %d columns with %d probes", ncol(ginput), nrow(ginput))
   if (p.value.cutoff < 1)
     ginput = geva.input.filter(ginput, p.value.cutoff=p.value.cutoff, ...)

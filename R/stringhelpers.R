@@ -29,3 +29,17 @@ strconjunct <- function(strvec, sep=', ', conj=' and ')
   if (len == 1L) return(strvec)
   return(strjoin(strvec[1L:(len-1L)], sep) + conj + strvec[len])
 }
+
+# Gets the basename without extension
+basename_noext <- function(path) sub("\\.\\w*?$", "",
+                                     basename(path), perl = TRUE)
+
+# Cleans the calls into rather argument-like names
+clean_calls <- function(calls, sep='_')
+{
+  calls = as.character(calls)
+  calls = trimws(calls, whitespace = "[\t\r\n\"\' ]")
+  calls = sub("\\(\\)$", "", calls)
+  calls = make.unique(calls, sep)
+  calls
+}
