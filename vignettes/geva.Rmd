@@ -68,7 +68,6 @@ knitr::opts_chunk$set(
   fig.height = 6,
   dpi=300
 )
-set.seed(1)
 ```
 
 # Introduction
@@ -143,6 +142,9 @@ The code above will produce a `GEVAInput` object, which stores all the relevant 
 
 Be it due the abscence of experimental data or merely for didatical reasons, there may be some situations where the features in this package have to be immediately accessed and tested without needing to provide any real data, since two or more DE analyses must be performed before using GEVA. In this sense, the `geva.ideal.example` function can be used to generate a random input that simulates real processed inputs by GEVA. The function is called as follows:
 ```{r  geva-ideal-example, eval=TRUE}
+# (optional) Sets the initial seed to reproduce the
+# results presented here
+set.seed(1)
 # Generates a random GEVAInput with 10000 probes
 # and 6 columns
 ginput <- geva.ideal.example()
